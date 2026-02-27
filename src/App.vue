@@ -726,9 +726,48 @@ function renderComposite() {
 }
 
 function exportImage() {
-  const canvas = canvasRef.value
-  if (!canvas) return
-  canvas.toBlob((blob) => {
+  const exportCanvas = document.createElement('canvas')
+  exportCanvas.width = canvasSize.value.width
+  exportCanvas.height = canvasSize.value.height
+  const ctx = exportCanvas.getContext('2d')
+  if (!ctx) return
+
+  ctx.clearRect(0, 0, exportCanvas.width, exportCanvas.height)
+  ctx.save()
+  ctx.fillStyle = '#0b0b0f'
+  ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height)
+  ctx.restore()
+
+  const ordered = [...state.layers].reverse()
+  ordered.forEach((layer) => {
+    if (!layer.visible) return
+    const layerCanvas = document.createElement('canvas')
+    layerCanvas.width = layer.width
+    layerCanvas.height = layer.height
+    const layerCtx = layerCanvas.getContext('2d')
+    layerCtx.clearRect(0, 0, layer.width, layer.height)
+    layerCtx.drawImage(layer.img, 0, 0, layer.width, layer.height)
+
+    if (layer.hasSelection) {
+      layerCtx.globalCompositeOperation = 'destination-in'
+      layerCtx.drawImage(layer.mask, 0, 0)
+      layerCtx.globalCompositeOperation = 'source-over'
+    }
+
+    ctx.save()
+    ctx.globalCompositeOperation = layer.blendMode
+    ctx.globalAlpha = (layer.blendOpacity ?? 100) / 100
+    ctx.drawImage(
+      layerCanvas,
+      layer.x,
+      layer.y,
+      layer.width * layer.scale,
+      layer.height * layer.scale
+    )
+    ctx.restore()
+  })
+
+  exportCanvas.toBlob((blob) => {
     if (!blob) return
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
