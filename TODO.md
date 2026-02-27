@@ -1,0 +1,6 @@
+- refactoriser en composants
+- enlever le bouton de la gomme, et faire en sorte que l'icône de brush soit cliquable; quand on clique dessus ça devient la gomme, quand on reclique c'est de nouveau le brush
+- application d'un dégradé configurable (slider) sur toutes les zones de sélection des layers
+- remplacer la phrase de démarrage par une aide
+- vérifier le PWA sur Android
+- vérifier le responsive
