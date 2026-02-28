@@ -1,6 +1,10 @@
 import { nextTick } from 'vue'
 import { snapLayerToTargets } from '../utils/snap'
-import { DEFAULT_VIEWPORT } from '../constants/editorDefaults'
+import {
+  DEFAULT_PAN,
+  DEFAULT_VIEWPORT,
+  DEFAULT_ZOOM,
+} from '../constants/editorDefaults'
 
 export function useLayers({
   state,
@@ -320,6 +324,12 @@ export function useLayers({
     if (state.layers.length === 0) {
       state.hasViewport = false
       state.viewportSize = { ...DEFAULT_VIEWPORT }
+      state.showFinalComposite = false
+      state.isErasing = false
+      state.history = []
+      state.future = []
+      state.zoom = DEFAULT_ZOOM
+      state.pan = { ...DEFAULT_PAN }
     }
 
     renderComposite?.()
