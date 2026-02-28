@@ -8,6 +8,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
   const activeLayerRef = computed(() => unref(activeLayer) ?? null)
   const moveLayerRef = computed(() => unref(moveLayer) ?? null)
   const canvasSizeRef = computed(() => unref(canvasSize) ?? null)
+  let maskFeatherRenderTimer = null
 
   function renderComposite() {
     const canvas = canvasRef.value
@@ -22,6 +23,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
       canvasSize: canvasSizeRef.value,
       applySelectionMask: state.showFinalComposite,
       showSelectionOverlay: !state.showFinalComposite,
+      maskFeatherEnabled: state.maskFeatherEnabled,
+      maskFeatherSize: state.maskFeatherSize,
     })
   }
 
@@ -38,6 +41,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
       canvasSize: canvasSizeRef.value,
       applySelectionMask: true,
       showSelectionOverlay: false,
+      maskFeatherEnabled: state.maskFeatherEnabled,
+      maskFeatherSize: state.maskFeatherSize,
       respectVisibility: true,
     })
 
@@ -325,6 +330,20 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
     }
   )
 
+  watch(
+    () => state.maskFeatherSize,
+    () => {
+      if (!state.maskFeatherEnabled) return
+      if (maskFeatherRenderTimer) {
+        clearTimeout(maskFeatherRenderTimer)
+      }
+      maskFeatherRenderTimer = setTimeout(() => {
+        renderComposite()
+        maskFeatherRenderTimer = null
+      }, 250)
+    }
+  )
+
   onMounted(() => {
     renderComposite()
   })
@@ -332,6 +351,10 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
   onUnmounted(() => {
     if (state.pointerId !== null) {
       state.pointerId = null
+    }
+    if (maskFeatherRenderTimer) {
+      clearTimeout(maskFeatherRenderTimer)
+      maskFeatherRenderTimer = null
     }
   })
 

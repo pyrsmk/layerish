@@ -8,7 +8,10 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
     renderComposite?.()
   }
 
-
+  function toggleMaskFeather() {
+    state.maskFeatherEnabled = !state.maskFeatherEnabled
+    renderComposite?.()
+  }
 
   function toggleEraser() {
     state.isErasing = !state.isErasing
@@ -45,6 +48,7 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
 
   return {
     toggleFinalComposite,
+    toggleMaskFeather,
     toggleEraser,
     togglePanMode,
     onBlendModeChange,

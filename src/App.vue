@@ -69,6 +69,7 @@ const {
 
 const {
   toggleFinalComposite,
+  toggleMaskFeather,
   toggleEraser,
   togglePanMode,
   onBlendModeChange,
@@ -125,11 +126,13 @@ onMounted(() => {
 
       <Toolbar
         v-model:brushSize="state.brushSize"
+        v-model:maskFeatherSize="state.maskFeatherSize"
         :can-undo="canUndo"
         :can-redo="canRedo"
         :is-erasing="state.isErasing"
         :is-pan-mode="state.isPanMode"
         :show-final-composite="state.showFinalComposite"
+        :mask-feather-enabled="state.maskFeatherEnabled"
         :has-layers="state.layers.length > 0"
         :on-undo="undo"
         :on-redo="redo"
@@ -138,6 +141,7 @@ onMounted(() => {
         :on-toggle-eraser="toggleEraser"
         :on-toggle-pan-mode="togglePanMode"
         :on-center-in-view="centerInView"
+        :on-toggle-mask-feather="toggleMaskFeather"
         :on-toggle-final-composite="toggleFinalComposite"
         :on-export-image="exportImage"
       />
