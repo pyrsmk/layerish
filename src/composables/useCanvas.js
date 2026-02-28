@@ -45,8 +45,11 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
       if (!blob) return
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
+      const suffix = Array.from(crypto.getRandomValues(new Uint8Array(3)))
+        .map((value) => value.toString(16).padStart(2, '0'))
+        .join('')
       link.href = url
-      link.download = 'layerish.png'
+      link.download = `layerish-${suffix}.png`
       link.click()
       URL.revokeObjectURL(url)
     }, 'image/png')
