@@ -1,0 +1,155 @@
+<template>
+  <div class="toolbar">
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Annuler"
+      :disabled="!canUndo"
+      @click="onUndo"
+    >
+      <span class="material-symbols-outlined">undo</span>
+    </Button>
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Rétablir"
+      :disabled="!canRedo"
+      @click="onRedo"
+    >
+      <span class="material-symbols-outlined">redo</span>
+    </Button>
+    <Separator />
+
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Réduire"
+      @click="handleZoomBy(-0.1)"
+    >
+      <span class="material-symbols-outlined">remove</span>
+    </Button>
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Agrandir"
+      @click="handleZoomBy(0.1)"
+    >
+      <span class="material-symbols-outlined">add</span>
+    </Button>
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Taille initiale"
+      @click="onResetZoom"
+    >
+      <span class="material-symbols-outlined">view_real_size</span>
+    </Button>
+    <Separator />
+
+    <label class="toolbar-range" :style="{ '--range-value': brushPercent }">
+      <span class="material-symbols-outlined">brush</span>
+      <input
+        class="tooltip"
+        type="range"
+        :min="DEFAULT_BRUSH_MIN"
+        :max="DEFAULT_BRUSH_MAX"
+        v-model.number="brushModel"
+        :data-tooltip="`${brushModel}px`"
+      />
+    </label>
+    <Button
+      ghost
+      selectable
+      class="tooltip"
+      data-tooltip="Gomme"
+      :active="isErasing"
+      @click="onToggleEraser"
+    >
+      <span class="material-symbols-outlined">ink_eraser</span>
+    </Button>
+    <Separator />
+
+    <Button
+      ghost
+      selectable
+      class="tooltip"
+      data-tooltip="Déplacement"
+      :active="isPanMode"
+      @click="onTogglePanMode"
+    >
+      <span class="material-symbols-outlined">open_with</span>
+    </Button>
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Recentrer la vue"
+      @click="onCenterInView"
+    >
+      <span class="material-symbols-outlined">arrows_input</span>
+    </Button>
+    <Button
+      ghost
+      selectable
+      class="tooltip"
+      data-tooltip="Aimantation"
+      :active="snapEnabled"
+      @click="onToggleSnap"
+    >
+      <span class="material-symbols-outlined">bolt</span>
+    </Button>
+    <Separator />
+
+    <Button
+      ghost
+      class="tooltip"
+      data-tooltip="Exporter"
+      @click="onExportImage"
+    >
+      <span class="material-symbols-outlined">save</span>
+    </Button>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import Button from './Button.vue'
+import Separator from './Separator.vue'
+import {
+  DEFAULT_BRUSH_MAX,
+  DEFAULT_BRUSH_MIN,
+} from '../constants/editorDefaults'
+
+const props = defineProps({
+  canUndo: { type: Boolean, default: false },
+  canRedo: { type: Boolean, default: false },
+  brushSize: { type: Number, default: 32 },
+  isErasing: { type: Boolean, default: false },
+  isPanMode: { type: Boolean, default: false },
+  snapEnabled: { type: Boolean, default: true },
+  onUndo: { type: Function, required: true },
+  onRedo: { type: Function, required: true },
+  onZoomBy: { type: Function, required: true },
+  onResetZoom: { type: Function, required: true },
+  onToggleEraser: { type: Function, required: true },
+  onTogglePanMode: { type: Function, required: true },
+  onCenterInView: { type: Function, required: true },
+  onToggleSnap: { type: Function, required: true },
+  onExportImage: { type: Function, required: true },
+})
+
+const emit = defineEmits(['update:brushSize'])
+
+const brushModel = computed({
+  get: () => props.brushSize,
+  set: (value) => emit('update:brushSize', value),
+})
+
+const brushPercent = computed(
+  () =>
+    ((props.brushSize - DEFAULT_BRUSH_MIN) /
+      (DEFAULT_BRUSH_MAX - DEFAULT_BRUSH_MIN)) *
+    100
+)
+
+const handleZoomBy = (delta) => props.onZoomBy(delta)
+</script>

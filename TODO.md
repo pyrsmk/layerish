@@ -1,4 +1,7 @@
-- refactoriser en composants
+- enlever les coins arrondis sur le viewport
+- bouger le bouton composite à côté du bouton save
+- nom de fichier d'export
+- #E4003A / #FF0066 / #FF2929
 - enlever le bouton de la gomme, et faire en sorte que l'icône de brush soit cliquable; quand on clique dessus ça devient la gomme, quand on reclique c'est de nouveau le brush
 - application d'un dégradé configurable (slider) sur toutes les zones de sélection des layers
 - remplacer la phrase de démarrage par une aide
