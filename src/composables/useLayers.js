@@ -275,6 +275,12 @@ export function useLayers({
     pushHistory?.()
   }
 
+  function toggleLayerVisibility(layer) {
+    layer.visible = !layer.visible
+    renderComposite?.()
+    pushHistory?.()
+  }
+
   function invertActiveMask() {
     const layer = state.layers.find(
       (item) => item.id === state.activeLayerId
@@ -358,6 +364,7 @@ export function useLayers({
     fitLayerToViewport,
     recenterLayer,
     clearMask,
+    toggleLayerVisibility,
     invertActiveMask,
     deleteLayer,
     toggleMoveLayer,

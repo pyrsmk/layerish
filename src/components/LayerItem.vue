@@ -23,6 +23,17 @@
           <Button
             ghost
             small
+            selectable
+            class="tooltip"
+            :data-tooltip="props.layer.visible ? 'Masquer' : 'Afficher'"
+            :active="!props.layer.visible"
+            @click.stop="emitToggleVisibility"
+          >
+            <span class="material-symbols-outlined">visibility_off</span>
+          </Button>
+          <Button
+            ghost
+            small
             class="add-layer-button tooltip"
             data-tooltip="Supprimer le layer"
             @click.stop="emitDelete"
@@ -127,6 +138,7 @@ const props = defineProps({
 const emit = defineEmits([
   'select',
   'delete',
+  'toggle-visibility',
   'blend-mode-change',
   'blend-opacity-input',
   'nudge-scale',
@@ -142,6 +154,7 @@ const emit = defineEmits([
 
 const emitSelect = () => emit('select', props.layer.id)
 const emitDelete = () => emit('delete', props.layer)
+const emitToggleVisibility = () => emit('toggle-visibility', props.layer)
 const emitBlendModeChange = () => emit('blend-mode-change', props.layer)
 const emitBlendOpacityInput = () => emit('blend-opacity-input', props.layer)
 const emitNudge = (delta) => emit('nudge-scale', props.layer, delta)

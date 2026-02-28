@@ -26,7 +26,7 @@
           ghost
           icon
           class="layers-toggle tooltip"
-          data-tooltip="Afficher/Masquer le panneau des layers"
+          data-tooltip="Afficher/Masquer le panneau"
           @click="props.onToggleLayersPanel"
         >
           <span class="material-symbols-outlined">{{
@@ -65,6 +65,7 @@
           @nudge-scale="props.onNudgeLayerScale"
           @fit-viewport="props.onFitLayerToViewport"
           @toggle-move="props.onToggleMoveLayer"
+          @toggle-visibility="props.onToggleVisibility"
           @recenter="props.onRecenterLayer"
           @clear-mask="props.onClearMask"
           @dragstart="props.onLayerDragStart"
@@ -121,6 +122,7 @@ const props = defineProps({
   onNudgeLayerScale: { type: Function, required: true },
   onFitLayerToViewport: { type: Function, required: true },
   onToggleMoveLayer: { type: Function, required: true },
+  onToggleVisibility: { type: Function, required: true },
   onRecenterLayer: { type: Function, required: true },
   onClearMask: { type: Function, required: true },
   onLayerDragStart: { type: Function, required: true },

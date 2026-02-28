@@ -160,7 +160,7 @@ export function drawComposite({
     : ordered
 
   visibleOrdered.forEach((layer) => {
-    if (respectVisibility && !layer.visible) return
+    if (!layer.visible) return
     const { layerCanvas, layerCtx } = createLayerCanvas(layer)
 
     const maskCanvas =

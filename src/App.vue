@@ -61,6 +61,7 @@ const {
   fitLayerToViewport,
   recenterLayer,
   clearMask,
+  toggleLayerVisibility,
   invertActiveMask,
   deleteLayer,
   toggleMoveLayer,
@@ -115,6 +116,7 @@ onMounted(async () => {
       :on-nudge-layer-scale="nudgeLayerScale"
       :on-fit-layer-to-viewport="fitLayerToViewport"
       :on-toggle-move-layer="toggleMoveLayer"
+      :on-toggle-visibility="toggleLayerVisibility"
       :on-recenter-layer="recenterLayer"
       :on-clear-mask="clearMask"
       :on-layer-drag-start="onLayerDragStart"
