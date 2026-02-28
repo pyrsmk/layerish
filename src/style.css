@@ -83,6 +83,11 @@ img {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 2px 0;
+}
+
+.layers-header h2 {
+  margin: 0;
 }
 
 .layers-title {

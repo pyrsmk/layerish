@@ -1,4 +1,3 @@
-- enlever de la marge au dessus et en dessous du header
 - corriger le drag n drop qui déconne par moment
 - comment améliorer la gestion du déplacement ?
   - icone de curseur
