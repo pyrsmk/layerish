@@ -1,5 +1,8 @@
 <template>
-  <aside :class="['layers', { collapsed: !props.isOpen }]">
+  <aside
+    :class="['layers', { collapsed: !props.isOpen }]"
+    @transitionend.self="handleTransitionEnd"
+  >
     <div class="layers-header">
       <div class="layers-title">
         <img class="layers-logo" src="/app.png" alt="" />
@@ -108,6 +111,7 @@ const props = defineProps({
 
   blendModes: { type: Array, required: true },
   onToggleLayersPanel: { type: Function, required: true },
+  onLayersTransitionEnd: { type: Function, required: false },
 
   onFilesSelected: { type: Function, required: true },
   onSetActiveLayer: { type: Function, required: true },
@@ -128,7 +132,20 @@ const props = defineProps({
 
 const fileInputRef = ref(null)
 
+const handleTransitionEnd = (event) => {
+  if (event.propertyName !== 'width') return
+  props.onLayersTransitionEnd?.(event)
+}
+
 const triggerFileInput = () => {
   fileInputRef.value?.click()
 }
 </script>
+
+<style scoped>
+h2 {
+  text-decoration: underline;
+  font-weight: 200;
+  font-size: 2em;
+}
+</style>

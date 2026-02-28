@@ -23,20 +23,17 @@ const {
 } = useEditorState()
 const { createMaskCanvas } = useMask()
 const { toggleLayersPanel } = useLayout(state)
-
 const canvasWorkspaceRef = ref(null)
-const renderComposite = () =>
-  canvasWorkspaceRef.value?.renderComposite?.()
-const fitToView = () =>
-  canvasWorkspaceRef.value?.fitToView?.()
-const centerInView = () =>
-  canvasWorkspaceRef.value?.centerInView?.()
-const resetZoom = () =>
-  canvasWorkspaceRef.value?.resetZoom?.()
-const zoomBy = (delta) =>
-  canvasWorkspaceRef.value?.zoomBy?.(delta)
-const exportImage = () =>
-  canvasWorkspaceRef.value?.exportImage?.()
+const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
+const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
+const centerInView = () => canvasWorkspaceRef.value?.centerInView?.()
+const handleLayersPanelTransitionEnd = (event) => {
+  if (event?.propertyName !== 'width') return
+  centerInView()
+}
+const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
+const zoomBy = (delta) => canvasWorkspaceRef.value?.zoomBy?.(delta)
+const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
 
 const { pushHistory, undo, redo } = useHistory({
   state,
@@ -97,6 +94,7 @@ onMounted(() => {
       :drag-insert-index="state.dragInsertIndex"
       :blend-modes="blendModes"
       :on-toggle-layers-panel="toggleLayersPanel"
+      :on-layers-transition-end="handleLayersPanelTransitionEnd"
       :on-files-selected="onFilesSelected"
       :on-set-active-layer="setActiveLayer"
       :on-delete-layer="deleteLayer"
