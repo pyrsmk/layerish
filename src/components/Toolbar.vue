@@ -24,7 +24,7 @@
       class="tooltip"
       data-tooltip="Réduire"
       :disabled="!hasLayers"
-      @click="handleZoomBy(-0.1)"
+      @click="handleZoomBy(-0.05)"
     >
       <span class="material-symbols-outlined">remove</span>
     </Button>
@@ -33,7 +33,7 @@
       class="tooltip"
       data-tooltip="Agrandir"
       :disabled="!hasLayers"
-      @click="handleZoomBy(0.1)"
+      @click="handleZoomBy(0.05)"
     >
       <span class="material-symbols-outlined">add</span>
     </Button>

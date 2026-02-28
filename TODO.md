@@ -1,8 +1,8 @@
-- corriger le drag n drop qui déconne par moment
 - enlever de la marge au dessus et en dessous du header
-- fonctionnalité d'angle ?
+- corriger le drag n drop qui déconne par moment
 - comment améliorer la gestion du déplacement ?
   - icone de curseur
+- fonctionnalité d'angle ?
 - refacto le CSS
 - remplacer la phrase de démarrage par une aide
 - vérifier le PWA sur Android

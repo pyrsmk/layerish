@@ -321,7 +321,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
   function handleWheel(event) {
     if (!event.ctrlKey && !event.metaKey) return
     event.preventDefault()
-    const delta = event.deltaY > 0 ? -0.1 : 0.1
+    const delta = event.deltaY > 0 ? -0.05 : 0.05
     zoomBy(delta)
   }
 
