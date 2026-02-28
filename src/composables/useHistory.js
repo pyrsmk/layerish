@@ -1,4 +1,9 @@
-export function useHistory({ state, createMaskCanvas, renderComposite }) {
+export function useHistory({
+  state,
+  createMaskCanvas,
+  renderComposite,
+  onChange,
+} = {}) {
   function captureSnapshot() {
     return {
       layers: state.layers.map((layer) => {
@@ -71,6 +76,7 @@ export function useHistory({ state, createMaskCanvas, renderComposite }) {
       state.history.shift()
     }
     state.future = []
+    onChange?.()
   }
 
   function undo() {
@@ -82,6 +88,7 @@ export function useHistory({ state, createMaskCanvas, renderComposite }) {
     const previous = state.history[state.history.length - 1]
     applySnapshot(previous)
     state.isRestoring = false
+    onChange?.()
   }
 
   function redo() {
@@ -95,6 +102,7 @@ export function useHistory({ state, createMaskCanvas, renderComposite }) {
     state.history.push(next)
     applySnapshot(next)
     state.isRestoring = false
+    onChange?.()
   }
 
   return {

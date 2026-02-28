@@ -1,3 +1,4 @@
+- bouton "oeil barré" pour cacher un layer à la demande
 - remplacer la phrase de démarrage par une aide
 - vérifier le PWA sur Android
 - vérifier le responsive

@@ -6,6 +6,7 @@ import Toolbar from './components/Toolbar.vue'
 import Tooltip from './components/Tooltip.vue'
 import { useEditorState } from './composables/useEditorState'
 import { useHistory } from './composables/useHistory'
+import { usePersistence } from './composables/usePersistence'
 
 import { useLayout } from './composables/useLayout'
 import { useLayers } from './composables/useLayers'
@@ -35,10 +36,17 @@ const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
 const zoomBy = (delta) => canvasWorkspaceRef.value?.zoomBy?.(delta)
 const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
 
+const { restoreSession, scheduleSave } = usePersistence({
+  state,
+  createMaskCanvas,
+  renderComposite,
+})
+
 const { pushHistory, undo, redo } = useHistory({
   state,
   createMaskCanvas,
   renderComposite,
+  onChange: scheduleSave,
 })
 
 const {
@@ -77,9 +85,12 @@ const {
   pushHistory,
 })
 
-onMounted(() => {
-  renderComposite()
-  pushHistory()
+onMounted(async () => {
+  const restored = await restoreSession()
+  if (!restored) {
+    renderComposite()
+    pushHistory()
+  }
 })
 </script>
 
