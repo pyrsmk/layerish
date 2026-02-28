@@ -49,8 +49,18 @@
     </Button>
     <Separator />
 
-    <label class="toolbar-range" :style="{ '--range-value': brushPercent }">
-      <span class="material-symbols-outlined">brush</span>
+    <div class="toolbar-range" :style="{ '--range-value': brushPercent }">
+      <Button
+        ghost
+        class="tooltip"
+        :data-tooltip="isErasing ? 'Gomme' : 'Pinceau'"
+        :disabled="!hasLayers"
+        @click="onToggleEraser"
+      >
+        <span class="material-symbols-outlined">
+          {{ isErasing ? 'ink_eraser' : 'brush' }}
+        </span>
+      </Button>
       <input
         class="tooltip"
         type="range"
@@ -60,18 +70,7 @@
         :data-tooltip="`${brushModel}px`"
         :disabled="!hasLayers"
       />
-    </label>
-    <Button
-      ghost
-      selectable
-      class="tooltip"
-      data-tooltip="Gomme"
-      :active="isErasing"
-      :disabled="!hasLayers"
-      @click="onToggleEraser"
-    >
-      <span class="material-symbols-outlined">ink_eraser</span>
-    </Button>
+    </div>
     <Separator />
 
     <Button
