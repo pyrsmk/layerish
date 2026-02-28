@@ -10,5 +10,6 @@ export const DEFAULT_ZOOM = 1
 export const DEFAULT_PAN = Object.freeze({ x: 0, y: 0 })
 
 export const DEFAULT_SNAP_TOLERANCE = 8
+export const DEFAULT_SNAP_ENABLED = true
 export const DEFAULT_SHOW_FINAL_COMPOSITE = false
 export const DEFAULT_LAYERS_OPEN = true

@@ -204,6 +204,7 @@ export function useLayers({
   }
 
   function snapLayerToBelow(layer) {
+    if (!state.snapEnabled) return
     const tolerance = state.snapTolerance / state.zoom
     snapLayerToTargets({
       layer,

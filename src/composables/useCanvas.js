@@ -222,7 +222,9 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
       const dy = point.y - state.moveStart.y
       layer.x = state.moveStart.layerX + dx
       layer.y = state.moveStart.layerY + dy
-      snapLayerToBelow(layer)
+      if (state.snapEnabled) {
+        snapLayerToBelow(layer)
+      }
       renderComposite()
       return
     }

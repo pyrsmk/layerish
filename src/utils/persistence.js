@@ -145,6 +145,7 @@ export function serializeState(state) {
       maskFeatherEnabled: state.maskFeatherEnabled,
       maskFeatherSize: state.maskFeatherSize,
       maskFeatherEdgeClamp: state.maskFeatherEdgeClamp,
+      snapEnabled: state.snapEnabled,
       showFinalComposite: state.showFinalComposite,
       isLayersOpen: state.isLayersOpen,
       hasUserToggledLayers: state.hasUserToggledLayers,

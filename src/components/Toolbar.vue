@@ -129,6 +129,17 @@
     >
       <span class="material-symbols-outlined">arrows_input</span>
     </Button>
+    <Button
+      ghost
+      selectable
+      class="tooltip"
+      data-tooltip="Aimantation"
+      :active="snapEnabled"
+      :disabled="!hasLayers"
+      @click="onToggleSnapEnabled"
+    >
+      <span class="material-symbols-outlined">electric_bolt</span>
+    </Button>
     <Separator />
     <Button
       ghost
@@ -172,6 +183,7 @@ const props = defineProps({
   maskFeatherEdgeClamp: { type: Boolean, default: false },
   isErasing: { type: Boolean, default: false },
   isPanMode: { type: Boolean, default: false },
+  snapEnabled: { type: Boolean, default: true },
   showFinalComposite: { type: Boolean, default: false },
   hasLayers: { type: Boolean, default: false },
   onUndo: { type: Function, required: true },
@@ -183,6 +195,7 @@ const props = defineProps({
   onToggleEraser: { type: Function, required: true },
   onTogglePanMode: { type: Function, required: true },
   onCenterInView: { type: Function, required: true },
+  onToggleSnapEnabled: { type: Function, required: true },
   onToggleFinalComposite: { type: Function, required: true },
   onExportImage: { type: Function, required: true },
 })

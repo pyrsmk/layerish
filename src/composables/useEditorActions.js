@@ -18,6 +18,10 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
     renderComposite?.()
   }
 
+  function toggleSnapEnabled() {
+    state.snapEnabled = !state.snapEnabled
+  }
+
   function toggleEraser() {
     state.isErasing = !state.isErasing
   }
@@ -55,6 +59,7 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
     toggleFinalComposite,
     toggleMaskFeather,
     toggleMaskFeatherEdgeClamp,
+    toggleSnapEnabled,
     toggleEraser,
     togglePanMode,
     onBlendModeChange,
