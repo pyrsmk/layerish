@@ -18,6 +18,10 @@ export function useLayers({
   }
 
   function onLayerDragStart(layer, event) {
+    if (state.isDrawing || state.isPanning || state.isMovingLayer) {
+      event?.preventDefault?.()
+      return
+    }
     if (
       event?.target?.closest('button, input, select, option, label, a')
     ) {
