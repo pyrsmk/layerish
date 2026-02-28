@@ -271,6 +271,34 @@ export function useLayers({
     pushHistory?.()
   }
 
+  function invertActiveMask() {
+    const layer = state.layers.find(
+      (item) => item.id === state.activeLayerId
+    )
+    if (!layer) return
+    const ctx = layer.mask.getContext('2d')
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      layer.mask.width,
+      layer.mask.height
+    )
+    const data = imageData.data
+    let hasSelection = false
+    for (let i = 0; i < data.length; i += 4) {
+      const nextAlpha = 255 - data[i + 3]
+      data[i] = 255
+      data[i + 1] = 255
+      data[i + 2] = 255
+      data[i + 3] = nextAlpha
+      if (nextAlpha > 0) hasSelection = true
+    }
+    ctx.putImageData(imageData, 0, 0)
+    layer.hasSelection = hasSelection
+    renderComposite?.()
+    pushHistory?.()
+  }
+
   function deleteLayer(layer) {
     const index = state.layers.findIndex((item) => item.id === layer.id)
     if (index === -1) return
@@ -320,6 +348,7 @@ export function useLayers({
     fitLayerToViewport,
     recenterLayer,
     clearMask,
+    invertActiveMask,
     deleteLayer,
     toggleMoveLayer,
     snapLayerToBelow,

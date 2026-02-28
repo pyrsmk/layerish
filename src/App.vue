@@ -61,6 +61,7 @@ const {
   fitLayerToViewport,
   recenterLayer,
   clearMask,
+  invertActiveMask,
   deleteLayer,
   toggleMoveLayer,
 } = useLayers({
@@ -147,6 +148,7 @@ onMounted(async () => {
         :on-redo="redo"
         :on-zoom-by="zoomBy"
         :on-reset-zoom="resetZoom"
+        :on-invert-mask="invertActiveMask"
         :on-toggle-eraser="toggleEraser"
         :on-toggle-pan-mode="togglePanMode"
         :on-center-in-view="centerInView"

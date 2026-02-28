@@ -70,6 +70,15 @@
         :data-tooltip="`${brushModel}px`"
         :disabled="!hasLayers"
       />
+      <Button
+        ghost
+        class="tooltip"
+        data-tooltip="Inverser le mask"
+        :disabled="!hasLayers"
+        @click="onInvertMask"
+      >
+        <span class="material-symbols-outlined">stroke_partial</span>
+      </Button>
     </div>
     <Separator />
     <div class="toolbar-range" :style="{ '--range-value': maskFeatherPercent }">
@@ -167,6 +176,7 @@ const props = defineProps({
   onRedo: { type: Function, required: true },
   onZoomBy: { type: Function, required: true },
   onResetZoom: { type: Function, required: true },
+  onInvertMask: { type: Function, required: true },
   onToggleEraser: { type: Function, required: true },
   onToggleMaskFeather: { type: Function, required: true },
   onTogglePanMode: { type: Function, required: true },
