@@ -95,10 +95,8 @@ onMounted(() => {
       :move-layer-id="state.moveLayerId"
       :drag-layer-id="state.dragLayerId"
       :drag-insert-index="state.dragInsertIndex"
-      :show-final-composite="state.showFinalComposite"
       :blend-modes="blendModes"
       :on-toggle-layers-panel="toggleLayersPanel"
-      :on-toggle-final-composite="toggleFinalComposite"
       :on-files-selected="onFilesSelected"
       :on-set-active-layer="setActiveLayer"
       :on-delete-layer="deleteLayer"
@@ -133,6 +131,7 @@ onMounted(() => {
         :is-erasing="state.isErasing"
         :is-pan-mode="state.isPanMode"
         :snap-enabled="state.snapEnabled"
+        :show-final-composite="state.showFinalComposite"
         :on-undo="undo"
         :on-redo="redo"
         :on-zoom-by="zoomBy"
@@ -141,6 +140,7 @@ onMounted(() => {
         :on-toggle-pan-mode="togglePanMode"
         :on-center-in-view="centerInView"
         :on-toggle-snap="toggleSnap"
+        :on-toggle-final-composite="toggleFinalComposite"
         :on-export-image="exportImage"
       />
     </main>

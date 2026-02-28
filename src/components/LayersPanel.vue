@@ -18,18 +18,7 @@
         >
           <span class="material-symbols-outlined">add</span>
         </Button>
-        <Button
-          v-if="props.isOpen"
-          ghost
-          icon
-          selectable
-          class="tooltip"
-          data-tooltip="Aperçu du composite"
-          :active="props.showFinalComposite"
-          @click="props.onToggleFinalComposite"
-        >
-          <span class="material-symbols-outlined">texture</span>
-        </Button>
+
         <Button
           ghost
           icon
@@ -116,10 +105,10 @@ const props = defineProps({
   moveLayerId: { type: String, default: null },
   dragLayerId: { type: String, default: null },
   dragInsertIndex: { type: Number, default: null },
-  showFinalComposite: { type: Boolean, default: false },
+
   blendModes: { type: Array, required: true },
   onToggleLayersPanel: { type: Function, required: true },
-  onToggleFinalComposite: { type: Function, required: true },
+
   onFilesSelected: { type: Function, required: true },
   onSetActiveLayer: { type: Function, required: true },
   onDeleteLayer: { type: Function, required: true },

@@ -58,8 +58,9 @@ export function drawComposite({
   const activeIndex = state.activeLayerId
     ? state.layers.findIndex((layer) => layer.id === state.activeLayerId)
     : -1
-  const allowedIds =
-    activeIndex === -1
+  const allowedIds = applySelectionMask
+    ? null
+    : activeIndex === -1
       ? null
       : new Set(
           state.layers

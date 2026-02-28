@@ -1,5 +1,4 @@
-- enlever les coins arrondis sur le viewport
-- bouger le bouton composite à côté du bouton save
+- aimantation sur les bords du viewport ainsi que tous les autres layers
 - nom de fichier d'export
 - #E4003A / #FF0066 / #FF2929
 - enlever le bouton de la gomme, et faire en sorte que l'icône de brush soit cliquable; quand on clique dessus ça devient la gomme, quand on reclique c'est de nouveau le brush

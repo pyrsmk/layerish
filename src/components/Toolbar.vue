@@ -101,6 +101,16 @@
 
     <Button
       ghost
+      selectable
+      class="tooltip"
+      data-tooltip="Mode composite"
+      :active="showFinalComposite"
+      @click="onToggleFinalComposite"
+    >
+      <span class="material-symbols-outlined">texture</span>
+    </Button>
+    <Button
+      ghost
       class="tooltip"
       data-tooltip="Exporter"
       @click="onExportImage"
@@ -126,6 +136,7 @@ const props = defineProps({
   isErasing: { type: Boolean, default: false },
   isPanMode: { type: Boolean, default: false },
   snapEnabled: { type: Boolean, default: true },
+  showFinalComposite: { type: Boolean, default: false },
   onUndo: { type: Function, required: true },
   onRedo: { type: Function, required: true },
   onZoomBy: { type: Function, required: true },
@@ -134,6 +145,7 @@ const props = defineProps({
   onTogglePanMode: { type: Function, required: true },
   onCenterInView: { type: Function, required: true },
   onToggleSnap: { type: Function, required: true },
+  onToggleFinalComposite: { type: Function, required: true },
   onExportImage: { type: Function, required: true },
 })
 
