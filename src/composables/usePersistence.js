@@ -123,6 +123,9 @@ export function usePersistence({ state, createMaskCanvas, renderComposite }) {
       if (typeof settings.maskFeatherSize === 'number') {
         state.maskFeatherSize = settings.maskFeatherSize
       }
+      if (typeof settings.maskFeatherEdgeClamp === 'boolean') {
+        state.maskFeatherEdgeClamp = settings.maskFeatherEdgeClamp
+      }
       if (typeof settings.showFinalComposite === 'boolean') {
         state.showFinalComposite = settings.showFinalComposite
       }
@@ -181,6 +184,7 @@ export function usePersistence({ state, createMaskCanvas, renderComposite }) {
       state.brushSize,
       state.maskFeatherEnabled,
       state.maskFeatherSize,
+      state.maskFeatherEdgeClamp,
       state.showFinalComposite,
       state.isLayersOpen,
       state.hasUserToggledLayers,

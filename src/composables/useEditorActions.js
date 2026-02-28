@@ -13,6 +13,11 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
     renderComposite?.()
   }
 
+  function toggleMaskFeatherEdgeClamp() {
+    state.maskFeatherEdgeClamp = !state.maskFeatherEdgeClamp
+    renderComposite?.()
+  }
+
   function toggleEraser() {
     state.isErasing = !state.isErasing
   }
@@ -49,6 +54,7 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
   return {
     toggleFinalComposite,
     toggleMaskFeather,
+    toggleMaskFeatherEdgeClamp,
     toggleEraser,
     togglePanMode,
     onBlendModeChange,

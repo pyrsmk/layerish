@@ -1,6 +1,7 @@
 import { computed, reactive } from 'vue'
 import {
   DEFAULT_BRUSH_SIZE,
+  DEFAULT_MASK_FEATHER_EDGE_CLAMP,
   DEFAULT_MASK_FEATHER_SIZE,
   DEFAULT_LAYERS_OPEN,
   DEFAULT_PAN,
@@ -17,6 +18,7 @@ export function useEditorState() {
     brushSize: DEFAULT_BRUSH_SIZE,
     maskFeatherEnabled: true,
     maskFeatherSize: DEFAULT_MASK_FEATHER_SIZE,
+    maskFeatherEdgeClamp: DEFAULT_MASK_FEATHER_EDGE_CLAMP,
     isErasing: false,
     isDrawing: false,
     isPanning: false,

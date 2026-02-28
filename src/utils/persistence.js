@@ -144,6 +144,7 @@ export function serializeState(state) {
       brushSize: state.brushSize,
       maskFeatherEnabled: state.maskFeatherEnabled,
       maskFeatherSize: state.maskFeatherSize,
+      maskFeatherEdgeClamp: state.maskFeatherEdgeClamp,
       showFinalComposite: state.showFinalComposite,
       isLayersOpen: state.isLayersOpen,
       hasUserToggledLayers: state.hasUserToggledLayers,

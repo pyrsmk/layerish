@@ -36,7 +36,7 @@ function drawSelectionOverlay(ctx, layer, maskCanvas) {
   ctx.restore()
 }
 
-function createFeatheredMask(layer, featherPx) {
+function createFeatheredMask(layer, featherPx, clampEdges) {
   const radius = Math.max(0, Math.round(featherPx / layer.scale))
   if (!Number.isFinite(radius) || radius <= 0) return layer.mask
 
@@ -52,13 +52,14 @@ function createFeatheredMask(layer, featherPx) {
   const scale = 1000
   const diag = Math.round(Math.SQRT2 * scale)
   const dist = new Int32Array(size)
+  const edgeTransparent = !clampEdges
 
   for (let i = 0; i < size; i += 1) {
     const alpha = sourceData[i * 4 + 3]
     const x = i % width
     const y = Math.floor(i / width)
     const isEdge = x === 0 || y === 0 || x === width - 1 || y === height - 1
-    dist[i] = alpha === 0 || isEdge ? 0 : INF
+    dist[i] = alpha === 0 || (edgeTransparent && isEdge) ? 0 : INF
   }
 
   for (let y = 0; y < height; y += 1) {
@@ -168,7 +169,7 @@ export function drawComposite({
       maskFeatherEnabled &&
       maskFeatherSize > 0 &&
       layer.hasSelection
-        ? createFeatheredMask(layer, maskFeatherSize)
+        ? createFeatheredMask(layer, maskFeatherSize, state.maskFeatherEdgeClamp)
         : layer.mask
 
     if (applySelectionMask && layer.hasSelection) {

@@ -5,6 +5,7 @@ export const DEFAULT_BRUSH_MAX = 128
 export const DEFAULT_MASK_FEATHER_MIN = 0
 export const DEFAULT_MASK_FEATHER_MAX = 200
 export const DEFAULT_MASK_FEATHER_SIZE = 12
+export const DEFAULT_MASK_FEATHER_EDGE_CLAMP = false
 export const DEFAULT_ZOOM = 1
 export const DEFAULT_PAN = Object.freeze({ x: 0, y: 0 })
 

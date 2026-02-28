@@ -77,6 +77,7 @@ const {
 const {
   toggleFinalComposite,
   toggleMaskFeather,
+  toggleMaskFeatherEdgeClamp,
   toggleEraser,
   togglePanMode,
   onBlendModeChange,
@@ -144,12 +145,14 @@ onMounted(async () => {
         :is-erasing="state.isErasing"
         :is-pan-mode="state.isPanMode"
         :show-final-composite="state.showFinalComposite"
+        :mask-feather-edge-clamp="state.maskFeatherEdgeClamp"
         :has-layers="state.layers.length > 0"
         :on-undo="undo"
         :on-redo="redo"
         :on-zoom-by="zoomBy"
         :on-reset-zoom="resetZoom"
         :on-invert-mask="invertActiveMask"
+        :on-toggle-mask-feather-edge-clamp="toggleMaskFeatherEdgeClamp"
         :on-toggle-eraser="toggleEraser"
         :on-toggle-pan-mode="togglePanMode"
         :on-center-in-view="centerInView"

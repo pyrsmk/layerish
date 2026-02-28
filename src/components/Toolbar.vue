@@ -19,7 +19,6 @@
       <span class="material-symbols-outlined">redo</span>
     </Button>
     <Separator />
-
     <Button
       ghost
       class="tooltip"
@@ -48,7 +47,6 @@
       <span class="material-symbols-outlined">view_real_size</span>
     </Button>
     <Separator />
-
     <div class="toolbar-range" :style="{ '--range-value': brushPercent }">
       <Button
         ghost
@@ -73,7 +71,7 @@
       <Button
         ghost
         class="tooltip"
-        data-tooltip="Inverser le mask"
+        data-tooltip="Inverser la sélection"
         :disabled="!hasLayers"
         @click="onInvertMask"
       >
@@ -86,7 +84,9 @@
         class="material-symbols-outlined tooltip"
         data-tooltip="Dégradé des sélections"
         aria-hidden="true"
-      >blur_on</span>
+      >
+        blur_on
+      </span>
       <input
         class="tooltip"
         type="range"
@@ -97,8 +97,18 @@
         :disabled="!hasLayers"
       />
     </div>
+    <Button
+      ghost
+      selectable
+      class="tooltip"
+      data-tooltip="Pas de dégradé sur les bords"
+      :active="maskFeatherEdgeClamp"
+      :disabled="!hasLayers"
+      @click="onToggleMaskFeatherEdgeClamp"
+    >
+      <span class="material-symbols-outlined">flip_to_back</span>
+    </Button>
     <Separator />
-
     <Button
       ghost
       selectable
@@ -119,9 +129,7 @@
     >
       <span class="material-symbols-outlined">arrows_input</span>
     </Button>
-
     <Separator />
-
     <Button
       ghost
       selectable
@@ -161,6 +169,7 @@ const props = defineProps({
   canRedo: { type: Boolean, default: false },
   brushSize: { type: Number, default: 32 },
   maskFeatherSize: { type: Number, default: 24 },
+  maskFeatherEdgeClamp: { type: Boolean, default: false },
   isErasing: { type: Boolean, default: false },
   isPanMode: { type: Boolean, default: false },
   showFinalComposite: { type: Boolean, default: false },
@@ -170,6 +179,7 @@ const props = defineProps({
   onZoomBy: { type: Function, required: true },
   onResetZoom: { type: Function, required: true },
   onInvertMask: { type: Function, required: true },
+  onToggleMaskFeatherEdgeClamp: { type: Function, required: true },
   onToggleEraser: { type: Function, required: true },
   onTogglePanMode: { type: Function, required: true },
   onCenterInView: { type: Function, required: true },

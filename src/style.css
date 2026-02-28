@@ -363,6 +363,10 @@ img {
   gap: 8px;
 }
 
+.toolbar-range .toolbar-separator {
+  margin: 0 4px;
+}
+
 .toolbar-range input[type='range'] {
   margin: 0;
   padding: 0;
