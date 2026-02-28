@@ -1,5 +1,5 @@
 import { nextTick } from 'vue'
-import { snapLayerToBelow as snapLayerToBelowUtil } from '../utils/snap'
+import { snapLayerToTargets } from '../utils/snap'
 import { DEFAULT_VIEWPORT } from '../constants/editorDefaults'
 
 export function useLayers({
@@ -200,14 +200,13 @@ export function useLayers({
   }
 
   function snapLayerToBelow(layer) {
-    if (!state.snapEnabled) return
-    const belowIndex =
-      state.layers.findIndex((l) => l.id === layer.id) + 1
-    const belowLayer = state.layers[belowIndex]
-    if (!belowLayer) return
-
     const tolerance = state.snapTolerance / state.zoom
-    snapLayerToBelowUtil({ layer, belowLayer, tolerance })
+    snapLayerToTargets({
+      layer,
+      references: state.layers,
+      viewport: canvasSize.value,
+      tolerance,
+    })
   }
 
   function nudgeLayerScale(layer, delta) {

@@ -8,9 +8,7 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
     renderComposite?.()
   }
 
-  function toggleSnap() {
-    state.snapEnabled = !state.snapEnabled
-  }
+
 
   function toggleEraser() {
     state.isErasing = !state.isErasing
@@ -47,7 +45,6 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
 
   return {
     toggleFinalComposite,
-    toggleSnap,
     toggleEraser,
     togglePanMode,
     onBlendModeChange,

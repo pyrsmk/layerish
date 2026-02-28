@@ -69,7 +69,6 @@ const {
 
 const {
   toggleFinalComposite,
-  toggleSnap,
   toggleEraser,
   togglePanMode,
   onBlendModeChange,
@@ -130,7 +129,6 @@ onMounted(() => {
         :can-redo="canRedo"
         :is-erasing="state.isErasing"
         :is-pan-mode="state.isPanMode"
-        :snap-enabled="state.snapEnabled"
         :show-final-composite="state.showFinalComposite"
         :has-layers="state.layers.length > 0"
         :on-undo="undo"
@@ -140,7 +138,6 @@ onMounted(() => {
         :on-toggle-eraser="toggleEraser"
         :on-toggle-pan-mode="togglePanMode"
         :on-center-in-view="centerInView"
-        :on-toggle-snap="toggleSnap"
         :on-toggle-final-composite="toggleFinalComposite"
         :on-export-image="exportImage"
       />

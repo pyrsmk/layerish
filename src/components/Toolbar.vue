@@ -93,17 +93,7 @@
     >
       <span class="material-symbols-outlined">arrows_input</span>
     </Button>
-    <Button
-      ghost
-      selectable
-      class="tooltip"
-      data-tooltip="Aimantation"
-      :active="snapEnabled"
-      :disabled="!hasLayers"
-      @click="onToggleSnap"
-    >
-      <span class="material-symbols-outlined">bolt</span>
-    </Button>
+
     <Separator />
 
     <Button
@@ -144,7 +134,6 @@ const props = defineProps({
   brushSize: { type: Number, default: 32 },
   isErasing: { type: Boolean, default: false },
   isPanMode: { type: Boolean, default: false },
-  snapEnabled: { type: Boolean, default: true },
   showFinalComposite: { type: Boolean, default: false },
   hasLayers: { type: Boolean, default: false },
   onUndo: { type: Function, required: true },
@@ -154,7 +143,6 @@ const props = defineProps({
   onToggleEraser: { type: Function, required: true },
   onTogglePanMode: { type: Function, required: true },
   onCenterInView: { type: Function, required: true },
-  onToggleSnap: { type: Function, required: true },
   onToggleFinalComposite: { type: Function, required: true },
   onExportImage: { type: Function, required: true },
 })

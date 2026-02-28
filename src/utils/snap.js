@@ -27,10 +27,31 @@ export function getSnapTargets(layer, referenceLayer) {
   }
 }
 
-export function snapLayerToBelow({ layer, belowLayer, tolerance }) {
-  if (!layer || !belowLayer) return layer
+export function snapLayerToTargets({ layer, references = [], viewport, tolerance }) {
+  if (!layer) return layer
 
-  const targets = getSnapTargets(layer, belowLayer)
+  const targets = { x: [], y: [] }
+  references
+    .filter((referenceLayer) => referenceLayer && referenceLayer.id !== layer.id)
+    .forEach((referenceLayer) => {
+      const snapTargets = getSnapTargets(layer, referenceLayer)
+      targets.x.push(...snapTargets.x)
+      targets.y.push(...snapTargets.y)
+    })
+
+  if (viewport) {
+    const viewportReference = {
+      x: 0,
+      y: 0,
+      width: viewport.width,
+      height: viewport.height,
+      scale: 1,
+    }
+    const viewportTargets = getSnapTargets(layer, viewportReference)
+    targets.x.push(...viewportTargets.x)
+    targets.y.push(...viewportTargets.y)
+  }
+
   let snappedX = layer.x
   let snappedY = layer.y
 
@@ -44,4 +65,13 @@ export function snapLayerToBelow({ layer, belowLayer, tolerance }) {
   layer.x = snappedX
   layer.y = snappedY
   return layer
+}
+
+export function snapLayerToBelow({ layer, belowLayer, tolerance }) {
+  if (!layer || !belowLayer) return layer
+  return snapLayerToTargets({
+    layer,
+    references: [belowLayer],
+    tolerance,
+  })
 }
