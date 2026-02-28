@@ -82,17 +82,11 @@
     </div>
     <Separator />
     <div class="toolbar-range" :style="{ '--range-value': maskFeatherPercent }">
-      <Button
-        ghost
-        selectable
-        class="tooltip"
+      <span
+        class="material-symbols-outlined tooltip"
         data-tooltip="Dégradé des sélections"
-        :active="maskFeatherEnabled"
-        :disabled="!hasLayers"
-        @click="onToggleMaskFeather"
-      >
-        <span class="material-symbols-outlined">blur_on</span>
-      </Button>
+        aria-hidden="true"
+      >blur_on</span>
       <input
         class="tooltip"
         type="range"
@@ -167,7 +161,6 @@ const props = defineProps({
   canRedo: { type: Boolean, default: false },
   brushSize: { type: Number, default: 32 },
   maskFeatherSize: { type: Number, default: 24 },
-  maskFeatherEnabled: { type: Boolean, default: false },
   isErasing: { type: Boolean, default: false },
   isPanMode: { type: Boolean, default: false },
   showFinalComposite: { type: Boolean, default: false },
@@ -178,7 +171,6 @@ const props = defineProps({
   onResetZoom: { type: Function, required: true },
   onInvertMask: { type: Function, required: true },
   onToggleEraser: { type: Function, required: true },
-  onToggleMaskFeather: { type: Function, required: true },
   onTogglePanMode: { type: Function, required: true },
   onCenterInView: { type: Function, required: true },
   onToggleFinalComposite: { type: Function, required: true },

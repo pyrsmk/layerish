@@ -15,7 +15,7 @@ export function useEditorState() {
     layers: [],
     activeLayerId: null,
     brushSize: DEFAULT_BRUSH_SIZE,
-    maskFeatherEnabled: false,
+    maskFeatherEnabled: true,
     maskFeatherSize: DEFAULT_MASK_FEATHER_SIZE,
     isErasing: false,
     isDrawing: false,
