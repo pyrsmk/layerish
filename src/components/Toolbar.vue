@@ -1,10 +1,10 @@
 <template>
-  <div class="toolbar">
+  <div class="toolbar" :class="{ 'toolbar-disabled': !hasLayers }">
     <Button
       ghost
       class="tooltip"
       data-tooltip="Annuler"
-      :disabled="!canUndo"
+      :disabled="!hasLayers || !canUndo"
       @click="onUndo"
     >
       <span class="material-symbols-outlined">undo</span>
@@ -13,7 +13,7 @@
       ghost
       class="tooltip"
       data-tooltip="Rétablir"
-      :disabled="!canRedo"
+      :disabled="!hasLayers || !canRedo"
       @click="onRedo"
     >
       <span class="material-symbols-outlined">redo</span>
@@ -24,6 +24,7 @@
       ghost
       class="tooltip"
       data-tooltip="Réduire"
+      :disabled="!hasLayers"
       @click="handleZoomBy(-0.1)"
     >
       <span class="material-symbols-outlined">remove</span>
@@ -32,6 +33,7 @@
       ghost
       class="tooltip"
       data-tooltip="Agrandir"
+      :disabled="!hasLayers"
       @click="handleZoomBy(0.1)"
     >
       <span class="material-symbols-outlined">add</span>
@@ -40,6 +42,7 @@
       ghost
       class="tooltip"
       data-tooltip="Taille initiale"
+      :disabled="!hasLayers"
       @click="onResetZoom"
     >
       <span class="material-symbols-outlined">view_real_size</span>
@@ -55,6 +58,7 @@
         :max="DEFAULT_BRUSH_MAX"
         v-model.number="brushModel"
         :data-tooltip="`${brushModel}px`"
+        :disabled="!hasLayers"
       />
     </label>
     <Button
@@ -63,6 +67,7 @@
       class="tooltip"
       data-tooltip="Gomme"
       :active="isErasing"
+      :disabled="!hasLayers"
       @click="onToggleEraser"
     >
       <span class="material-symbols-outlined">ink_eraser</span>
@@ -75,6 +80,7 @@
       class="tooltip"
       data-tooltip="Déplacement"
       :active="isPanMode"
+      :disabled="!hasLayers"
       @click="onTogglePanMode"
     >
       <span class="material-symbols-outlined">open_with</span>
@@ -83,6 +89,7 @@
       ghost
       class="tooltip"
       data-tooltip="Recentrer la vue"
+      :disabled="!hasLayers"
       @click="onCenterInView"
     >
       <span class="material-symbols-outlined">arrows_input</span>
@@ -93,6 +100,7 @@
       class="tooltip"
       data-tooltip="Aimantation"
       :active="snapEnabled"
+      :disabled="!hasLayers"
       @click="onToggleSnap"
     >
       <span class="material-symbols-outlined">bolt</span>
@@ -105,6 +113,7 @@
       class="tooltip"
       data-tooltip="Mode composite"
       :active="showFinalComposite"
+      :disabled="!hasLayers"
       @click="onToggleFinalComposite"
     >
       <span class="material-symbols-outlined">texture</span>
@@ -113,6 +122,7 @@
       ghost
       class="tooltip"
       data-tooltip="Exporter"
+      :disabled="!hasLayers"
       @click="onExportImage"
     >
       <span class="material-symbols-outlined">save</span>
@@ -137,6 +147,7 @@ const props = defineProps({
   isPanMode: { type: Boolean, default: false },
   snapEnabled: { type: Boolean, default: true },
   showFinalComposite: { type: Boolean, default: false },
+  hasLayers: { type: Boolean, default: false },
   onUndo: { type: Function, required: true },
   onRedo: { type: Function, required: true },
   onZoomBy: { type: Function, required: true },
@@ -165,3 +176,14 @@ const brushPercent = computed(
 
 const handleZoomBy = (delta) => props.onZoomBy(delta)
 </script>
+
+<style scoped>
+.toolbar {
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
+.toolbar.toolbar-disabled {
+  opacity: 0.55;
+  filter: grayscale(0.8);
+}
+</style>

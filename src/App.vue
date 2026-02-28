@@ -132,6 +132,7 @@ onMounted(() => {
         :is-pan-mode="state.isPanMode"
         :snap-enabled="state.snapEnabled"
         :show-final-composite="state.showFinalComposite"
+        :has-layers="state.layers.length > 0"
         :on-undo="undo"
         :on-redo="redo"
         :on-zoom-by="zoomBy"
