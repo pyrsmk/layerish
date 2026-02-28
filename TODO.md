@@ -1,4 +1,3 @@
-- application d'un dégradé configurable (slider) sur toutes les zones de sélection des layers
 - remplacer la phrase de démarrage par une aide
 - vérifier le PWA sur Android
 - vérifier le responsive

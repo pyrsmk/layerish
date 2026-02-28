@@ -77,7 +77,7 @@
         ghost
         selectable
         class="tooltip"
-        data-tooltip="Dégradé du mask"
+        data-tooltip="Dégradé des sélections"
         :active="maskFeatherEnabled"
         :disabled="!hasLayers"
         @click="onToggleMaskFeather"
@@ -100,7 +100,7 @@
       ghost
       selectable
       class="tooltip"
-      data-tooltip="Déplacement"
+      data-tooltip="Déplacer la zone de travail"
       :active="isPanMode"
       :disabled="!hasLayers"
       @click="onTogglePanMode"
@@ -110,7 +110,7 @@
     <Button
       ghost
       class="tooltip"
-      data-tooltip="Recentrer la vue"
+      data-tooltip="Recentrer la zone de travail"
       :disabled="!hasLayers"
       @click="onCenterInView"
     >
@@ -133,7 +133,7 @@
     <Button
       ghost
       class="tooltip"
-      data-tooltip="Exporter"
+      data-tooltip="Exporter l'image"
       :disabled="!hasLayers"
       @click="onExportImage"
     >
