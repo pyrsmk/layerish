@@ -185,3 +185,32 @@ onMounted(async () => {
     <Tooltip />
   </div>
 </template>
+
+<style>
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.workspace {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.material-symbols-outlined {
+  font-size: 18px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+@media (max-width: 900px) {
+  .app {
+    flex-direction: column;
+  }
+}
+</style>

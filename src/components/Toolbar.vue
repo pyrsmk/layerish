@@ -231,11 +231,50 @@ const handleZoomBy = (delta) => props.onZoomBy(delta)
 
 <style scoped>
 .toolbar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #1f2028;
+  background: #0f1016;
+  align-items: center;
+  justify-content: center;
   transition: opacity 0.15s ease, filter 0.15s ease;
 }
 
 .toolbar.toolbar-disabled {
   opacity: 0.55;
   filter: grayscale(0.8);
+}
+
+
+
+.toolbar-range {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-range .toolbar-separator {
+  margin: 0 4px;
+}
+
+.toolbar-range input[type='range'] {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.toolbar input[type='range'] {
+  width: 120px;
+  --range-thumb-size: 16px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 </style>

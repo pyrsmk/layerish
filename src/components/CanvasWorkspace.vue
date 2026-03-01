@@ -100,3 +100,42 @@ defineExpose({
   zoomBy,
 })
 </script>
+
+<style scoped>
+.canvas-shell {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  background: #0b0b0f;
+}
+
+.canvas-shell.cursor-hidden {
+  cursor: none;
+}
+
+.canvas-wrapper {
+  transform-origin: top left;
+}
+
+.main-canvas {
+  background: #0b0b0f;
+  border-radius: 12px;
+  border: 1px solid #1f2028;
+  touch-action: none;
+}
+
+.brush-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 999px;
+  background: rgba(47, 123, 255, 0.45);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.brush-cursor.erase {
+  background: rgba(255, 82, 82, 0.45);
+}
+</style>

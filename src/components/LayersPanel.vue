@@ -193,9 +193,134 @@ const handleFileDrop = (event) => {
 </script>
 
 <style scoped>
-h2 {
+.layers {
+  position: relative;
+  z-index: 10;
+  width: 320px;
+  background: #14141a;
+  border-right: 1px solid #1f2028;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 12px;
+  transition: width 0.2s ease, padding 0.2s ease;
+}
+
+.layers.collapsed {
+  width: 56px;
+  padding: 12px 8px;
+}
+
+.layers.collapsed .layers-header {
+  justify-content: center;
+}
+
+.layers.collapsed .layers-title,
+.layers.collapsed .layers-list,
+.layers.collapsed .layers-empty,
+.layers.collapsed :deep(.add-layer-button) {
+  display: none;
+}
+
+.layers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.layers-header h2 {
+  margin: 0;
   text-decoration: underline;
   font-weight: 200;
   font-size: 2em;
+}
+
+.layers-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.layers-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.layers-header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.layers-collapsed-logo {
+  display: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: transparent;
+  padding: 0;
+  box-sizing: border-box;
+  margin: 6px 0;
+}
+
+.layers-collapsed-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.layers.collapsed .layers-header-actions {
+  flex-direction: column;
+}
+
+.layers.collapsed .layers-collapsed-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layers-list {
+  --layer-gap: 12px;
+  --layer-slot-padding: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.layers-empty {
+  color: #9ea1b0;
+  font-size: 14px;
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+@media (max-width: 900px) {
+  .layers {
+    width: 100%;
+    height: 220px;
+    border-right: none;
+    border-bottom: 1px solid #1f2028;
+    flex-shrink: 0;
+  }
+
+  .layers.collapsed {
+    width: 100%;
+    height: 56px;
+    padding: 12px 12px;
+  }
 }
 </style>

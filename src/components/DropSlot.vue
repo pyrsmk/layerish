@@ -19,3 +19,27 @@ const emit = defineEmits(['dragover', 'drop'])
 const handleDragOver = (event) => emit('dragover', event)
 const handleDrop = (event) => emit('drop', event)
 </script>
+
+<style scoped>
+.drop-slot {
+  height: var(--layer-gap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.drop-slot-line {
+  height: 2px;
+  width: 100%;
+  margin: 0 var(--layer-slot-padding);
+  background: #7b61ff;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.drop-slot.active .drop-slot-line {
+  opacity: 1;
+}
+</style>
