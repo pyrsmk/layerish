@@ -155,7 +155,7 @@
     <Button
       ghost
       class="tooltip"
-      data-tooltip="Exporter l'image"
+      data-tooltip="Sauvegarder l'image"
       :disabled="!hasLayers"
       @click="onExportImage"
     >

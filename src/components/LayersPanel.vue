@@ -22,7 +22,7 @@
           data-tooltip="Ajouter une image"
           @click="triggerFileInput"
         >
-          <span class="material-symbols-outlined">add</span>
+          <span class="material-symbols-outlined">add_photo_alternate</span>
         </Button>
 
         <Button
@@ -39,8 +39,78 @@
       </div>
     </div>
 
+    <p v-if="props.layers.length === 0" class="layers-empty-title">
+      Aucun calque pour le moment.
+    </p>
     <div v-if="props.layers.length === 0" class="layers-empty">
-      Ajoute une image pour démarrer.
+      <p class="layers-empty-help-title">Aide :</p>
+      <ul class="layers-empty-tips">
+        <li>
+          <span class="material-symbols-outlined">add_photo_alternate</span>
+          Importer une image<br>(ou par glisser-déposer)
+        </li>
+        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li>
+          <span class="material-symbols-outlined">add</span>
+          Zoomer
+        </li>
+        <li>
+          <span class="material-symbols-outlined">remove</span>
+          Dézoomer
+        </li>
+        <li>
+          <span class="material-symbols-outlined">view_real_size</span>
+          Revenir à la taille initiale
+        </li>
+        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li>
+          <span class="material-symbols-outlined">brush</span>
+          Mode pinceau
+        </li>
+        <li>
+          <span class="material-symbols-outlined">ink_eraser</span>
+          Mode gomme
+        </li>
+        <li>
+          <span class="material-symbols-outlined">stroke_partial</span>
+          Inverser la sélection du masque
+        </li>
+        <li>
+          <span class="material-symbols-outlined">remove_selection</span>
+          Effacer la sélection
+        </li>
+        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li>
+          <span class="material-symbols-outlined">blur_on</span>
+          Ajuster le dégradé des sélections pour adoucir les bords
+        </li>
+        <li>
+          <span class="material-symbols-outlined">flip_to_back</span>
+          Désactiver le dégradé sur le bord des masques
+        </li>
+        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li>
+          <span class="material-symbols-outlined">open_with</span>
+          Déplacer le calque ou la zone de travail
+        </li>
+        <li>
+          <span class="material-symbols-outlined">arrows_input</span>
+          Recentrer le calque ou la zone de travail
+        </li>
+        <li>
+          <span class="material-symbols-outlined">electric_bolt</span>
+          Activer l’aimantation
+        </li>
+        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li>
+          <span class="material-symbols-outlined">texture</span>
+          Activer le mode composite pour prévisualiser le rendu
+        </li>
+        <li>
+          <span class="material-symbols-outlined">save</span>
+          Sauvegarder l’image finale
+        </li>
+      </ul>
     </div>
 
     <ul class="layers-list">
@@ -257,6 +327,57 @@ const triggerFileInput = () => {
 .layers-empty {
   color: #9ea1b0;
   font-size: 14px;
+  background: #171820;
+  border: 1px dashed #2a2c36;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.layers-empty-title {
+  margin: 6px 0 8px 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #c7cad8;
+}
+
+.layers-empty-help-title {
+  margin: 0 0 16px 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #9ea1b0;
+}
+
+.layers-empty-tips {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layers-empty-tips li {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  align-items: start;
+  gap: 8px;
+  line-height: 1.3;
+}
+
+.layers-empty-tips .layers-empty-separator {
+  display: block;
+  grid-template-columns: none;
+  height: 1px;
+  width: 55%;
+  margin: 4px auto;
+  background: #2a2c36;
+  border-radius: 999px;
+}
+
+.layers-empty-tips .material-symbols-outlined {
+  font-size: 18px;
+  color: #f5f6fa;
+  line-height: 1;
 }
 
 .hidden {
