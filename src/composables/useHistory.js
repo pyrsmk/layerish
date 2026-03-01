@@ -34,6 +34,8 @@ export function useHistory({
       zoom: state.zoom,
       pan: { ...state.pan },
       moveLayerId: state.moveLayerId,
+      maskFeatherSize: state.maskFeatherSize,
+      maskFeatherEdgeClamp: state.maskFeatherEdgeClamp,
     }
   }
 
@@ -56,6 +58,12 @@ export function useHistory({
     state.moveLayerId = snapshot.moveLayerId
     state.zoom = snapshot.zoom
     state.pan = { ...snapshot.pan }
+    if (typeof snapshot.maskFeatherSize === 'number') {
+      state.maskFeatherSize = snapshot.maskFeatherSize
+    }
+    if (typeof snapshot.maskFeatherEdgeClamp === 'boolean') {
+      state.maskFeatherEdgeClamp = snapshot.maskFeatherEdgeClamp
+    }
     state.isDrawing = false
     state.isPanning = false
     state.isMovingLayer = false

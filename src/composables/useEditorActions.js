@@ -16,6 +16,7 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
   function toggleMaskFeatherEdgeClamp() {
     state.maskFeatherEdgeClamp = !state.maskFeatherEdgeClamp
     renderComposite?.()
+    pushHistory?.()
   }
 
   function toggleSnapEnabled() {

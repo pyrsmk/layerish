@@ -9,6 +9,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
   const moveLayerRef = computed(() => unref(moveLayer) ?? null)
   const canvasSizeRef = computed(() => unref(canvasSize) ?? null)
   let maskFeatherRenderTimer = null
+  let maskFeatherHistoryTimer = null
 
   function renderComposite() {
     const canvas = canvasRef.value
@@ -343,6 +344,13 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
         renderComposite()
         maskFeatherRenderTimer = null
       }, 250)
+      if (maskFeatherHistoryTimer) {
+        clearTimeout(maskFeatherHistoryTimer)
+      }
+      maskFeatherHistoryTimer = setTimeout(() => {
+        pushHistory?.()
+        maskFeatherHistoryTimer = null
+      }, 300)
     }
   )
 
@@ -357,6 +365,10 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
     if (maskFeatherRenderTimer) {
       clearTimeout(maskFeatherRenderTimer)
       maskFeatherRenderTimer = null
+    }
+    if (maskFeatherHistoryTimer) {
+      clearTimeout(maskFeatherHistoryTimer)
+      maskFeatherHistoryTimer = null
     }
   })
 
