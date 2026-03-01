@@ -1,5 +1,3 @@
-- historique réduire le champ des saves
-- slider drag n drop
 - corriger le drag n drop qui déconne par moment
 - comment améliorer la gestion du déplacement ?
   - icone de curseur

@@ -6,7 +6,7 @@
         active: props.isActive,
       },
     ]"
-    draggable="true"
+    :draggable="!isDragSuppressed"
     @dragstart="emitDragStart"
     @dragover.prevent="emitDragOver"
     @drop.prevent="emitDrop"
@@ -56,6 +56,10 @@
           v-model.number="props.layer.blendOpacity"
           :data-tooltip="`${props.layer.blendOpacity}%`"
           @input="emitBlendOpacityInput"
+          @pointerdown.stop="isDragSuppressed = true"
+          @pointerup.stop="isDragSuppressed = false"
+          @pointercancel.stop="isDragSuppressed = false"
+          @pointerleave.stop="isDragSuppressed = false"
         />
       </label>
       <div class="layer-actions">
@@ -125,6 +129,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import Button from './Button.vue'
 
 const props = defineProps({
@@ -134,6 +139,8 @@ const props = defineProps({
   isMoveActive: { type: Boolean, default: false },
   blendModes: { type: Array, required: true },
 })
+
+const isDragSuppressed = ref(false)
 
 const emit = defineEmits([
   'select',
