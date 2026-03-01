@@ -19,7 +19,7 @@ function drawSelectionOverlay(ctx, layer, maskCanvas) {
   overlayCanvas.width = layer.width
   overlayCanvas.height = layer.height
   const overlayCtx = overlayCanvas.getContext('2d')
-  overlayCtx.fillStyle = 'rgba(47, 123, 255, 0.35)'
+  overlayCtx.fillStyle = 'rgba(47, 123, 255, 0.45)'
   overlayCtx.fillRect(0, 0, layer.width, layer.height)
   overlayCtx.globalCompositeOperation = 'destination-in'
   overlayCtx.drawImage(maskCanvas, 0, 0)
