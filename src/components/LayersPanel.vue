@@ -2,13 +2,9 @@
   <aside
     :class="[
       'layers',
-      { collapsed: !props.isOpen, 'is-file-drag': isFileDragActive },
+      { collapsed: !props.isOpen },
     ]"
     @transitionend.self="handleTransitionEnd"
-    @dragenter="handleFileDragEnter"
-    @dragover="handleFileDragOver"
-    @dragleave="handleFileDragLeave"
-    @drop="handleFileDrop"
   >
     <div class="layers-header">
       <div class="layers-title">
@@ -140,7 +136,6 @@ const props = defineProps({
 })
 
 const fileInputRef = ref(null)
-const isFileDragActive = ref(false)
 
 const handleTransitionEnd = (event) => {
   if (event.propertyName !== 'width') return
@@ -151,45 +146,7 @@ const triggerFileInput = () => {
   fileInputRef.value?.click()
 }
 
-const hasFileTransfer = (event) =>
-  Array.from(event?.dataTransfer?.types || []).includes('Files')
 
-const handleFileDragEnter = (event) => {
-  if (!hasFileTransfer(event)) return
-  event.preventDefault()
-  isFileDragActive.value = true
-}
-
-const handleFileDragOver = (event) => {
-  if (!hasFileTransfer(event)) return
-  event.preventDefault()
-  if (event.dataTransfer) {
-    event.dataTransfer.dropEffect = 'copy'
-  }
-  isFileDragActive.value = true
-}
-
-const handleFileDragLeave = (event) => {
-  if (!hasFileTransfer(event)) return
-  if (
-    event.relatedTarget &&
-    event.currentTarget?.contains?.(event.relatedTarget)
-  ) {
-    return
-  }
-  isFileDragActive.value = false
-}
-
-const handleFileDrop = (event) => {
-  if (!hasFileTransfer(event)) return
-  event.preventDefault()
-  isFileDragActive.value = false
-  const files = Array.from(event.dataTransfer?.files || []).filter((file) =>
-    file.type?.startsWith('image/')
-  )
-  if (!files.length) return
-  props.onFilesSelected({ target: { files, value: '' } })
-}
 </script>
 
 <style scoped>

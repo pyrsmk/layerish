@@ -7,7 +7,6 @@ import Tooltip from './components/Tooltip.vue'
 import { useEditorState } from './composables/useEditorState'
 import { useHistory } from './composables/useHistory'
 import { usePersistence } from './composables/usePersistence'
-
 import { useLayout } from './composables/useLayout'
 import { useLayers } from './composables/useLayers'
 import { useMask } from './composables/useMask'
@@ -25,6 +24,8 @@ const {
 const { createMaskCanvas } = useMask()
 const { toggleLayersPanel } = useLayout(state)
 const canvasWorkspaceRef = ref(null)
+const isFileDragActive = ref(false)
+const fileDragDepth = ref(0)
 const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
 const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
 const centerInView = () => canvasWorkspaceRef.value?.centerInView?.()
@@ -99,6 +100,48 @@ const handleGlobalButtonClick = (event) => {
   clearMoveModes()
 }
 
+const hasFileTransfer = (event) =>
+  Array.from(event?.dataTransfer?.types || []).includes('Files')
+
+const resetFileDragState = () => {
+  isFileDragActive.value = false
+  fileDragDepth.value = 0
+}
+
+const handleAppFileDragEnter = (event) => {
+  if (!hasFileTransfer(event)) return
+  event.preventDefault()
+  fileDragDepth.value += 1
+  isFileDragActive.value = true
+}
+
+const handleAppFileDragLeave = (event) => {
+  if (!hasFileTransfer(event)) return
+  fileDragDepth.value = Math.max(0, fileDragDepth.value - 1)
+  if (fileDragDepth.value === 0) {
+    isFileDragActive.value = false
+  }
+}
+
+const handleAppFileDragOver = (event) => {
+  if (!hasFileTransfer(event)) return
+  event.preventDefault()
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'copy'
+  }
+}
+
+const handleAppFileDrop = (event) => {
+  if (!hasFileTransfer(event)) return
+  event.preventDefault()
+  resetFileDragState()
+  const files = Array.from(event.dataTransfer?.files || []).filter((file) =>
+    file.type?.startsWith('image/')
+  )
+  if (!files.length) return
+  onFilesSelected({ target: { files, value: '' } })
+}
+
 onMounted(() => {
   document.addEventListener('click', handleGlobalButtonClick, true)
 })
@@ -117,7 +160,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="app">
+  <div
+    class="app"
+    @dragenter="handleAppFileDragEnter"
+    @dragleave="handleAppFileDragLeave"
+    @dragover="handleAppFileDragOver"
+    @drop="handleAppFileDrop"
+  >
     <LayersPanel
       :is-open="state.isLayersOpen"
       :layers="state.layers"
@@ -182,6 +231,15 @@ onMounted(async () => {
       />
     </main>
 
+    <div v-if="isFileDragActive" class="file-drop-overlay">
+      <div class="file-drop-overlay-content">
+        <span class="material-symbols-outlined" aria-hidden="true">
+          add_photo_alternate
+        </span>
+        <p>Ajouter les images</p>
+      </div>
+    </div>
+
     <Tooltip />
   </div>
 </template>
@@ -206,6 +264,30 @@ onMounted(async () => {
   font-size: 18px;
   line-height: 1;
   vertical-align: middle;
+}
+
+.file-drop-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 11, 15, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.file-drop-overlay-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f5f6fa;
+  font-size: 32px;
+  text-align: center;
+}
+
+.file-drop-overlay-content .material-symbols-outlined {
+  font-size: 32px;
 }
 
 @media (max-width: 900px) {
