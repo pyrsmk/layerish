@@ -1,3 +1,4 @@
+- le déplacement de fichier ne se fait que sur le panel, du coup il faudrait changer le curseur seulement à cet endroit et aussi changer la couleur du panel pour montrer qu'il y a une intéraction
 - fonctionnalité d'angle ?
 - remplacer la phrase de démarrage par une aide
 - vérifier le PWA sur Android

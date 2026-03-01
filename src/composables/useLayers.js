@@ -127,15 +127,15 @@ export function useLayers({
   }
 
   onMounted(() => {
-    window.addEventListener('dragend', handleGlobalDragReset, true)
-    window.addEventListener('drop', handleGlobalDragReset, true)
+    window.addEventListener('dragend', handleGlobalDragReset)
+    window.addEventListener('drop', handleGlobalDragReset)
     window.addEventListener('blur', handleGlobalDragReset)
     document.addEventListener('visibilitychange', handleGlobalDragReset)
   })
 
   onUnmounted(() => {
-    window.removeEventListener('dragend', handleGlobalDragReset, true)
-    window.removeEventListener('drop', handleGlobalDragReset, true)
+    window.removeEventListener('dragend', handleGlobalDragReset)
+    window.removeEventListener('drop', handleGlobalDragReset)
     window.removeEventListener('blur', handleGlobalDragReset)
     document.removeEventListener('visibilitychange', handleGlobalDragReset)
   })
