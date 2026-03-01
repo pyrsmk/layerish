@@ -1,4 +1,7 @@
-- corriger le drag n drop qui déconne par moment
+- désactivation de tous les déplacements quand :
+  - on clique un layer
+  - on clique sur un autre bouton
+- renforcer le bleu et le rouge
 - comment améliorer la gestion du déplacement ?
   - icone de curseur
 - fonctionnalité d'angle ?

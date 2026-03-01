@@ -1,4 +1,4 @@
-import { nextTick } from 'vue'
+import { nextTick, onMounted, onUnmounted } from 'vue'
 import { snapLayerToTargets } from '../utils/snap'
 import {
   DEFAULT_PAN,
@@ -19,6 +19,12 @@ export function useLayers({
     if (state.moveLayerId && state.moveLayerId !== id) {
       state.moveLayerId = null
     }
+  }
+
+  function clearDragState() {
+    state.dragLayerId = null
+    state.dragOverLayerId = null
+    state.dragInsertIndex = null
   }
 
   function onLayerDragStart(layer, event) {
@@ -112,10 +118,26 @@ export function useLayers({
   }
 
   function onLayerDragEnd() {
-    state.dragLayerId = null
-    state.dragOverLayerId = null
-    state.dragInsertIndex = null
+    clearDragState()
   }
+
+  const handleGlobalDragReset = () => {
+    clearDragState()
+  }
+
+  onMounted(() => {
+    window.addEventListener('dragend', handleGlobalDragReset, true)
+    window.addEventListener('drop', handleGlobalDragReset, true)
+    window.addEventListener('blur', handleGlobalDragReset)
+    document.addEventListener('visibilitychange', handleGlobalDragReset)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('dragend', handleGlobalDragReset, true)
+    window.removeEventListener('drop', handleGlobalDragReset, true)
+    window.removeEventListener('blur', handleGlobalDragReset)
+    document.removeEventListener('visibilitychange', handleGlobalDragReset)
+  })
 
   function createLayerFromImage(img, name) {
     const width = img.naturalWidth || img.width
