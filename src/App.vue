@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import CanvasWorkspace from './components/CanvasWorkspace.vue'
 import LayersPanel from './components/LayersPanel.vue'
 import Toolbar from './components/Toolbar.vue'
@@ -87,6 +87,24 @@ const {
   state,
   renderComposite,
   pushHistory,
+})
+
+const clearMoveModes = () => {
+  state.isPanMode = false
+  state.moveLayerId = null
+}
+
+const handleGlobalButtonClick = (event) => {
+  if (!event?.target?.closest?.('button')) return
+  clearMoveModes()
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleGlobalButtonClick, true)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleGlobalButtonClick, true)
 })
 
 onMounted(async () => {

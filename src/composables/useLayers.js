@@ -16,6 +16,7 @@ export function useLayers({
 }) {
   function setActiveLayer(id) {
     state.activeLayerId = id
+    state.isPanMode = false
     if (state.moveLayerId && state.moveLayerId !== id) {
       state.moveLayerId = null
     }

@@ -1,9 +1,3 @@
-- désactivation de tous les déplacements quand :
-  - on clique un layer
-  - on clique sur un autre bouton
-- renforcer le bleu et le rouge
-- comment améliorer la gestion du déplacement ?
-  - icone de curseur
 - fonctionnalité d'angle ?
 - refacto le CSS
 - remplacer la phrase de démarrage par une aide

@@ -8,6 +8,9 @@
         !state.moveLayerId &&
         state.isCursorOverImage,
     }"
+    :style="{
+      cursor: state.isPanMode || state.moveLayerId ? 'move' : '',
+    }"
     ref="containerRef"
   >
     <div
