@@ -27,7 +27,7 @@
             class="tooltip"
             :data-tooltip="props.layer.visible ? 'Masquer' : 'Afficher'"
             :active="!props.layer.visible"
-            @click.stop="emitToggleVisibility"
+            @click.stop="emitSelect(); emitToggleVisibility()"
           >
             <span class="material-symbols-outlined">visibility_off</span>
           </Button>
@@ -36,13 +36,13 @@
             small
             class="add-layer-button tooltip"
             data-tooltip="Supprimer le layer"
-            @click.stop="emitDelete"
+            @click.stop="emitSelect(); emitDelete()"
           >
             <span class="material-symbols-outlined">delete</span>
           </Button>
         </div>
       </div>
-      <select v-model="props.layer.blendMode" @change="emitBlendModeChange">
+      <select v-model="props.layer.blendMode" @change="emitSelect(); emitBlendModeChange()">
         <option v-for="mode in props.blendModes" :key="mode.value" :value="mode.value">
           {{ mode.label }}
         </option>
@@ -55,8 +55,8 @@
           max="100"
           v-model.number="props.layer.blendOpacity"
           :data-tooltip="`${props.layer.blendOpacity}%`"
-          @input="emitBlendOpacityInput"
-          @pointerdown.stop="isDragSuppressed = true"
+          @input="emitSelect(); emitBlendOpacityInput()"
+          @pointerdown.stop="isDragSuppressed = true; emitSelect()"
           @pointerup.stop="isDragSuppressed = false"
           @pointercancel.stop="isDragSuppressed = false"
           @pointerleave.stop="isDragSuppressed = false"
@@ -69,7 +69,7 @@
             small
             class="tooltip"
             data-tooltip="Réduire"
-            @click.stop="emitNudge(-0.05)"
+            @click.stop="emitSelect(); emitNudge(-0.05)"
           >
             <span class="material-symbols-outlined">remove</span>
           </Button>
@@ -78,7 +78,7 @@
             small
             class="tooltip"
             data-tooltip="Agrandir"
-            @click.stop="emitNudge(0.05)"
+            @click.stop="emitSelect(); emitNudge(0.05)"
           >
             <span class="material-symbols-outlined">add</span>
           </Button>
@@ -87,7 +87,7 @@
             small
             class="tooltip"
             data-tooltip="Adapter au viewport"
-            @click.stop="emitFitViewport"
+            @click.stop="emitSelect(); emitFitViewport()"
           >
             <span class="material-symbols-outlined">view_real_size</span>
           </Button>
@@ -100,7 +100,7 @@
             class="tooltip"
             data-tooltip="Déplacer"
             :active="props.isMoveActive"
-            @click.stop="emitToggleMove"
+            @click.stop="emitSelect(); emitToggleMove()"
           >
             <span class="material-symbols-outlined">open_with</span>
           </Button>
@@ -109,7 +109,7 @@
             small
             class="tooltip"
             data-tooltip="Recentrer"
-            @click.stop="emitRecenter"
+            @click.stop="emitSelect(); emitRecenter()"
           >
             <span class="material-symbols-outlined">arrows_input</span>
           </Button>
@@ -118,7 +118,7 @@
             small
             class="tooltip"
             data-tooltip="Effacer la sélection"
-            @click.stop="emitClearMask"
+            @click.stop="emitSelect(); emitClearMask()"
           >
             <span class="material-symbols-outlined">remove_selection</span>
           </Button>

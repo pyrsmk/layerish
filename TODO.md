@@ -1,2 +1,3 @@
-- vérifier le PWA sur Android
+- quand on clique sur le bouton d'un layer, ça le sélectionne
 - vérifier le responsive
+- vérifier le PWA sur Android
