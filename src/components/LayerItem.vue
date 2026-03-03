@@ -89,7 +89,7 @@
             data-tooltip="Adapter au viewport"
             @click.stop="emitSelect(); emitFitViewport()"
           >
-            <span class="material-symbols-outlined">view_real_size</span>
+            <span class="material-symbols-outlined">fit_screen</span>
           </Button>
         </div>
         <div class="layer-toolbar">

@@ -56,7 +56,7 @@
           Dézoomer
         </li>
         <li>
-          <span class="material-symbols-outlined">view_real_size</span>
+          <span class="material-symbols-outlined">fit_screen</span>
           Revenir à la taille initiale
         </li>
         <li class="layers-empty-separator" aria-hidden="true"></li>

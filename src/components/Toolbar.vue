@@ -44,7 +44,7 @@
       :disabled="!hasLayers"
       @click="onResetZoom"
     >
-      <span class="material-symbols-outlined">view_real_size</span>
+      <span class="material-symbols-outlined">fit_screen</span>
     </Button>
     <Separator />
     <div class="toolbar-range" :style="{ '--range-value': brushPercent }">
