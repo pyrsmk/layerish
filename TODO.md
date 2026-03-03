@@ -1,9 +1,11 @@
+- ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
+- il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit
+- il faut rajouter un bouton flèche à gauche et à droite du select pour passer les modes rapidement
 - pas sûr que le move/zoom au niveau workspace soit vraiment utile
 - les tooltips sur les sliders se mettent mal à jour
 - refacto composite : bouger le bouton composite en haut à droite de la zone de travail ? comment le rendre bien visible ? est-ce qu'il y aurait pas mieux comme UX pour ne pas se mélanger les pinceaux ?
 - refacto positionnement : comment gérer différemment le positionnement ? l'idée serait d'avoir un positionnement en action par défaut et de devoir explicitement choisir le pinceau ou la gomme ensuite
 - refacto historique
-  - d'abord on va supprimer tout le système d'historique et persistence, on va garder juste les deux boutons undo et redo pour avoir quelque chose de clean; puis on intègre chaque morceau un à un
   - il faut aussi vider indexeddb
   - détails :
     - historique/persistence ISO

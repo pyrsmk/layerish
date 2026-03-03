@@ -11,7 +11,6 @@ export function useLayers({
   canvasSize,
   createMaskCanvas,
   renderComposite,
-  pushHistory,
   fitToView,
 }) {
   function setActiveLayer(id) {
@@ -115,7 +114,6 @@ export function useLayers({
     state.dragOverLayerId = null
     state.dragInsertIndex = null
     renderComposite?.()
-    pushHistory?.()
   }
 
   function onLayerDragEnd() {
@@ -215,12 +213,10 @@ export function useLayers({
           nextTick(() => {
             fitToView?.()
             renderComposite?.()
-            pushHistory?.()
           })
           return
         }
         renderComposite?.()
-        pushHistory?.()
       })
       .finally(() => {
         event.target.value = ''
@@ -257,7 +253,6 @@ export function useLayers({
 
     snapLayerToBelow(layer)
     renderComposite?.()
-    pushHistory?.()
   }
 
   function fitLayerToViewport(layer) {
@@ -277,7 +272,6 @@ export function useLayers({
     layer.y = (viewportHeight - nextHeight) / 2
 
     renderComposite?.()
-    pushHistory?.()
   }
 
   function recenterLayer(layer) {
@@ -289,7 +283,6 @@ export function useLayers({
     layer.y = (canvasHeight - height) / 2
     snapLayerToBelow(layer)
     renderComposite?.()
-    pushHistory?.()
   }
 
   function clearMask(layer) {
@@ -297,19 +290,16 @@ export function useLayers({
     ctx.clearRect(0, 0, layer.mask.width, layer.mask.height)
     layer.hasSelection = false
     renderComposite?.()
-    pushHistory?.()
   }
 
   function toggleLayerVisibility(layer) {
     layer.visible = !layer.visible
     renderComposite?.()
-    pushHistory?.()
   }
 
   function toggleLayerStretchEdges(layer) {
     layer.stretchEdges = !layer.stretchEdges
     renderComposite?.()
-    pushHistory?.()
   }
 
   function invertActiveMask() {
@@ -337,7 +327,6 @@ export function useLayers({
     ctx.putImageData(imageData, 0, 0)
     layer.hasSelection = hasSelection
     renderComposite?.()
-    pushHistory?.()
   }
 
   function deleteLayer(layer) {
@@ -363,14 +352,12 @@ export function useLayers({
       state.viewportSize = { ...DEFAULT_VIEWPORT }
       state.showFinalComposite = false
       state.isErasing = false
-      state.history = []
-      state.future = []
+
       state.zoom = DEFAULT_ZOOM
       state.pan = { ...DEFAULT_PAN }
     }
 
     renderComposite?.()
-    pushHistory?.()
   }
 
   function toggleMoveLayer(layer) {

@@ -5,8 +5,6 @@ import LayersPanel from './components/LayersPanel.vue'
 import Toolbar from './components/Toolbar.vue'
 import Tooltip from './components/Tooltip.vue'
 import { useEditorState } from './composables/useEditorState'
-import { useHistory } from './composables/useHistory'
-import { usePersistence } from './composables/usePersistence'
 import { useLayout } from './composables/useLayout'
 import { useLayers } from './composables/useLayers'
 import { useMask } from './composables/useMask'
@@ -37,18 +35,8 @@ const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
 const zoomBy = (delta) => canvasWorkspaceRef.value?.zoomBy?.(delta)
 const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
 
-const { restoreSession, scheduleSave } = usePersistence({
-  state,
-  createMaskCanvas,
-  renderComposite,
-})
-
-const { pushHistory, undo, redo } = useHistory({
-  state,
-  createMaskCanvas,
-  renderComposite,
-  onChange: scheduleSave,
-})
+const undo = () => {}
+const redo = () => {}
 
 const {
   setActiveLayer,
@@ -72,7 +60,6 @@ const {
   canvasSize,
   createMaskCanvas,
   renderComposite,
-  pushHistory,
   fitToView,
 })
 
@@ -88,7 +75,6 @@ const {
 } = useEditorActions({
   state,
   renderComposite,
-  pushHistory,
 })
 
 const clearMoveModes = () => {
@@ -151,12 +137,8 @@ onUnmounted(() => {
   document.removeEventListener('click', handleGlobalButtonClick, true)
 })
 
-onMounted(async () => {
-  const restored = await restoreSession()
-  if (!restored) {
-    renderComposite()
-    pushHistory()
-  }
+onMounted(() => {
+  renderComposite()
 })
 </script>
 
@@ -204,7 +186,6 @@ onMounted(async () => {
         :active-layer="activeLayer"
         :move-layer="moveLayer"
         :canvas-size="canvasSize"
-        :push-history="pushHistory"
       />
 
       <Toolbar

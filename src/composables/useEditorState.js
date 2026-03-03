@@ -37,9 +37,6 @@ export function useEditorState() {
     moveStart: null,
     moveLayerId: null,
     isPanMode: false,
-    history: [],
-    future: [],
-    isRestoring: false,
     isLayersOpen: DEFAULT_LAYERS_OPEN,
     hasUserToggledLayers: false,
     isCursorOverImage: false,
@@ -56,8 +53,8 @@ export function useEditorState() {
   const moveLayer = computed(() =>
     state.layers.find((layer) => layer.id === state.moveLayerId)
   )
-  const canUndo = computed(() => state.history.length > 1)
-  const canRedo = computed(() => state.future.length > 0)
+  const canUndo = computed(() => false)
+  const canRedo = computed(() => false)
 
   const canvasSize = computed(() => {
     if (state.hasViewport) {

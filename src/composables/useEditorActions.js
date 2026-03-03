@@ -1,6 +1,6 @@
 import { onUnmounted } from 'vue'
 
-export function useEditorActions({ state, renderComposite, pushHistory }) {
+export function useEditorActions({ state, renderComposite }) {
   let blendOpacityTimer = null
 
   function toggleFinalComposite() {
@@ -16,7 +16,6 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
   function toggleMaskFeatherEdgeClamp() {
     state.maskFeatherEdgeClamp = !state.maskFeatherEdgeClamp
     renderComposite?.()
-    pushHistory?.()
   }
 
   function toggleSnapEnabled() {
@@ -36,7 +35,6 @@ export function useEditorActions({ state, renderComposite, pushHistory }) {
 
   function onBlendModeChange() {
     renderComposite?.()
-    pushHistory?.()
   }
 
   function onBlendOpacityInput() {

@@ -62,7 +62,6 @@ const props = defineProps({
   activeLayer: { type: Object, default: null },
   moveLayer: { type: Object, default: null },
   canvasSize: { type: Object, required: true },
-  pushHistory: { type: Function, required: true },
 })
 
 const activeLayerRef = toRef(props, 'activeLayer')
@@ -88,7 +87,6 @@ const {
   activeLayer: activeLayerRef,
   moveLayer: moveLayerRef,
   canvasSize: canvasSizeRef,
-  pushHistory: props.pushHistory,
 })
 
 defineExpose({

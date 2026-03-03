@@ -2,14 +2,13 @@ import { computed, onMounted, onUnmounted, ref, unref, watch } from 'vue'
 import { snapLayerToTargets } from '../utils/snap'
 import { drawComposite } from '../utils/composite'
 
-export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHistory }) {
+export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
   const canvasRef = ref(null)
   const containerRef = ref(null)
   const activeLayerRef = computed(() => unref(activeLayer) ?? null)
   const moveLayerRef = computed(() => unref(moveLayer) ?? null)
   const canvasSizeRef = computed(() => unref(canvasSize) ?? null)
   let maskFeatherRenderTimer = null
-  let maskFeatherHistoryTimer = null
 
   function renderComposite() {
     const canvas = canvasRef.value
@@ -249,7 +248,6 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
     if (state.pointerId !== event.pointerId) return
     const wasDrawing = state.isDrawing
     const wasErasing = state.isErasing
-    const shouldSnapshot = state.isDrawing || state.isMovingLayer
     state.isDrawing = false
     state.isPanning = false
     state.isMovingLayer = false
@@ -268,9 +266,6 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
       }
     }
     event.currentTarget.releasePointerCapture(event.pointerId)
-    if (shouldSnapshot) {
-      pushHistory?.()
-    }
   }
 
   function centerInView() {
@@ -367,13 +362,6 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
         renderComposite()
         maskFeatherRenderTimer = null
       }, 250)
-      if (maskFeatherHistoryTimer) {
-        clearTimeout(maskFeatherHistoryTimer)
-      }
-      maskFeatherHistoryTimer = setTimeout(() => {
-        pushHistory?.()
-        maskFeatherHistoryTimer = null
-      }, 300)
     }
   )
 
@@ -389,10 +377,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
       clearTimeout(maskFeatherRenderTimer)
       maskFeatherRenderTimer = null
     }
-    if (maskFeatherHistoryTimer) {
-      clearTimeout(maskFeatherHistoryTimer)
-      maskFeatherHistoryTimer = null
-    }
+
   })
 
   return {
