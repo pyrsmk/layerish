@@ -39,11 +39,31 @@
           </Button>
         </div>
       </div>
-      <select v-model="props.layer.blendMode" @change="emitSelect(); emitBlendModeChange()">
-        <option v-for="mode in props.blendModes" :key="mode.value" :value="mode.value">
-          {{ mode.label }}
-        </option>
-      </select>
+      <div class="blend-mode-controls">
+        <Button
+          ghost
+          small
+          class="tooltip"
+          data-tooltip="Mode précédent"
+          @click.stop="emitSelect(); selectPreviousBlendMode()"
+        >
+          <span class="material-symbols-outlined">chevron_left</span>
+        </Button>
+        <select v-model="props.layer.blendMode" @change="emitSelect(); emitBlendModeChange()">
+          <option v-for="mode in props.blendModes" :key="mode.value" :value="mode.value">
+            {{ mode.label }}
+          </option>
+        </select>
+        <Button
+          ghost
+          small
+          class="tooltip"
+          data-tooltip="Mode suivant"
+          @click.stop="emitSelect(); selectNextBlendMode()"
+        >
+          <span class="material-symbols-outlined">chevron_right</span>
+        </Button>
+      </div>
       <label class="layer-range" :style="{ '--range-value': props.layer.blendOpacity }">
         <input
           class="tooltip"
@@ -178,6 +198,27 @@ const emitClearMask = () => emit('clear-mask', props.layer)
 const emitToggleStretchEdges = () => emit('toggle-stretch-edges', props.layer)
 const emitPointerDragStart = (event) =>
   emit('pointer-drag-start', props.layer, props.index, event)
+
+const getBlendModeIndex = () =>
+  props.blendModes.findIndex((mode) => mode.value === props.layer.blendMode)
+
+const selectBlendModeAt = (index) => {
+  if (!props.blendModes.length) {
+    return
+  }
+  if (index < 0 || index >= props.blendModes.length) {
+    return
+  }
+  const nextMode = props.blendModes[index]
+  if (!nextMode || nextMode.value === props.layer.blendMode) {
+    return
+  }
+  props.layer.blendMode = nextMode.value
+  emitBlendModeChange()
+}
+
+const selectPreviousBlendMode = () => selectBlendModeAt(getBlendModeIndex() - 1)
+const selectNextBlendMode = () => selectBlendModeAt(getBlendModeIndex() + 1)
 </script>
 
 <style scoped>
@@ -264,7 +305,19 @@ const emitPointerDragStart = (event) =>
   cursor: pointer;
 }
 
-.layer-info select {
+.blend-mode-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.blend-mode-controls :deep(button) {
+  flex: 0 0 auto;
+}
+
+.blend-mode-controls select {
+  flex: 1 1 auto;
   width: 100%;
   background: #1b1c24;
   color: #f5f6fa;
