@@ -1,3 +1,38 @@
-- quand on clique sur le bouton d'un layer, ça le sélectionne
+- refacto composite : bouger le bouton composite en haut à droite de la zone de travail ? comment le rendre bien visible ? est-ce qu'il y aurait pas mieux comme UX pour ne pas se mélanger les pinceaux ?
+- refacto positionnement : comment gérer différemment le positionnement ? l'idée serait d'avoir un positionnement en action par défaut et de devoir explicitement choisir le pinceau ou la gomme ensuite
+- refacto historique
+  - d'abord on va supprimer tout le système d'historique et persistence, on va garder juste les deux boutons undo et redo pour avoir quelque chose de clean; puis on intègre chaque morceau un à un
+  - détails :
+    - historique/persistence ISO
+    - format : [{ key: timestamp, value: metadata }]
+    - suppression du plafond sur le nombre d'actions
+    - restauration au lancement en rejouant tous les states de la persistence
+    - le pointeur de l'historique référence le timestamp
+    - si nouvelle action après un undo, alors on supprime le futur puis on crée la nouvelle action et on met à jour le pointeur
+    - on ne snapshot l'image qu'une seule fois, lors du load
+    - la suppression d'un calque supprime tous les évènements d'historique liés à ce calque, aisni que dans la persistence
+    - si tous les calques sont supprimés alors supprime tous les évènements globaux de l'historique
+    - les masques sont enregistrés par diff rectangulaire
+  - data :
+    - { event: 'add_layer', layer_id: <layer_id>, image: ImageBitmap, width: number, height: number }
+    - { event: 'layer_visibility', layer_id: <layer_id>, visible: boolean }
+    - { event: 'layer_blend_mode', layer_id: <layer_id>, mode: string }
+    - { event: 'layer_blend_opacity', layer_id: <layer_id>, opacity: number }
+    - { event: 'layer_scale', layer_id: <layer_id>, scale: number }
+    - { event: 'layer_fit', layer_id: <layer_id> }
+    - { event: 'layer_move', layer_id: <layer_id>, x: number, y: number }
+    - { event: 'layer_recenter', layer_id: <layer_id> }
+    - { event: 'mask_draw', rect: { x, y, w, h }, data: ImageData }
+    - { event: 'mask_invert', layer_id: <layer_id> }
+    - { event: 'mask_clear', layer_id: <layer_id> }
+    - { event: 'workspace_mask_feather_size', size: number }
+    - { event: 'workspace_mask_feather_edge_clamp', enabled: boolean }
+    - { event: 'workspace_scale', scale: number }
+    - { event: 'workspace_fit'  }
+    - { event: 'workspace_move' , x: number, y: number }
+    - { event: 'workspace_recenter' }
+    - { event: 'workspace_snap', enabled: boolean }
+    - { event: 'workspace_composite_mode', enabled: boolean }
+    - <layer_id> : hash aléatoire de 6 caractères hexadécimaux
 - vérifier le responsive
 - vérifier le PWA sur Android

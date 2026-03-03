@@ -108,7 +108,7 @@ export function useLayers({
 
     const startIndex = Math.min(fromIndex, normalizedToIndex)
     for (let i = startIndex; i < state.layers.length; i += 1) {
-      state.layers[i].name = `Layer ${state.layers.length - i}`
+      state.layers[i].name = `Calque ${state.layers.length - i}`
     }
 
     state.dragLayerId = null
@@ -183,7 +183,7 @@ export function useLayers({
     Promise.all(reads)
       .then((results) => {
         results.forEach(({ img }) => {
-          const layerName = `Layer ${state.layers.length + 1}`
+          const layerName = `Calque ${state.layers.length + 1}`
           const layer = createLayerFromImage(img, layerName)
           if (!state.hasViewport) {
             state.viewportSize = { width: layer.width, height: layer.height }
@@ -347,7 +347,7 @@ export function useLayers({
 
     let nextNumber = 1
     for (let i = state.layers.length - 1; i >= 0; i -= 1) {
-      state.layers[i].name = `Layer ${nextNumber}`
+      state.layers[i].name = `Calque ${nextNumber}`
       nextNumber += 1
     }
 

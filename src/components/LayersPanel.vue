@@ -39,9 +39,6 @@
       </div>
     </div>
 
-    <p v-if="props.layers.length === 0" class="layers-empty-title">
-      Aucun calque pour le moment.
-    </p>
     <div v-if="props.layers.length === 0" class="layers-empty">
       <p class="layers-empty-help-title">Aide :</p>
       <ul class="layers-empty-tips">
@@ -331,13 +328,6 @@ const triggerFileInput = () => {
   border: 1px dashed #2a2c36;
   border-radius: 12px;
   padding: 12px;
-}
-
-.layers-empty-title {
-  margin: 6px 0 8px 0;
-  font-weight: 600;
-  font-size: 14px;
-  color: #c7cad8;
 }
 
 .layers-empty-help-title {

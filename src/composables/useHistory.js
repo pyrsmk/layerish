@@ -80,7 +80,7 @@ export function useHistory({
     if (state.isRestoring) return
     const snapshot = captureSnapshot()
     state.history.push(snapshot)
-    if (state.history.length > 50) {
+    if (state.history.length > 20) {
       state.history.shift()
     }
     state.future = []
