@@ -157,6 +157,7 @@ export function useLayers({
       mask: createMaskCanvas(width, height),
       hasSelection: false,
       visible: true,
+      stretchEdges: false,
     }
   }
 
@@ -305,6 +306,12 @@ export function useLayers({
     pushHistory?.()
   }
 
+  function toggleLayerStretchEdges(layer) {
+    layer.stretchEdges = !layer.stretchEdges
+    renderComposite?.()
+    pushHistory?.()
+  }
+
   function invertActiveMask() {
     const layer = state.layers.find(
       (item) => item.id === state.activeLayerId
@@ -389,6 +396,7 @@ export function useLayers({
     recenterLayer,
     clearMask,
     toggleLayerVisibility,
+    toggleLayerStretchEdges,
     invertActiveMask,
     deleteLayer,
     toggleMoveLayer,

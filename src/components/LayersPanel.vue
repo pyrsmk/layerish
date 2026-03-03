@@ -138,6 +138,7 @@
           @toggle-visibility="props.onToggleVisibility"
           @recenter="props.onRecenterLayer"
           @clear-mask="props.onClearMask"
+          @toggle-stretch-edges="props.onToggleStretchEdges"
           @dragstart="props.onLayerDragStart"
           @dragover="props.onLayerDragOver"
           @drop="props.onLayerDrop"
@@ -195,6 +196,7 @@ const props = defineProps({
   onToggleVisibility: { type: Function, required: true },
   onRecenterLayer: { type: Function, required: true },
   onClearMask: { type: Function, required: true },
+  onToggleStretchEdges: { type: Function, required: true },
   onLayerDragStart: { type: Function, required: true },
   onLayerDragOver: { type: Function, required: true },
   onLayerDrop: { type: Function, required: true },

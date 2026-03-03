@@ -116,6 +116,17 @@
           <Button
             ghost
             small
+            selectable
+            class="tooltip"
+            data-tooltip="Étirer le calque"
+            :active="props.layer.stretchEdges"
+            @click.stop="emitSelect(); emitToggleStretchEdges()"
+          >
+            <span class="material-symbols-outlined">pan_zoom</span>
+          </Button>
+          <Button
+            ghost
+            small
             class="tooltip"
             data-tooltip="Effacer la sélection"
             @click.stop="emitSelect(); emitClearMask()"
@@ -153,6 +164,7 @@ const emit = defineEmits([
   'toggle-move',
   'recenter',
   'clear-mask',
+  'toggle-stretch-edges',
   'dragstart',
   'dragover',
   'drop',
@@ -169,6 +181,7 @@ const emitFitViewport = () => emit('fit-viewport', props.layer)
 const emitToggleMove = () => emit('toggle-move', props.layer)
 const emitRecenter = () => emit('recenter', props.layer)
 const emitClearMask = () => emit('clear-mask', props.layer)
+const emitToggleStretchEdges = () => emit('toggle-stretch-edges', props.layer)
 const emitDragStart = (event) => emit('dragstart', props.layer, event)
 const emitDragOver = (event) => emit('dragover', props.layer, props.index, event)
 const emitDrop = () => emit('drop', props.layer, props.index)

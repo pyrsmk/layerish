@@ -63,6 +63,7 @@ const {
   recenterLayer,
   clearMask,
   toggleLayerVisibility,
+  toggleLayerStretchEdges,
   invertActiveMask,
   deleteLayer,
   toggleMoveLayer,
@@ -188,6 +189,7 @@ onMounted(async () => {
       :on-toggle-visibility="toggleLayerVisibility"
       :on-recenter-layer="recenterLayer"
       :on-clear-mask="clearMask"
+      :on-toggle-stretch-edges="toggleLayerStretchEdges"
       :on-layer-drag-start="onLayerDragStart"
       :on-layer-drag-over="onLayerDragOver"
       :on-layer-drop="onLayerDrop"

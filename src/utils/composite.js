@@ -14,6 +14,176 @@ function applySelectionMaskToLayer(layerCtx, maskCanvas) {
   layerCtx.globalCompositeOperation = 'source-over'
 }
 
+function getLayerRenderRect(layer) {
+  const x = Math.floor(layer.x)
+  const y = Math.floor(layer.y)
+  const width = Math.ceil(layer.width * layer.scale)
+  const height = Math.ceil(layer.height * layer.scale)
+  return { x, y, width, height }
+}
+
+function applySelectionMaskToStretchedCanvas(
+  stretchedCanvas,
+  layer,
+  layerCanvas,
+  maskCanvas
+) {
+  const maskedCanvas = document.createElement('canvas')
+  maskedCanvas.width = layer.width
+  maskedCanvas.height = layer.height
+  const maskedCtx = maskedCanvas.getContext('2d')
+  if (!maskedCtx) return
+  maskedCtx.drawImage(layerCanvas, 0, 0)
+  maskedCtx.globalCompositeOperation = 'destination-in'
+  maskedCtx.drawImage(maskCanvas, 0, 0)
+  maskedCtx.globalCompositeOperation = 'source-over'
+
+  const { x, y, width, height } = getLayerRenderRect(layer)
+
+  const stretchedCtx = stretchedCanvas.getContext('2d')
+  if (!stretchedCtx) return
+  stretchedCtx.clearRect(x, y, width, height)
+  stretchedCtx.drawImage(maskedCanvas, x, y, width, height)
+}
+
+
+
+function createStretchedLayerCanvas(layer, layerCanvas, canvasSize) {
+  const viewportWidth = canvasSize.width
+  const viewportHeight = canvasSize.height
+  const { x, y, width, height } = getLayerRenderRect(layer)
+  const gapLeft = Math.max(0, x)
+  const gapTop = Math.max(0, y)
+  const gapRight = Math.max(0, viewportWidth - (x + width))
+  const gapBottom = Math.max(0, viewportHeight - (y + height))
+
+  if (gapLeft === 0 && gapTop === 0 && gapRight === 0 && gapBottom === 0) {
+    return null
+  }
+
+  const stretchedCanvas = document.createElement('canvas')
+  stretchedCanvas.width = viewportWidth
+  stretchedCanvas.height = viewportHeight
+  const stretchedCtx = stretchedCanvas.getContext('2d')
+  if (!stretchedCtx) return null
+
+  stretchedCtx.drawImage(
+    layerCanvas,
+    x,
+    y,
+    width,
+    height
+  )
+
+  if (gapLeft > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      0,
+      0,
+      1,
+      layer.height,
+      0,
+      y,
+      gapLeft,
+      height
+    )
+  }
+  if (gapRight > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      layer.width - 1,
+      0,
+      1,
+      layer.height,
+      x + width,
+      y,
+      gapRight,
+      height
+    )
+  }
+  if (gapTop > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      0,
+      0,
+      layer.width,
+      1,
+      x,
+      0,
+      width,
+      gapTop
+    )
+  }
+  if (gapBottom > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      0,
+      layer.height - 1,
+      layer.width,
+      1,
+      x,
+      y + height,
+      width,
+      gapBottom
+    )
+  }
+
+  if (gapLeft > 0 && gapTop > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      gapLeft,
+      gapTop
+    )
+  }
+  if (gapRight > 0 && gapTop > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      layer.width - 1,
+      0,
+      1,
+      1,
+      x + width,
+      0,
+      gapRight,
+      gapTop
+    )
+  }
+  if (gapLeft > 0 && gapBottom > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      0,
+      layer.height - 1,
+      1,
+      1,
+      0,
+      y + height,
+      gapLeft,
+      gapBottom
+    )
+  }
+  if (gapRight > 0 && gapBottom > 0) {
+    stretchedCtx.drawImage(
+      layerCanvas,
+      layer.width - 1,
+      layer.height - 1,
+      1,
+      1,
+      x + width,
+      y + height,
+      gapRight,
+      gapBottom
+    )
+  }
+
+  return stretchedCanvas
+}
+
 function drawSelectionOverlay(ctx, layer, maskCanvas) {
   const overlayCanvas = document.createElement('canvas')
   overlayCanvas.width = layer.width
@@ -172,20 +342,33 @@ export function drawComposite({
         ? createFeatheredMask(layer, maskFeatherSize, state.maskFeatherEdgeClamp)
         : layer.mask
 
+    const stretchedCanvas = layer.stretchEdges
+      ? createStretchedLayerCanvas(layer, layerCanvas, canvasSize)
+      : null
+
     if (applySelectionMask && layer.hasSelection) {
-      applySelectionMaskToLayer(layerCtx, maskCanvas)
+      if (stretchedCanvas) {
+        applySelectionMaskToStretchedCanvas(
+          stretchedCanvas,
+          layer,
+          layerCanvas,
+          maskCanvas
+        )
+      } else {
+        applySelectionMaskToLayer(layerCtx, maskCanvas)
+      }
     }
+
+    const drawCanvas = stretchedCanvas ?? layerCanvas
+    const drawX = stretchedCanvas ? 0 : layer.x
+    const drawY = stretchedCanvas ? 0 : layer.y
+    const drawWidth = stretchedCanvas ? width : layer.width * layer.scale
+    const drawHeight = stretchedCanvas ? height : layer.height * layer.scale
 
     ctx.save()
     ctx.globalCompositeOperation = layer.blendMode
     ctx.globalAlpha = (layer.blendOpacity ?? 100) / 100
-    ctx.drawImage(
-      layerCanvas,
-      layer.x,
-      layer.y,
-      layer.width * layer.scale,
-      layer.height * layer.scale
-    )
+    ctx.drawImage(drawCanvas, drawX, drawY, drawWidth, drawHeight)
     ctx.restore()
 
     if (
