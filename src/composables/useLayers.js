@@ -21,6 +21,8 @@ export function useLayers({
     }
   }
 
+
+
   function clearDragState() {
     state.dragLayerId = null
     state.dragOverLayerId = null
@@ -42,11 +44,7 @@ export function useLayers({
     state.dragOverLayerId = layer.id
     state.dragInsertIndex = null
     state.activeLayerId = layer.id
-    if (event.dataTransfer) {
-      event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.dropEffect = 'move'
-      event.dataTransfer.setData('text/plain', layer.id)
-    }
+
   }
 
   function onLayerDragOver(layer, index, event) {
@@ -78,30 +76,28 @@ export function useLayers({
     state.dragOverLayerId = null
   }
 
-  function onLayerDrop(layer, index) {
+  function finalizeLayerDrop() {
     const fromId = state.dragLayerId
     const insertIndex = state.dragInsertIndex
-    if (!fromId) return
-
-    const fromIndex = state.layers.findIndex((item) => item.id === fromId)
-    const toIndex = insertIndex ?? index
-
-    if (fromIndex === -1 || toIndex === null) {
-      state.dragLayerId = null
-      state.dragOverLayerId = null
-      state.dragInsertIndex = null
+    if (!fromId || typeof insertIndex !== 'number') {
+      clearDragState()
       return
     }
 
-    if (fromIndex === toIndex || fromIndex + 1 === toIndex) {
-      state.dragLayerId = null
-      state.dragOverLayerId = null
-      state.dragInsertIndex = null
+    const fromIndex = state.layers.findIndex((item) => item.id === fromId)
+    if (fromIndex === -1) {
+      clearDragState()
+      return
+    }
+
+    const normalizedToIndex =
+      fromIndex < insertIndex ? insertIndex - 1 : insertIndex
+    if (normalizedToIndex === fromIndex) {
+      clearDragState()
       return
     }
 
     const [moved] = state.layers.splice(fromIndex, 1)
-    const normalizedToIndex = fromIndex < toIndex ? toIndex - 1 : toIndex
     state.layers.splice(normalizedToIndex, 0, moved)
     state.activeLayerId = moved.id
 
@@ -110,32 +106,38 @@ export function useLayers({
       state.layers[i].name = `Calque ${state.layers.length - i}`
     }
 
-    state.dragLayerId = null
-    state.dragOverLayerId = null
-    state.dragInsertIndex = null
+    clearDragState()
     renderComposite?.()
   }
 
-  function onLayerDragEnd() {
-    clearDragState()
+  function onLayerDrop(layer, index) {
+    finalizeLayerDrop()
   }
 
-  const handleGlobalDragReset = () => {
+  function onLayerDragEnd() {
+    finalizeLayerDrop()
+  }
+
+  const handleGlobalDragEnd = () => {
+    finalizeLayerDrop()
+  }
+
+  const handleGlobalDragCancel = () => {
     clearDragState()
   }
 
   onMounted(() => {
-    window.addEventListener('dragend', handleGlobalDragReset)
-    window.addEventListener('drop', handleGlobalDragReset)
-    window.addEventListener('blur', handleGlobalDragReset)
-    document.addEventListener('visibilitychange', handleGlobalDragReset)
+    window.addEventListener('dragend', handleGlobalDragEnd)
+    window.addEventListener('drop', handleGlobalDragEnd)
+    window.addEventListener('blur', handleGlobalDragCancel)
+    document.addEventListener('visibilitychange', handleGlobalDragCancel)
   })
 
   onUnmounted(() => {
-    window.removeEventListener('dragend', handleGlobalDragReset)
-    window.removeEventListener('drop', handleGlobalDragReset)
-    window.removeEventListener('blur', handleGlobalDragReset)
-    document.removeEventListener('visibilitychange', handleGlobalDragReset)
+    window.removeEventListener('dragend', handleGlobalDragEnd)
+    window.removeEventListener('drop', handleGlobalDragEnd)
+    window.removeEventListener('blur', handleGlobalDragCancel)
+    document.removeEventListener('visibilitychange', handleGlobalDragCancel)
   })
 
   function createLayerFromImage(img, name) {

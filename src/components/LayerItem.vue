@@ -6,11 +6,8 @@
         active: props.isActive,
       },
     ]"
-    :draggable="!isDragSuppressed"
-    @dragstart="emitDragStart"
-    @dragover.prevent="emitDragOver"
-    @drop.prevent="emitDrop"
-    @dragend="emitDragEnd"
+    :draggable="false"
+    @pointerdown="emitPointerDragStart"
     @click="emitSelect"
   >
     <div class="layer-thumb">
@@ -165,10 +162,7 @@ const emit = defineEmits([
   'recenter',
   'clear-mask',
   'toggle-stretch-edges',
-  'dragstart',
-  'dragover',
-  'drop',
-  'dragend',
+  'pointer-drag-start',
 ])
 
 const emitSelect = () => emit('select', props.layer.id)
@@ -182,10 +176,8 @@ const emitToggleMove = () => emit('toggle-move', props.layer)
 const emitRecenter = () => emit('recenter', props.layer)
 const emitClearMask = () => emit('clear-mask', props.layer)
 const emitToggleStretchEdges = () => emit('toggle-stretch-edges', props.layer)
-const emitDragStart = (event) => emit('dragstart', props.layer, event)
-const emitDragOver = (event) => emit('dragover', props.layer, props.index, event)
-const emitDrop = () => emit('drop', props.layer, props.index)
-const emitDragEnd = () => emit('dragend')
+const emitPointerDragStart = (event) =>
+  emit('pointer-drag-start', props.layer, props.index, event)
 </script>
 
 <style scoped>

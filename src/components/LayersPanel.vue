@@ -110,7 +110,7 @@
       </ul>
     </div>
 
-    <ul class="layers-list">
+    <ul class="layers-list" ref="layersListRef">
       <DropSlot
         :active="
           Boolean(props.dragLayerId && props.dragInsertIndex === 0)
@@ -139,10 +139,7 @@
           @recenter="props.onRecenterLayer"
           @clear-mask="props.onClearMask"
           @toggle-stretch-edges="props.onToggleStretchEdges"
-          @dragstart="props.onLayerDragStart"
-          @dragover="props.onLayerDragOver"
-          @drop="props.onLayerDrop"
-          @dragend="props.onLayerDragEnd"
+          @pointer-drag-start="handlePointerDragStart"
         />
         <DropSlot
           :active="
@@ -168,7 +165,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import Button from './Button.vue'
 import DropSlot from './DropSlot.vue'
 import LayerItem from './LayerItem.vue'
@@ -205,6 +202,62 @@ const props = defineProps({
 })
 
 const fileInputRef = ref(null)
+const layersListRef = ref(null)
+let activePointerId = null
+
+const stopPointerListeners = () => {
+  window.removeEventListener('pointermove', handlePointerMove)
+  window.removeEventListener('pointerup', handlePointerUp)
+  window.removeEventListener('pointercancel', handlePointerCancel)
+}
+
+onUnmounted(() => {
+  stopPointerListeners()
+})
+
+const handlePointerMove = (event) => {
+  if (activePointerId === null || event.pointerId !== activePointerId) return
+  const list = layersListRef.value
+  if (!list) return
+  const items = Array.from(list.querySelectorAll('.layer-item'))
+  if (!items.length) return
+  const pointerY = event.clientY
+  let insertIndex = items.length
+  for (let i = 0; i < items.length; i += 1) {
+    const rect = items[i].getBoundingClientRect()
+    if (pointerY < rect.top + rect.height / 2) {
+      insertIndex = i
+      break
+    }
+  }
+  props.onDropSlotOver(insertIndex, null)
+}
+
+const handlePointerUp = (event) => {
+  if (activePointerId === null || event.pointerId !== activePointerId) return
+  activePointerId = null
+  stopPointerListeners()
+  props.onLayerDragEnd()
+}
+
+const handlePointerCancel = (event) => {
+  if (activePointerId === null || event.pointerId !== activePointerId) return
+  activePointerId = null
+  stopPointerListeners()
+  props.onLayerDragEnd()
+}
+
+const handlePointerDragStart = (layer, index, event) => {
+  if (!event || event.button !== 0) return
+  if (event.target?.closest('button, input, select, option, label, a')) return
+  event.preventDefault()
+  props.onLayerDragStart(layer, event)
+  activePointerId = event.pointerId
+  event.currentTarget?.setPointerCapture?.(event.pointerId)
+  window.addEventListener('pointermove', handlePointerMove)
+  window.addEventListener('pointerup', handlePointerUp)
+  window.addEventListener('pointercancel', handlePointerCancel)
+}
 
 const handleTransitionEnd = (event) => {
   if (event.propertyName !== 'width') return
