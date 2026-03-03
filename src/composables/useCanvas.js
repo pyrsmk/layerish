@@ -102,6 +102,17 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
     renderComposite()
   }
 
+  function maskHasContent(layer) {
+    const ctx = layer.mask.getContext('2d')
+    if (!ctx) return false
+    const { width, height } = layer.mask
+    const data = ctx.getImageData(0, 0, width, height).data
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] !== 0) return true
+    }
+    return false
+  }
+
   function snapLayerToBelow(layer) {
     const tolerance = state.snapTolerance / state.zoom
     snapLayerToTargets({
@@ -236,6 +247,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
 
   function handlePointerUp(event) {
     if (state.pointerId !== event.pointerId) return
+    const wasDrawing = state.isDrawing
+    const wasErasing = state.isErasing
     const shouldSnapshot = state.isDrawing || state.isMovingLayer
     state.isDrawing = false
     state.isPanning = false
@@ -244,6 +257,16 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize, pushHisto
     state.brushLastPoint = null
     state.panLastPoint = null
     state.moveStart = null
+    if (wasDrawing && wasErasing) {
+      const layer = activeLayerRef.value
+      if (layer) {
+        const hadSelection = layer.hasSelection
+        layer.hasSelection = maskHasContent(layer)
+        if (hadSelection !== layer.hasSelection) {
+          renderComposite()
+        }
+      }
+    }
     event.currentTarget.releasePointerCapture(event.pointerId)
     if (shouldSnapshot) {
       pushHistory?.()
