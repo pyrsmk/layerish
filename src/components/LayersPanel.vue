@@ -1,9 +1,6 @@
 <template>
   <aside
-    :class="[
-      'layers',
-      { collapsed: !props.isOpen },
-    ]"
+    :class="['layers', { collapsed: !props.isOpen }]"
     @transitionend.self="handleTransitionEnd"
   >
     <div class="layers-header">
@@ -28,9 +25,9 @@
           data-tooltip="Afficher/Masquer le panneau"
           @click="props.onToggleLayersPanel"
         >
-          <span class="material-symbols-outlined">{{
-            props.isOpen ? 'chevron_left' : 'chevron_right'
-          }}</span>
+          <span class="material-symbols-outlined">
+            {{ props.isOpen ? 'chevron_left' : 'chevron_right' }}
+          </span>
         </Button>
       </div>
     </div>
@@ -108,12 +105,8 @@
 
     <ul class="layers-list" ref="layersListRef">
       <DropSlot
-        :active="
-          Boolean(props.dragLayerId && props.dragInsertIndex === 0)
-        "
-        @dragover="
-          (event) => props.onDropSlotOver(0, event)
-        "
+        :active="Boolean(props.dragLayerId && props.dragInsertIndex === 0)"
+        @dragover="event => props.onDropSlotOver(0, event)"
         @drop="() => props.onLayerDrop(null, 0)"
       />
 
@@ -138,12 +131,8 @@
           @pointer-drag-start="handlePointerDragStart"
         />
         <DropSlot
-          :active="
-            Boolean(props.dragLayerId && props.dragInsertIndex === index + 1)
-          "
-          @dragover="
-            (event) => props.onDropSlotOver(index + 1, event)
-          "
+          :active="Boolean(props.dragLayerId && props.dragInsertIndex === index + 1)"
+          @dragover="event => props.onDropSlotOver(index + 1, event)"
           @drop="() => props.onLayerDrop(null, index + 1)"
         />
       </template>

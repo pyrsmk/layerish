@@ -1,22 +1,17 @@
 <template>
   <li
-    :class="[
-      'layer-item',
-      {
-        active: props.isActive,
-      },
-    ]"
+    :class="['layer-item', { active: props.isActive }]"
     :draggable="false"
     @pointerdown="emitPointerDragStart"
     @click="emitSelect"
   >
-    <div class="layer-thumb">
+    <div class="thumb">
       <img :src="props.layer.img.src" alt="" />
     </div>
-    <div class="layer-info">
-      <div class="layer-title">
+    <div class="controls">
+      <div class="title">
         <span>{{ props.layer.name }}</span>
-        <div class="layer-title-actions">
+        <div class="title-actions">
           <Button
             selectable
             class="tooltip"
@@ -35,7 +30,10 @@
           </Button>
         </div>
       </div>
-      <div class="blend-mode-controls">
+      <div
+        class="blend-controls"
+        :class="{ visible: props.index != 0 }"
+      >
         <Button
           class="tooltip"
           data-tooltip="Mode précédent"
@@ -44,7 +42,10 @@
         >
           <span class="material-symbols-outlined">chevron_left</span>
         </Button>
-        <select v-model="props.layer.blendMode" @change="emitSelect(); emitBlendModeChange()">
+        <select
+          v-model="props.layer.blendMode"
+          @change="emitSelect(); emitBlendModeChange()"
+        >
           <option v-for="mode in props.blendModes" :key="mode.value" :value="mode.value">
             {{ mode.label }}
           </option>
@@ -58,7 +59,11 @@
           <span class="material-symbols-outlined">chevron_right</span>
         </Button>
       </div>
-      <label class="layer-range" :style="{ '--range-value': props.layer.blendOpacity }">
+      <label
+        class="blend-range"
+        :class="{ visible: props.index != 0 }"
+        :style="{ '--range-value': props.layer.blendOpacity }"
+      >
         <input
           class="tooltip"
           type="range"
@@ -73,64 +78,62 @@
           @pointerleave.stop="isDragSuppressed = false"
         />
       </label>
-      <div class="layer-actions">
-        <div class="layer-toolbar">
-          <Button
-            class="tooltip"
-            data-tooltip="Réduire"
-            @click.stop="emitSelect(); emitNudge(-0.05)"
-          >
-            <span class="material-symbols-outlined">remove</span>
-          </Button>
-          <Button
-            class="tooltip"
-            data-tooltip="Agrandir"
-            @click.stop="emitSelect(); emitNudge(0.05)"
-          >
-            <span class="material-symbols-outlined">add</span>
-          </Button>
-          <Button
-            class="tooltip"
-            data-tooltip="Adapter au viewport"
-            @click.stop="emitSelect(); emitFitViewport()"
-          >
-            <span class="material-symbols-outlined">fit_screen</span>
-          </Button>
-        </div>
-        <div class="layer-toolbar">
-          <Button
-            selectable
-            class="tooltip"
-            data-tooltip="Déplacer"
-            :active="props.isMoveActive"
-            @click.stop="emitSelect(); emitToggleMove()"
-          >
-            <span class="material-symbols-outlined">open_with</span>
-          </Button>
-          <Button
-            class="tooltip"
-            data-tooltip="Recentrer"
-            @click.stop="emitSelect(); emitRecenter()"
-          >
-            <span class="material-symbols-outlined">arrows_input</span>
-          </Button>
-          <Button
-            selectable
-            class="tooltip"
-            data-tooltip="Étirer le calque"
-            :active="props.layer.stretchEdges"
-            @click.stop="emitSelect(); emitToggleStretchEdges()"
-          >
-            <span class="material-symbols-outlined">pan_zoom</span>
-          </Button>
-          <Button
-            class="tooltip"
-            data-tooltip="Effacer la sélection"
-            @click.stop="emitSelect(); emitClearMask()"
-          >
-            <span class="material-symbols-outlined">remove_selection</span>
-          </Button>
-        </div>
+      <div class="toolbar">
+        <Button
+          class="tooltip"
+          data-tooltip="Réduire"
+          @click.stop="emitSelect(); emitNudge(-0.05)"
+        >
+          <span class="material-symbols-outlined">remove</span>
+        </Button>
+        <Button
+          class="tooltip"
+          data-tooltip="Agrandir"
+          @click.stop="emitSelect(); emitNudge(0.05)"
+        >
+          <span class="material-symbols-outlined">add</span>
+        </Button>
+        <Button
+          class="tooltip"
+          data-tooltip="Adapter au viewport"
+          @click.stop="emitSelect(); emitFitViewport()"
+        >
+          <span class="material-symbols-outlined">fit_screen</span>
+        </Button>
+      </div>
+      <div class="toolbar">
+        <Button
+          selectable
+          class="tooltip"
+          data-tooltip="Déplacer"
+          :active="props.isMoveActive"
+          @click.stop="emitSelect(); emitToggleMove()"
+        >
+          <span class="material-symbols-outlined">open_with</span>
+        </Button>
+        <Button
+          class="tooltip"
+          data-tooltip="Recentrer"
+          @click.stop="emitSelect(); emitRecenter()"
+        >
+          <span class="material-symbols-outlined">arrows_input</span>
+        </Button>
+        <Button
+          selectable
+          class="tooltip"
+          data-tooltip="Étirer le calque"
+          :active="props.layer.stretchEdges"
+          @click.stop="emitSelect(); emitToggleStretchEdges()"
+        >
+          <span class="material-symbols-outlined">pan_zoom</span>
+        </Button>
+        <Button
+          class="tooltip"
+          data-tooltip="Effacer la sélection"
+          @click.stop="emitSelect(); emitClearMask()"
+        >
+          <span class="material-symbols-outlined">remove_selection</span>
+        </Button>
       </div>
     </div>
   </li>
@@ -182,12 +185,14 @@ const getBlendModeIndex = () => (
   props.blendModes.findIndex(mode => mode.value === props.layer.blendMode)
 )
 const blendModeIndex = computed(() => getBlendModeIndex())
+
 const isPreviousBlendModeDisabled = computed(
   () => blendModeIndex.value == 0
 )
 const isNextBlendModeDisabled = computed(
   () => blendModeIndex.value == props.blendModes.length - 1
 )
+
 const selectBlendModeAt = index => {
   if (!props.blendModes.length) {
     return
@@ -221,7 +226,7 @@ const selectNextBlendMode = () => selectBlendModeAt(getBlendModeIndex() + 1)
   box-shadow: 0 0 0 1px rgba(123, 97, 255, 0.4);
 }
 
-.layer-thumb {
+.thumb {
   width: 56px;
   height: 56px;
   aspect-ratio: 1 / 1;
@@ -231,14 +236,14 @@ const selectNextBlendMode = () => selectBlendModeAt(getBlendModeIndex() + 1)
   background: #0e0f14;
 }
 
-.layer-thumb img {
+.thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
-.layer-info {
+.controls {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -246,58 +251,29 @@ const selectNextBlendMode = () => selectBlendModeAt(getBlendModeIndex() + 1)
   min-width: 0;
 }
 
-.layer-title {
+.title {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
 }
 
-.layer-title-actions {
+.title-actions {
   display: flex;
   gap: 6px;
-  align-items: center;
-  flex-shrink: 0;
 }
 
-:deep(.layer-title-actions .small),
-:deep(.layer-actions .small) {
-  padding: 2px 6px;
-}
-
-:deep(.layer-title-actions button) {
-  cursor: pointer;
-}
-
-.layer-range {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.layer-range input[type='range'] {
-  --range-thumb-size: 16px;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
-
-.blend-mode-controls {
+.blend-controls {
   display: flex;
   gap: 6px;
   align-items: center;
   width: 100%;
 }
 
-.blend-mode-controls :deep(button) {
+.blend-controls > * {
   flex: 0 0 auto;
 }
 
-.blend-mode-controls select {
+.blend-controls select {
   flex: 1 1 auto;
   width: 100%;
   background: #1b1c24;
@@ -309,34 +285,36 @@ const selectNextBlendMode = () => selectBlendModeAt(getBlendModeIndex() + 1)
   cursor: pointer;
 }
 
-.layer-actions {
+.blend-range {
+  position: relative;
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  align-items: center;
   width: 100%;
 }
 
-:deep(.layer-actions button) {
-  flex: 1 1 0;
-  min-width: 0;
+.blend-range input[type='range'] {
+  --range-thumb-size: 16px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   cursor: pointer;
 }
 
-.layer-toolbar {
+.toolbar {
   display: flex;
   gap: 6px;
   width: 100%;
 }
 
-.layer-toolbar > * {
+.toolbar > * {
   flex: 1 1 0;
   min-width: 0;
 }
 
-.layer-toolbar .toolbar-separator {
-  flex: 0 0 1px;
-  width: 1px;
-  height: 16px;
-  align-self: center;
+.blend-controls:not(.visible),
+.blend-range:not(.visible) {
+  display: none;
 }
 </style>
