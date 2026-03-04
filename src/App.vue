@@ -48,6 +48,7 @@ const {
   onFilesSelected,
   nudgeLayerScale,
   fitLayerToViewport,
+  fitViewportToLayer,
   recenterLayer,
   clearMask,
   toggleLayerVisibility,
@@ -167,6 +168,7 @@ onMounted(() => {
       :on-blend-opacity-input="onBlendOpacityInput"
       :on-nudge-layer-scale="nudgeLayerScale"
       :on-fit-layer-to-viewport="fitLayerToViewport"
+      :on-fit-viewport-to-layer="fitViewportToLayer"
       :on-toggle-move-layer="toggleMoveLayer"
       :on-toggle-visibility="toggleLayerVisibility"
       :on-recenter-layer="recenterLayer"

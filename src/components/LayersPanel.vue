@@ -122,7 +122,8 @@
           @blend-mode-change="props.onBlendModeChange"
           @blend-opacity-input="props.onBlendOpacityInput"
           @nudge-scale="props.onNudgeLayerScale"
-          @fit-viewport="props.onFitLayerToViewport"
+          @fit-layer-to-viewport="props.onFitLayerToViewport"
+          @fit-viewport-to-layer="props.onFitViewportToLayer"
           @toggle-move="props.onToggleMoveLayer"
           @toggle-visibility="props.onToggleVisibility"
           @recenter="props.onRecenterLayer"
@@ -174,6 +175,7 @@ const props = defineProps({
   onBlendOpacityInput: { type: Function, required: true },
   onNudgeLayerScale: { type: Function, required: true },
   onFitLayerToViewport: { type: Function, required: true },
+  onFitViewportToLayer: { type: Function, required: true },
   onToggleMoveLayer: { type: Function, required: true },
   onToggleVisibility: { type: Function, required: true },
   onRecenterLayer: { type: Function, required: true },

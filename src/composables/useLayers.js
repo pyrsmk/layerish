@@ -276,6 +276,36 @@ export function useLayers({
     renderComposite?.()
   }
 
+  function fitViewportToLayer(layer) {
+    if (!layer) return
+    const nextWidth = layer.width * layer.scale
+    const nextHeight = layer.height * layer.scale
+    if (!Number.isFinite(nextWidth) || !Number.isFinite(nextHeight)) return
+
+    const previousViewport = canvasSize.value
+    const previousCenterX =
+      state.pan.x + (previousViewport.width * state.zoom) / 2
+    const previousCenterY =
+      state.pan.y + (previousViewport.height * state.zoom) / 2
+
+    const width = Math.max(1, nextWidth)
+    const height = Math.max(1, nextHeight)
+
+    state.viewportSize = { width, height }
+    state.hasViewport = true
+
+    const layerWidth = layer.width * layer.scale
+    const layerHeight = layer.height * layer.scale
+    layer.x = (width - layerWidth) / 2
+    layer.y = (height - layerHeight) / 2
+
+    nextTick(() => {
+      state.pan.x = previousCenterX - (width * state.zoom) / 2
+      state.pan.y = previousCenterY - (height * state.zoom) / 2
+      renderComposite?.()
+    })
+  }
+
   function recenterLayer(layer) {
     const canvasWidth = canvasSize.value.width
     const canvasHeight = canvasSize.value.height
@@ -382,6 +412,7 @@ export function useLayers({
     onFilesSelected,
     nudgeLayerScale,
     fitLayerToViewport,
+    fitViewportToLayer,
     recenterLayer,
     clearMask,
     toggleLayerVisibility,

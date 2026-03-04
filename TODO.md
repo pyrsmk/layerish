@@ -1,4 +1,3 @@
-- désactiver la fusion quand c'est le premier calque
 - ajouter un bouton pour adapter le viewport au calque courant
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
 - il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit

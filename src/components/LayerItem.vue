@@ -95,10 +95,17 @@
         </Button>
         <Button
           class="tooltip"
-          data-tooltip="Adapter au viewport"
-          @click.stop="emitSelect(); emitFitViewport()"
+          data-tooltip="Adapter la calque au viewport"
+          @click.stop="emitSelect(); emitFitLayerToViewport()"
         >
           <span class="material-symbols-outlined">fit_screen</span>
+        </Button>
+        <Button
+          class="tooltip"
+          data-tooltip="Adapter le viewport au calque"
+          @click.stop="emitSelect(); emitFitViewportToLayer()"
+        >
+          <span class="material-symbols-outlined">responsive_layout</span>
         </Button>
       </div>
       <div class="toolbar">
@@ -160,7 +167,8 @@ const emit = defineEmits([
   'blend-mode-change',
   'blend-opacity-input',
   'nudge-scale',
-  'fit-viewport',
+  'fit-layer-to-viewport',
+  'fit-viewport-to-layer',
   'toggle-move',
   'recenter',
   'clear-mask',
@@ -174,7 +182,8 @@ const emitToggleVisibility = () => emit('toggle-visibility', props.layer)
 const emitBlendModeChange = () => emit('blend-mode-change', props.layer)
 const emitBlendOpacityInput = () => emit('blend-opacity-input', props.layer)
 const emitNudge = delta => emit('nudge-scale', props.layer, delta)
-const emitFitViewport = () => emit('fit-viewport', props.layer)
+const emitFitLayerToViewport = () => emit('fit-layer-to-viewport', props.layer)
+const emitFitViewportToLayer = () => emit('fit-viewport-to-layer', props.layer)
 const emitToggleMove = () => emit('toggle-move', props.layer)
 const emitRecenter = () => emit('recenter', props.layer)
 const emitClearMask = () => emit('clear-mask', props.layer)
