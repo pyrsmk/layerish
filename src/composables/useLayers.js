@@ -289,8 +289,14 @@ export function useLayers({
 
     const layerWidth = layer.width * layer.scale
     const layerHeight = layer.height * layer.scale
-    layer.x = (width - layerWidth) / 2
-    layer.y = (height - layerHeight) / 2
+    const targetX = (width - layerWidth) / 2
+    const targetY = (height - layerHeight) / 2
+    const deltaX = targetX - layer.x
+    const deltaY = targetY - layer.y
+    state.layers.forEach((item) => {
+      item.x += deltaX
+      item.y += deltaY
+    })
 
     nextTick(() => {
       state.pan.x = previousCenterX - (width * state.zoom) / 2
