@@ -2,14 +2,15 @@
   <div
     class="canvas-shell"
     :class="{
-      'cursor-hidden':
+      'cursor-hidden': (
         state.layers.length > 0 &&
         !state.isPanMode &&
         !state.moveLayerId &&
-        state.isCursorOverImage,
+        state.isCursorOverImage
+      )
     }"
     :style="{
-      cursor: state.isPanMode || state.moveLayerId ? 'move' : '',
+      cursor: state.isPanMode || state.moveLayerId ? 'move' : ''
     }"
     ref="containerRef"
   >

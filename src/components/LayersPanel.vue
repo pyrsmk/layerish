@@ -16,8 +16,6 @@
           <img src="/app.png" alt="" />
         </div>
         <Button
-          ghost
-          icon
           class="add-layer-button tooltip"
           data-tooltip="Ajouter une image"
           @click="triggerFileInput"
@@ -26,8 +24,6 @@
         </Button>
 
         <Button
-          ghost
-          icon
           class="layers-toggle tooltip"
           data-tooltip="Afficher/Masquer le panneau"
           @click="props.onToggleLayersPanel"

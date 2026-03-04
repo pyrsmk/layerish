@@ -1,7 +1,6 @@
 <template>
-  <div class="toolbar" :class="{ 'toolbar-disabled': !hasLayers }">
+  <div class="toolbar">
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Annuler"
       :disabled="!hasLayers || !canUndo"
@@ -10,7 +9,6 @@
       <span class="material-symbols-outlined">undo</span>
     </Button>
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Rétablir"
       :disabled="!hasLayers || !canRedo"
@@ -20,7 +18,6 @@
     </Button>
     <Separator />
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Réduire"
       :disabled="!hasLayers"
@@ -29,7 +26,6 @@
       <span class="material-symbols-outlined">remove</span>
     </Button>
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Agrandir"
       :disabled="!hasLayers"
@@ -38,7 +34,6 @@
       <span class="material-symbols-outlined">add</span>
     </Button>
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Taille initiale"
       :disabled="!hasLayers"
@@ -49,7 +44,6 @@
     <Separator />
     <div class="toolbar-range" :style="{ '--range-value': brushPercent }">
       <Button
-        ghost
         class="tooltip"
         :data-tooltip="isErasing ? 'Gomme' : 'Pinceau'"
         :disabled="!hasLayers"
@@ -69,7 +63,6 @@
         :disabled="!hasLayers"
       />
       <Button
-        ghost
         class="tooltip"
         data-tooltip="Inverser la sélection"
         :disabled="!hasLayers"
@@ -98,7 +91,6 @@
       />
     </div>
     <Button
-      ghost
       selectable
       class="tooltip"
       data-tooltip="Pas de dégradé sur les bords"
@@ -110,7 +102,6 @@
     </Button>
     <Separator />
     <Button
-      ghost
       selectable
       class="tooltip"
       data-tooltip="Déplacer la zone de travail"
@@ -121,7 +112,6 @@
       <span class="material-symbols-outlined">open_with</span>
     </Button>
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Recentrer la zone de travail"
       :disabled="!hasLayers"
@@ -130,7 +120,6 @@
       <span class="material-symbols-outlined">arrows_input</span>
     </Button>
     <Button
-      ghost
       selectable
       class="tooltip"
       data-tooltip="Aimantation"
@@ -142,7 +131,6 @@
     </Button>
     <Separator />
     <Button
-      ghost
       selectable
       class="tooltip"
       data-tooltip="Mode composite"
@@ -153,7 +141,6 @@
       <span class="material-symbols-outlined">texture</span>
     </Button>
     <Button
-      ghost
       class="tooltip"
       data-tooltip="Sauvegarder l'image"
       :disabled="!hasLayers"
@@ -243,13 +230,6 @@ const handleZoomBy = (delta) => props.onZoomBy(delta)
   justify-content: center;
   transition: opacity 0.15s ease, filter 0.15s ease;
 }
-
-.toolbar.toolbar-disabled {
-  opacity: 0.55;
-  filter: grayscale(0.8);
-}
-
-
 
 .toolbar-range {
   position: relative;

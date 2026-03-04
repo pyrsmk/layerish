@@ -18,8 +18,6 @@
         <span>{{ props.layer.name }}</span>
         <div class="layer-title-actions">
           <Button
-            ghost
-            small
             selectable
             class="tooltip"
             :data-tooltip="props.layer.visible ? 'Masquer' : 'Afficher'"
@@ -29,9 +27,7 @@
             <span class="material-symbols-outlined">visibility_off</span>
           </Button>
           <Button
-            ghost
-            small
-            class="add-layer-button tooltip"
+            class="tooltip"
             data-tooltip="Supprimer le layer"
             @click.stop="emitSelect(); emitDelete()"
           >
@@ -41,10 +37,9 @@
       </div>
       <div class="blend-mode-controls">
         <Button
-          ghost
-          small
           class="tooltip"
           data-tooltip="Mode précédent"
+          :disabled="isPreviousBlendModeDisabled"
           @click.stop="emitSelect(); selectPreviousBlendMode()"
         >
           <span class="material-symbols-outlined">chevron_left</span>
@@ -55,10 +50,9 @@
           </option>
         </select>
         <Button
-          ghost
-          small
           class="tooltip"
           data-tooltip="Mode suivant"
+          :disabled="isNextBlendModeDisabled"
           @click.stop="emitSelect(); selectNextBlendMode()"
         >
           <span class="material-symbols-outlined">chevron_right</span>
@@ -82,8 +76,6 @@
       <div class="layer-actions">
         <div class="layer-toolbar">
           <Button
-            ghost
-            small
             class="tooltip"
             data-tooltip="Réduire"
             @click.stop="emitSelect(); emitNudge(-0.05)"
@@ -91,8 +83,6 @@
             <span class="material-symbols-outlined">remove</span>
           </Button>
           <Button
-            ghost
-            small
             class="tooltip"
             data-tooltip="Agrandir"
             @click.stop="emitSelect(); emitNudge(0.05)"
@@ -100,8 +90,6 @@
             <span class="material-symbols-outlined">add</span>
           </Button>
           <Button
-            ghost
-            small
             class="tooltip"
             data-tooltip="Adapter au viewport"
             @click.stop="emitSelect(); emitFitViewport()"
@@ -111,8 +99,6 @@
         </div>
         <div class="layer-toolbar">
           <Button
-            ghost
-            small
             selectable
             class="tooltip"
             data-tooltip="Déplacer"
@@ -122,8 +108,6 @@
             <span class="material-symbols-outlined">open_with</span>
           </Button>
           <Button
-            ghost
-            small
             class="tooltip"
             data-tooltip="Recentrer"
             @click.stop="emitSelect(); emitRecenter()"
@@ -131,8 +115,6 @@
             <span class="material-symbols-outlined">arrows_input</span>
           </Button>
           <Button
-            ghost
-            small
             selectable
             class="tooltip"
             data-tooltip="Étirer le calque"
@@ -142,8 +124,6 @@
             <span class="material-symbols-outlined">pan_zoom</span>
           </Button>
           <Button
-            ghost
-            small
             class="tooltip"
             data-tooltip="Effacer la sélection"
             @click.stop="emitSelect(); emitClearMask()"
@@ -157,7 +137,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import Button from './Button.vue'
 
 const props = defineProps({
@@ -190,33 +170,34 @@ const emitDelete = () => emit('delete', props.layer)
 const emitToggleVisibility = () => emit('toggle-visibility', props.layer)
 const emitBlendModeChange = () => emit('blend-mode-change', props.layer)
 const emitBlendOpacityInput = () => emit('blend-opacity-input', props.layer)
-const emitNudge = (delta) => emit('nudge-scale', props.layer, delta)
+const emitNudge = delta => emit('nudge-scale', props.layer, delta)
 const emitFitViewport = () => emit('fit-viewport', props.layer)
 const emitToggleMove = () => emit('toggle-move', props.layer)
 const emitRecenter = () => emit('recenter', props.layer)
 const emitClearMask = () => emit('clear-mask', props.layer)
 const emitToggleStretchEdges = () => emit('toggle-stretch-edges', props.layer)
-const emitPointerDragStart = (event) =>
-  emit('pointer-drag-start', props.layer, props.index, event)
+const emitPointerDragStart = event => emit('pointer-drag-start', props.layer, props.index, event)
 
-const getBlendModeIndex = () =>
-  props.blendModes.findIndex((mode) => mode.value === props.layer.blendMode)
-
-const selectBlendModeAt = (index) => {
+const getBlendModeIndex = () => (
+  props.blendModes.findIndex(mode => mode.value === props.layer.blendMode)
+)
+const blendModeIndex = computed(() => getBlendModeIndex())
+const isPreviousBlendModeDisabled = computed(
+  () => blendModeIndex.value == 0
+)
+const isNextBlendModeDisabled = computed(
+  () => blendModeIndex.value == props.blendModes.length - 1
+)
+const selectBlendModeAt = index => {
   if (!props.blendModes.length) {
     return
   }
   if (index < 0 || index >= props.blendModes.length) {
     return
   }
-  const nextMode = props.blendModes[index]
-  if (!nextMode || nextMode.value === props.layer.blendMode) {
-    return
-  }
-  props.layer.blendMode = nextMode.value
+  props.layer.blendMode = props.blendModes[index].value
   emitBlendModeChange()
 }
-
 const selectPreviousBlendMode = () => selectBlendModeAt(getBlendModeIndex() - 1)
 const selectNextBlendMode = () => selectBlendModeAt(getBlendModeIndex() + 1)
 </script>
