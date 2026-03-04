@@ -101,11 +101,6 @@ export function useLayers({
     state.layers.splice(normalizedToIndex, 0, moved)
     state.activeLayerId = moved.id
 
-    const startIndex = Math.min(fromIndex, normalizedToIndex)
-    for (let i = startIndex; i < state.layers.length; i += 1) {
-      state.layers[i].name = `Calque ${state.layers.length - i}`
-    }
-
     clearDragState()
     renderComposite?.()
   }
@@ -140,12 +135,11 @@ export function useLayers({
     document.removeEventListener('visibilitychange', handleGlobalDragCancel)
   })
 
-  function createLayerFromImage(img, name) {
+  function createLayerFromImage(img) {
     const width = img.naturalWidth || img.width
     const height = img.naturalHeight || img.height
     return {
       id: crypto.randomUUID(),
-      name,
       img,
       width,
       height,
@@ -184,8 +178,7 @@ export function useLayers({
     Promise.all(reads)
       .then((results) => {
         results.forEach(({ img }) => {
-          const layerName = `Calque ${state.layers.length + 1}`
-          const layer = createLayerFromImage(img, layerName)
+          const layer = createLayerFromImage(img)
           if (!state.hasViewport) {
             state.viewportSize = { width: layer.width, height: layer.height }
             state.hasViewport = true
@@ -208,7 +201,7 @@ export function useLayers({
               layer.y = (viewportHeight - nextHeight) / 2
             }
           }
-          state.layers.unshift(layer)
+          state.layers.push(layer)
           state.activeLayerId = layer.id
         })
         if (wasEmpty) {

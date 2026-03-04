@@ -10,7 +10,7 @@
     </div>
     <div class="controls">
       <div class="title">
-        <span>{{ props.layer.name }}</span>
+        <span>Calque {{ props.index + 1 }}</span>
         <div class="title-actions">
           <Button
             selectable

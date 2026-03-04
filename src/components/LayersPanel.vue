@@ -104,39 +104,42 @@
     </div>
 
     <ul class="layers-list" ref="layersListRef">
-      <DropSlot
-        :active="Boolean(props.dragLayerId && props.dragInsertIndex === 0)"
-        @dragover="event => props.onDropSlotOver(0, event)"
-        @drop="() => props.onLayerDrop(null, 0)"
-      />
 
-      <template v-for="(layer, index) in props.layers" :key="layer.id">
-        <LayerItem
-          :layer="layer"
-          :index="index"
-          :blend-modes="props.blendModes"
-          :is-active="layer.id === props.activeLayerId"
-          :is-move-active="layer.id === props.moveLayerId"
-          @select="props.onSetActiveLayer"
-          @delete="props.onDeleteLayer"
-          @blend-mode-change="props.onBlendModeChange"
-          @blend-opacity-input="props.onBlendOpacityInput"
-          @nudge-scale="props.onNudgeLayerScale"
-          @fit-layer-to-viewport="props.onFitLayerToViewport"
-          @fit-viewport-to-layer="props.onFitViewportToLayer"
-          @toggle-move="props.onToggleMoveLayer"
-          @toggle-visibility="props.onToggleVisibility"
-          @recenter="props.onRecenterLayer"
-          @clear-mask="props.onClearMask"
-          @toggle-stretch-edges="props.onToggleStretchEdges"
-          @pointer-drag-start="handlePointerDragStart"
-        />
+
+      <div style="display: flex; flex-direction: column-reverse;">
         <DropSlot
-          :active="Boolean(props.dragLayerId && props.dragInsertIndex === index + 1)"
-          @dragover="event => props.onDropSlotOver(index + 1, event)"
-          @drop="() => props.onLayerDrop(null, index + 1)"
+          :active="Boolean(props.dragLayerId && toDisplayInsertIndex(props.dragInsertIndex) === props.layers.length)"
+          @dragover="event => props.onDropSlotOver(toInternalInsertIndex(props.layers.length), event)"
+          @drop="() => props.onLayerDrop(null, toInternalInsertIndex(props.layers.length))"
         />
-      </template>
+        <template v-for="(layer, index) in props.layers" :key="layer.id">
+          <LayerItem
+            :layer="layer"
+            :index="index"
+            :blend-modes="props.blendModes"
+            :is-active="layer.id === props.activeLayerId"
+            :is-move-active="layer.id === props.moveLayerId"
+            @select="props.onSetActiveLayer"
+            @delete="props.onDeleteLayer"
+            @blend-mode-change="props.onBlendModeChange"
+            @blend-opacity-input="props.onBlendOpacityInput"
+            @nudge-scale="props.onNudgeLayerScale"
+            @fit-layer-to-viewport="props.onFitLayerToViewport"
+            @fit-viewport-to-layer="props.onFitViewportToLayer"
+            @toggle-move="props.onToggleMoveLayer"
+            @toggle-visibility="props.onToggleVisibility"
+            @recenter="props.onRecenterLayer"
+            @clear-mask="props.onClearMask"
+            @toggle-stretch-edges="props.onToggleStretchEdges"
+            @pointer-drag-start="handlePointerDragStart"
+          />
+          <DropSlot
+            :active="Boolean(props.dragLayerId && props.dragInsertIndex === index + 1)"
+            @dragover="event => props.onDropSlotOver(index + 1, event)"
+            @drop="() => props.onLayerDrop(null, index + 1)"
+          />
+        </template>
+      </div>
     </ul>
 
     <input
@@ -188,6 +191,10 @@ const props = defineProps({
   onDropSlotOver: { type: Function, required: true },
 })
 
+
+const toInternalInsertIndex = (displayIndex) => props.layers.length - displayIndex
+const toDisplayInsertIndex = (internalIndex) => props.layers.length - internalIndex
+
 const fileInputRef = ref(null)
 const layersListRef = ref(null)
 let activePointerId = null
@@ -209,15 +216,19 @@ const handlePointerMove = (event) => {
   const items = Array.from(list.querySelectorAll('.layer-item'))
   if (!items.length) return
   const pointerY = event.clientY
-  let insertIndex = items.length
-  for (let i = 0; i < items.length; i += 1) {
-    const rect = items[i].getBoundingClientRect()
+  const orderedItems = items
+    .map((item) => ({ item, rect: item.getBoundingClientRect() }))
+    .sort((a, b) => a.rect.top - b.rect.top)
+  let displayInsertIndex = orderedItems.length
+  for (let i = 0; i < orderedItems.length; i += 1) {
+    const { rect } = orderedItems[i]
     if (pointerY < rect.top + rect.height / 2) {
-      insertIndex = i
+      displayInsertIndex = i
       break
     }
   }
-  props.onDropSlotOver(insertIndex, null)
+  const internalInsertIndex = toInternalInsertIndex(displayInsertIndex)
+  props.onDropSlotOver(internalInsertIndex, null)
 }
 
 const handlePointerUp = (event) => {

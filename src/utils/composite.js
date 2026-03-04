@@ -322,10 +322,10 @@ export function drawComposite({
       ? null
       : new Set(
           state.layers
-            .slice(activeIndex)
+            .slice(0, activeIndex + 1)
             .map((layer) => layer.id)
         )
-  const ordered = [...state.layers].reverse()
+  const ordered = [...state.layers]
   const visibleOrdered = allowedIds
     ? ordered.filter((layer) => allowedIds.has(layer.id))
     : ordered
