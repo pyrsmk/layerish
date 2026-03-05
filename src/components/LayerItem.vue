@@ -132,7 +132,7 @@
           :active="props.layer.stretchEdges"
           @click.stop="emitSelect(); emitToggleStretchEdges()"
         >
-          <span class="material-symbols-outlined">pan_zoom</span>
+          <span class="material-symbols-outlined">crop</span>
         </Button>
         <Button
           class="tooltip"
