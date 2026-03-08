@@ -235,7 +235,8 @@ onMounted(() => {
     --gap: 8px;
     --radius: 8px;
     --margin: 4px 8px;
-    --margin-small: 2px 6px;
+    --margin-sm: 2px 6px;
+    --margin-xl: 12px 16px;
   }
 
   .app {

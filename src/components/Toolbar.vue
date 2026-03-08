@@ -191,8 +191,8 @@
     bottom: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: calc(var(--gap) * 1.5);
+    padding: var(--margin-xl);
     border-top: 1px solid #1f2028;
     background: #0f1016;
     align-items: center;
@@ -204,11 +204,11 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--gap);
   }
 
   .toolbar-range .toolbar-separator {
-    margin: 0 4px;
+    margin: 0 calc(var(--gap) / 2);
   }
 
   .toolbar-range input[type='range'] {

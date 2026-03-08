@@ -1,6 +1,6 @@
 <template>
   <aside
-    :class="['layers', { collapsed: !props.isOpen }]"
+    :class="['layers', { collapsed: !isOpen }]"
     @transitionend.self="handleTransitionEnd"
   >
     <div class="layers-header">
@@ -21,15 +21,15 @@
         />
         <Button
           class="layers-toggle"
-          @click="props.onToggleLayersPanel"
+          @click="onToggleLayersPanel"
           data-tooltip="Afficher/Masquer le panneau"
           data-tooltip-position="bottom"
-          :icon="props.isOpen ? 'chevron_left' : 'chevron_right'"
+          :icon="isOpen ? 'chevron_left' : 'chevron_right'"
         />
       </div>
     </div>
 
-    <div v-if="props.layers.length === 0" class="layers-empty">
+    <div v-if="layers.length === 0" class="layers-empty">
       <p class="layers-empty-help-title">Aide :</p>
       <ul class="layers-empty-tips">
         <li>
@@ -104,35 +104,35 @@
     <ul class="layers-list" ref="layersListRef">
       <div style="display: flex; flex-direction: column-reverse;">
         <DropSlot
-          :active="Boolean(props.dragLayerId && toDisplayInsertIndex(props.dragInsertIndex) === props.layers.length)"
-          @dragover="event => props.onDropSlotOver(toInternalInsertIndex(props.layers.length), event)"
-          @drop="() => props.onLayerDrop(null, toInternalInsertIndex(props.layers.length))"
+          :active="Boolean(dragLayerId && toDisplayInsertIndex(dragInsertIndex) === layers.length)"
+          @dragover="event => onDropSlotOver(toInternalInsertIndex(layers.length), event)"
+          @drop="() => onLayerDrop(null, toInternalInsertIndex(layers.length))"
         />
-        <template v-for="(layer, index) in props.layers" :key="layer.id">
+        <template v-for="(layer, index) in layers" :key="layer.id">
           <LayerItem
             :layer="layer"
             :index="index"
-            :blend-modes="props.blendModes"
-            :is-active="layer.id === props.activeLayerId"
-            :is-move-active="layer.id === props.moveLayerId"
-            @select="props.onSetActiveLayer"
-            @delete="props.onDeleteLayer"
-            @blend-mode-change="props.onBlendModeChange"
-            @blend-opacity-input="props.onBlendOpacityInput"
-            @nudge-scale="props.onNudgeLayerScale"
-            @fit-layer-to-viewport="props.onFitLayerToViewport"
-            @fit-viewport-to-layer="props.onFitViewportToLayer"
-            @toggle-move="props.onToggleMoveLayer"
-            @toggle-visibility="props.onToggleVisibility"
-            @recenter="props.onRecenterLayer"
-            @clear-mask="props.onClearMask"
-            @toggle-stretch-edges="props.onToggleStretchEdges"
+            :blend-modes="blendModes"
+            :is-active="layer.id === activeLayerId"
+            :is-move-active="layer.id === moveLayerId"
+            @select="onSetActiveLayer"
+            @delete="onDeleteLayer"
+            @blend-mode-change="onBlendModeChange"
+            @blend-opacity-input="onBlendOpacityInput"
+            @nudge-scale="onNudgeLayerScale"
+            @fit-layer-to-viewport="onFitLayerToViewport"
+            @fit-viewport-to-layer="onFitViewportToLayer"
+            @toggle-move="onToggleMoveLayer"
+            @toggle-visibility="onToggleVisibility"
+            @recenter="onRecenterLayer"
+            @clear-mask="onClearMask"
+            @toggle-stretch-edges="onToggleStretchEdges"
             @pointer-drag-start="handlePointerDragStart"
           />
           <DropSlot
-            :active="Boolean(props.dragLayerId && props.dragInsertIndex === index + 1)"
-            @dragover="event => props.onDropSlotOver(index + 1, event)"
-            @drop="() => props.onLayerDrop(null, index + 1)"
+            :active="Boolean(dragLayerId && dragInsertIndex === index + 1)"
+            @dragover="event => onDropSlotOver(index + 1, event)"
+            @drop="() => onLayerDrop(null, index + 1)"
           />
         </template>
       </div>
@@ -144,7 +144,7 @@
       accept="image/*"
       multiple
       class="file-input"
-      @change="props.onFilesSelected"
+      @change="onFilesSelected"
     />
   </aside>
 </template>
@@ -295,7 +295,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2px 0;
+    padding: var(--gap) 0;
   }
 
   .layers-header h2 {
@@ -371,8 +371,8 @@
     font-size: 14px;
     background: #171820;
     border: 1px dashed #2a2c36;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: var(--radius);
+    padding: calc(var(--gap) * 2);
   }
 
   .layers-empty-help-title {

@@ -29,12 +29,12 @@
     padding: var(--margin);
     border: 1px solid #2b2c34;
     border-radius: var(--radius);
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
-    will-change: transform;
+    transition: transform 0.12s ease,
+                box-shadow 0.12s ease;
   }
 
   button.small {
-    padding: var(--margin-small);
+    padding: var(--margin-sm);
   }
 
   button[disabled] {

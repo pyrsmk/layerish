@@ -1,23 +1,23 @@
 <template>
   <li
-    :class="['layer-item', { active: props.isActive }]"
+    :class="['layer-item', { active: isActive }]"
     :draggable="false"
     @pointerdown="emitPointerDragStart"
     @click="emitSelect"
   >
     <header>
       <div class="thumb">
-        <img :src="props.layer.img.src" alt="" />
+        <img :src="layer.img.src" alt="" />
       </div>
       <div class="title">
-        Calque {{ props.index + 1 }}
+        Calque {{ index + 1 }}
       </div>
       <div class="spacer" />
       <div class="actions">
         <Button
           @click="emitSelect(); emitToggleVisibility()"
-          :active="!props.layer.visible"
-          :data-tooltip="props.layer.visible ? 'Masquer' : 'Afficher'"
+          :active="!layer.visible"
+          :data-tooltip="layer.visible ? 'Masquer' : 'Afficher'"
           icon="visibility_off"
           selectable
           small
@@ -33,7 +33,7 @@
     <div class="controls">
       <div
         class="blend-controls"
-        :class="{ visible: props.index != 0 }"
+        :class="{ visible: index != 0 }"
       >
         <Button
           @click="emitSelect(); selectPreviousBlendMode()"
@@ -43,10 +43,10 @@
           small
         />
         <select
-          v-model="props.layer.blendMode"
+          v-model="layer.blendMode"
           @change="emitSelect(); emitBlendModeChange()"
         >
-          <option v-for="mode in props.blendModes" :key="mode.value" :value="mode.value">
+          <option v-for="mode in blendModes" :key="mode.value" :value="mode.value">
             {{ mode.label }}
           </option>
         </select>
@@ -60,15 +60,15 @@
       </div>
       <label
         class="blend-range"
-        :class="{ visible: props.index != 0 }"
-        :style="{ '--range-value': props.layer.blendOpacity }"
+        :class="{ visible: index != 0 }"
+        :style="{ '--range-value': layer.blendOpacity }"
       >
         <input
           type="range"
           min="0"
           max="100"
-          v-model.number="props.layer.blendOpacity"
-          :data-tooltip="`${props.layer.blendOpacity}%`"
+          v-model.number="layer.blendOpacity"
+          :data-tooltip="`${layer.blendOpacity}%`"
           @input="emitSelect(); emitBlendOpacityInput()"
           @pointerdown.stop="isDragSuppressed = true; emitSelect()"
           @pointerup.stop="isDragSuppressed = false"
@@ -105,7 +105,7 @@
       <div class="toolbar">
         <Button
           @click="emitSelect(); emitToggleMove()"
-          :active="props.isMoveActive"
+          :active="isMoveActive"
           data-tooltip="Déplacer"
           icon="open_with"
           selectable
@@ -119,7 +119,7 @@
         />
         <Button
           @click="emitSelect(); emitToggleStretchEdges()"
-          :active="props.layer.stretchEdges"
+          :active="layer.stretchEdges"
           data-tooltip="Étirer le calque"
           icon="transform"
           selectable
@@ -210,9 +210,9 @@
   .layer-item {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 12px;
+    gap: var(--gap);
+    padding: var(--gap);
+    border-radius: var(--radius);
     background: #1a1b22;
     border: 1px solid transparent;
     cursor: pointer;
@@ -306,13 +306,12 @@
 
   .toolbar {
     display: flex;
-    gap: 6px;
+    gap: var(--gap);
     width: 100%;
   }
 
   .toolbar > * {
     flex: 1 1 0;
-    min-width: 0;
   }
 
   .blend-controls:not(.visible),
