@@ -1,17 +1,15 @@
 <template>
   <aside
-    :class="['layers', { collapsed: !isOpen }]"
+    class="layers"
     @transitionend.self="handleTransitionEnd"
   >
-    <div class="layers-header">
-      <div class="layers-title">
-        <img class="layers-logo" src="/app.png" alt="" />
+    <div class="header">
+      <div class="title">
+        <img class="logo" src="/app.png" alt="" />
         <h2>layerish</h2>
+        <sub>{{ version }}</sub>
       </div>
-      <div class="layers-header-actions">
-        <div class="layers-collapsed-logo">
-          <img src="/app.png" alt="" />
-        </div>
+      <div class="actions">
         <Button
           class="add-layer-button"
           @click="triggerFileInput"
@@ -19,89 +17,88 @@
           data-tooltip-position="bottom"
           icon="add_photo_alternate"
         />
-        <Button
-          class="layers-toggle"
-          @click="onToggleLayersPanel"
-          data-tooltip="Afficher/Masquer le panneau"
-          data-tooltip-position="bottom"
-          :icon="isOpen ? 'chevron_left' : 'chevron_right'"
-        />
       </div>
     </div>
 
-    <div v-if="layers.length === 0" class="layers-empty">
-      <p class="layers-empty-help-title">Aide :</p>
-      <ul class="layers-empty-tips">
+    <div v-if="layers.length === 0" class="empty-layers">
+      <ul>
         <li>
-          <Icon code="add_photo_alternate" />
-          Importer une image<br>
-          (ou par glisser-déposer)
+          <Icon color="#f5f6fa" code="add_photo_alternate" />
+          <span>Importer une image<br>(ou par glisser-déposer)</span>
         </li>
-        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li class="separator" aria-hidden="true" />
         <li>
-          <Icon code="add" />
-          Zoomer
+          <Icon color="#f5f6fa" code="add" />
+          <span>Zoomer</span>
         </li>
         <li>
-          <Icon code="remove" />
-          Dézoomer
+          <Icon color="#f5f6fa" code="remove" />
+          <span>Dézoomer</span>
         </li>
         <li>
-          <Icon code="fit_screen" />
-          Revenir à la taille initiale
-        </li>
-        <li class="layers-empty-separator" aria-hidden="true"></li>
-        <li>
-          <Icon code="brush" />
-          Mode pinceau
+          <Icon color="#f5f6fa" code="fit_screen" />
+          <span>Adapter le calque au viewport</span>
         </li>
         <li>
-          <Icon code="ink_eraser" />
-          Mode gomme
+          <Icon color="#f5f6fa" code="responsive_layout" />
+          <span>Adapter le viewport au calque</span>
+        </li>
+        <li class="separator" aria-hidden="true" />
+        <li>
+          <Icon color="#f5f6fa" code="brush" />
+          <span>Mode pinceau</span>
         </li>
         <li>
-          <Icon code="stroke_partial" />
-          Inverser la sélection du masque
+          <Icon color="#f5f6fa" code="ink_eraser" />
+          <span>Mode gomme</span>
         </li>
         <li>
-          <Icon code="remove_selection" />
-          Effacer la sélection
-        </li>
-        <li class="layers-empty-separator" aria-hidden="true"></li>
-        <li>
-          <Icon code="blur_on" />
-          Ajuster le dégradé des sélections pour adoucir les bords
+          <Icon color="#f5f6fa" code="stroke_partial" />
+          <span>Inverser la sélection du masque</span>
         </li>
         <li>
-          <Icon code="flip_to_back" />
-          Désactiver le dégradé sur le bord des masques
-        </li>
-        <li class="layers-empty-separator" aria-hidden="true"></li>
-        <li>
-          <Icon code="open_with" />
-          Déplacer le calque ou la zone de travail
+          <Icon color="#f5f6fa" code="transform" />
+          <span>Étirer le masque</span>
         </li>
         <li>
-          <Icon code="arrows_input" />
-          Recentrer le calque ou la zone de travail
+          <Icon color="#f5f6fa" code="remove_selection" />
+          <span>Effacer la sélection</span>
+        </li>
+        <li class="separator" aria-hidden="true" />
+        <li>
+          <Icon color="#f5f6fa" code="blur_on" />
+          <span>Ajuster le dégradé des sélections pour adoucir les bords</span>
         </li>
         <li>
-          <Icon code="electric_bolt" />
-          Activer l’aimantation
+          <Icon color="#f5f6fa" code="flip_to_back" />
+          <span>Désactiver le dégradé sur le bord des masques</span>
         </li>
-        <li class="layers-empty-separator" aria-hidden="true"></li>
+        <li class="separator" aria-hidden="true" />
         <li>
-          <Icon code="texture" />
-          Activer le mode composite pour prévisualiser le rendu
+          <Icon color="#f5f6fa" code="open_with" />
+          <span>Déplacer le calque ou la zone de travail</span>
         </li>
         <li>
-          <Icon code="save" />
-          Sauvegarder l’image finale
+          <Icon color="#f5f6fa" code="arrows_input" />
+          <span>Recentrer le calque ou la zone de travail</span>
+        </li>
+        <li>
+          <Icon color="#f5f6fa" code="electric_bolt" />
+          <span>Activer l’aimantation</span>
+        </li>
+        <li class="separator" aria-hidden="true" />
+        <li>
+          <Icon color="#f5f6fa" code="texture" />
+          <span>Activer le mode composite pour prévisualiser le rendu</span>
+        </li>
+        <li>
+          <Icon color="#f5f6fa" code="save" />
+          <span>Sauvegarder l’image finale</span>
         </li>
       </ul>
     </div>
 
-    <ul class="layers-list" ref="layersListRef">
+    <ul class="list" ref="layersListRef">
       <div style="display: flex; flex-direction: column-reverse;">
         <DropSlot
           :active="Boolean(dragLayerId && toDisplayInsertIndex(dragInsertIndex) === layers.length)"
@@ -150,6 +147,7 @@
 </template>
 
 <script setup>
+  import { version } from '../constants'
   import { onUnmounted, ref } from 'vue'
   import Icon from './Icon.vue'
   import Button from './Button.vue'
@@ -157,7 +155,6 @@
   import LayerItem from './LayerItem.vue'
 
   const props = defineProps({
-    isOpen: { type: Boolean, default: true },
     layers: { type: Array, required: true },
     activeLayerId: { type: String, default: null },
     moveLayerId: { type: String, default: null },
@@ -265,95 +262,62 @@
   .layers {
     position: relative;
     z-index: 10;
-    width: 320px;
+    width: 350px;
     background: #14141a;
     border-right: 1px solid #1f2028;
     display: flex;
     flex-direction: column;
     padding: 16px;
     gap: 12px;
-    transition: width 0.2s ease, padding 0.2s ease;
+    transition: width 0.2s ease,
+                padding 0.2s ease;
   }
 
-  .layers.collapsed {
-    width: 56px;
-    padding: 12px 8px;
-  }
-
-  .layers.collapsed .layers-header {
-    justify-content: center;
-  }
-
-  .layers.collapsed .layers-title,
-  .layers.collapsed .layers-list,
-  .layers.collapsed .layers-empty,
-  .layers.collapsed :deep(.add-layer-button) {
-    display: none;
-  }
-
-  .layers-header {
+  .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--gap) 0;
   }
 
-  .layers-header h2 {
+  .header h2 {
     margin: 0;
     text-decoration: underline;
     font-weight: 200;
     font-size: 2em;
   }
 
-  .layers-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .layers-logo {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    box-sizing: border-box;
-  }
-
-  .layers-header-actions {
+  .header .actions {
     display: flex;
-    gap: 8px;
+    gap: var(--gap);
     align-items: center;
   }
 
-  .layers-collapsed-logo {
-    display: none;
+  .title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap);
+  }
+
+  .title sub {
+    font-size: 9px;
+    padding: var(--margin-xsmall);
+    background-color: #f5f6fa;
+    color: #0b0b0f;
+    border-radius: calc(var(--gap) / 2);
+    position: relative;
+    top: -6px;
+    left: -2px;
+  }
+
+  .logo {
     width: 28px;
     height: 28px;
     border-radius: 6px;
-    overflow: hidden;
-    background: transparent;
-    padding: 0;
     box-sizing: border-box;
-    margin: 6px 0;
   }
 
-  .layers-collapsed-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 6px;
-  }
-
-  .layers.collapsed .layers-header-actions {
-    flex-direction: column;
-  }
-
-  .layers.collapsed .layers-collapsed-logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .layers-list {
+  .list {
     --layer-gap: 12px;
     --layer-slot-padding: 10px;
     list-style: none;
@@ -366,72 +330,42 @@
     gap: 0;
   }
 
-  .layers-empty {
+  .empty-layers {
     color: #9ea1b0;
     font-size: 14px;
     background: #171820;
     border: 1px dashed #2a2c36;
     border-radius: var(--radius);
     padding: calc(var(--gap) * 2);
+    overflow-y: auto;
   }
 
-  .layers-empty-help-title {
-    margin: 0 0 16px 0;
-    font-weight: 600;
-    font-size: 14px;
-    color: #9ea1b0;
-  }
-
-  .layers-empty-tips {
+  .empty-layers ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
   }
 
-  .layers-empty-tips li {
+  .empty-layers li {
     display: grid;
     grid-template-columns: 20px 1fr;
     align-items: start;
-    gap: 8px;
+    gap: var(--gap);
     line-height: 1.3;
   }
 
-  .layers-empty-tips .layers-empty-separator {
+  .empty-layers .separator {
     display: block;
-    grid-template-columns: none;
     height: 1px;
     width: 55%;
     margin: 4px auto;
     background: #2a2c36;
-    border-radius: 999px;
   }
-
-  /*.layers-empty-tips .material-symbols-outlined {
-    font-size: 18px;
-    color: #f5f6fa;
-    line-height: 1;
-  }*/
 
   .file-input {
     display: none;
-  }
-
-  @media (max-width: 900px) {
-    .layers {
-      width: 100%;
-      height: 220px;
-      border-right: none;
-      border-bottom: 1px solid #1f2028;
-      flex-shrink: 0;
-    }
-
-    .layers.collapsed {
-      width: 100%;
-      height: 56px;
-      padding: 12px 12px;
-    }
   }
 </style>

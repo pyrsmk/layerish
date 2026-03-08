@@ -34,7 +34,7 @@
   }
 
   button.small {
-    padding: var(--margin-sm);
+    padding: var(--margin-small);
   }
 
   button[disabled] {

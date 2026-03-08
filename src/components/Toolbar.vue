@@ -129,7 +129,7 @@
     DEFAULT_BRUSH_MIN,
     DEFAULT_MASK_FEATHER_MAX,
     DEFAULT_MASK_FEATHER_MIN,
-  } from '../constants/editorDefaults'
+  } from '../constants'
 
   const props = defineProps({
     canUndo: { type: Boolean, default: false },
@@ -192,7 +192,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: calc(var(--gap) * 1.5);
-    padding: var(--margin-xl);
+    padding: var(--margin-xlarge);
     border-top: 1px solid #1f2028;
     background: #0f1016;
     align-items: center;

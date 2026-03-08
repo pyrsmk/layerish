@@ -9,7 +9,7 @@ import { useLayout } from './composables/useLayout'
 import { useLayers } from './composables/useLayers'
 import { useMask } from './composables/useMask'
 import { useEditorActions } from './composables/useEditorActions'
-import blendModes from './constants/blendModes'
+import { blendModes } from './constants'
 
 const {
   state,
@@ -153,7 +153,6 @@ onMounted(() => {
     @drop="handleAppFileDrop"
   >
     <LayersPanel
-      :is-open="state.isLayersOpen"
       :layers="state.layers"
       :active-layer-id="state.activeLayerId"
       :move-layer-id="state.moveLayerId"
@@ -234,9 +233,10 @@ onMounted(() => {
   :root {
     --gap: 8px;
     --radius: 8px;
+    --margin-xsmall: 1px 3px;
+    --margin-small: 2px 6px;
     --margin: 4px 8px;
-    --margin-sm: 2px 6px;
-    --margin-xl: 12px 16px;
+    --margin-xlarge: 12px 16px;
   }
 
   .app {
@@ -268,7 +268,7 @@ onMounted(() => {
   .file-drop-overlay-content {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--gap);
     color: #f5f6fa;
     font-size: 32px;
     text-align: center;

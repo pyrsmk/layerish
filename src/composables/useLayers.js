@@ -4,7 +4,7 @@ import {
   DEFAULT_PAN,
   DEFAULT_VIEWPORT,
   DEFAULT_ZOOM,
-} from '../constants/editorDefaults'
+} from '../constants'
 
 export function useLayers({
   state,

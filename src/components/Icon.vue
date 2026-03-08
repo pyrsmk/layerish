@@ -1,5 +1,5 @@
 <template>
-  <span class="icon material-symbols-outlined" :class="{ small }">
+  <span class="icon material-symbols-outlined" :class="{ small }" :style="`color: ${color}`">
     {{ code }}
   </span>
 </template>
@@ -7,6 +7,7 @@
 <script setup>
   const props = defineProps({
     code: { type: String, required: true },
+    color: { type: String, default: 'inherit' },
     small: { type: Boolean, default: false },
   })
 </script>

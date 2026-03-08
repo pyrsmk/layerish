@@ -10,7 +10,7 @@ import {
   DEFAULT_SNAP_TOLERANCE,
   DEFAULT_VIEWPORT,
   DEFAULT_ZOOM,
-} from '../constants/editorDefaults'
+} from '../constants'
 
 export function useEditorState() {
   const state = reactive({
@@ -37,7 +37,6 @@ export function useEditorState() {
     moveStart: null,
     moveLayerId: null,
     isPanMode: false,
-    isLayersOpen: DEFAULT_LAYERS_OPEN,
     hasUserToggledLayers: false,
     isCursorOverImage: false,
     dragLayerId: null,
