@@ -1,87 +1,67 @@
 <template>
   <div class="toolbar">
     <Button
-      class="tooltip"
-      data-tooltip="Annuler"
-      :disabled="!hasLayers || !canUndo"
       @click="onUndo"
-    >
-      <span class="material-symbols-outlined">undo</span>
-    </Button>
+      :disabled="!hasLayers || !canUndo"
+      data-tooltip="Annuler"
+      icon="undo"
+    />
     <Button
-      class="tooltip"
-      data-tooltip="Rétablir"
-      :disabled="!hasLayers || !canRedo"
       @click="onRedo"
-    >
-      <span class="material-symbols-outlined">redo</span>
-    </Button>
+      :disabled="!hasLayers || !canRedo"
+      data-tooltip="Rétablir"
+      icon="redo"
+    />
     <Separator />
     <Button
-      class="tooltip"
-      data-tooltip="Réduire"
-      :disabled="!hasLayers"
       @click="handleZoomBy(-0.05)"
-    >
-      <span class="material-symbols-outlined">remove</span>
-    </Button>
-    <Button
-      class="tooltip"
-      data-tooltip="Agrandir"
       :disabled="!hasLayers"
+      data-tooltip="Réduire"
+      icon="remove"
+    />
+    <Button
       @click="handleZoomBy(0.05)"
-    >
-      <span class="material-symbols-outlined">add</span>
-    </Button>
-    <Button
-      class="tooltip"
-      data-tooltip="Taille initiale"
       :disabled="!hasLayers"
+      data-tooltip="Agrandir"
+      icon="add"
+    />
+    <Button
       @click="onResetZoom"
-    >
-      <span class="material-symbols-outlined">view_real_size</span>
-    </Button>
+      :disabled="!hasLayers"
+      data-tooltip="Taille initiale"
+      icon="view_real_size"
+    />
     <Separator />
     <div class="toolbar-range" :style="{ '--range-value': brushPercent }">
       <Button
-        class="tooltip"
-        :data-tooltip="isErasing ? 'Gomme' : 'Pinceau'"
-        :disabled="!hasLayers"
         @click="onToggleEraser"
-      >
-        <span class="material-symbols-outlined">
-          {{ isErasing ? 'ink_eraser' : 'brush' }}
-        </span>
-      </Button>
+        :disabled="!hasLayers"
+        :data-tooltip="isErasing ? 'Gomme' : 'Pinceau'"
+        :icon="isErasing ? 'ink_eraser' : 'brush'"
+      />
       <input
-        class="tooltip"
+        v-model.number="brushModel"
         type="range"
         :min="DEFAULT_BRUSH_MIN"
         :max="DEFAULT_BRUSH_MAX"
-        v-model.number="brushModel"
-        :data-tooltip="`${brushModel}px`"
         :disabled="!hasLayers"
+        :data-tooltip="`${brushModel}px`"
       />
       <Button
-        class="tooltip"
-        data-tooltip="Inverser la sélection"
-        :disabled="!hasLayers"
         @click="onInvertMask"
-      >
-        <span class="material-symbols-outlined">stroke_partial</span>
-      </Button>
+        :disabled="!hasLayers"
+        data-tooltip="Inverser la sélection"
+        icon="stroke_partial"
+      />
     </div>
     <Separator />
     <div class="toolbar-range" :style="{ '--range-value': maskFeatherPercent }">
-      <span
-        class="material-symbols-outlined tooltip"
+      <Icon
+        code="blur_on"
         data-tooltip="Dégradé des sélections"
         aria-hidden="true"
-      >
-        blur_on
-      </span>
+      />
       <input
-        class="tooltip"
         type="range"
         :min="DEFAULT_MASK_FEATHER_MIN"
         :max="DEFAULT_MASK_FEATHER_MAX"
@@ -91,170 +71,158 @@
       />
     </div>
     <Button
-      selectable
-      class="tooltip"
-      data-tooltip="Pas de dégradé sur les bords"
+      @click="onToggleMaskFeatherEdgeClamp"
       :active="maskFeatherEdgeClamp"
       :disabled="!hasLayers"
-      @click="onToggleMaskFeatherEdgeClamp"
-    >
-      <span class="material-symbols-outlined">flip_to_back</span>
-    </Button>
+      data-tooltip="Pas de dégradé sur les bords"
+      icon="motion_mode"
+      selectable
+    />
     <Separator />
     <Button
-      selectable
-      class="tooltip"
-      data-tooltip="Déplacer la zone de travail"
+      @click="onTogglePanMode"
       :active="isPanMode"
       :disabled="!hasLayers"
-      @click="onTogglePanMode"
-    >
-      <span class="material-symbols-outlined">open_with</span>
-    </Button>
-    <Button
-      class="tooltip"
-      data-tooltip="Recentrer la zone de travail"
-      :disabled="!hasLayers"
-      @click="onCenterInView"
-    >
-      <span class="material-symbols-outlined">arrows_input</span>
-    </Button>
-    <Button
+      data-tooltip="Déplacer la zone de travail"
+      icon="open_with"
       selectable
-      class="tooltip"
-      data-tooltip="Aimantation"
+    />
+    <Button
+      @click="onCenterInView"
+      :disabled="!hasLayers"
+      data-tooltip="Recentrer la zone de travail"
+      icon="arrows_input"
+    />
+    <Button
+      @click="onToggleSnapEnabled"
       :active="snapEnabled"
       :disabled="!hasLayers"
-      @click="onToggleSnapEnabled"
-    >
-      <span class="material-symbols-outlined">electric_bolt</span>
-    </Button>
+      data-tooltip="Aimantation"
+      icon="electric_bolt"
+      selectable
+    />
     <Separator />
     <Button
-      selectable
-      class="tooltip"
-      data-tooltip="Mode composite"
+      @click="onToggleFinalComposite"
       :active="showFinalComposite"
       :disabled="!hasLayers"
-      @click="onToggleFinalComposite"
-    >
-      <span class="material-symbols-outlined">texture</span>
-    </Button>
+      data-tooltip="Mode composite"
+      icon="texture"
+      selectable
+    />
     <Button
-      class="tooltip"
-      data-tooltip="Sauvegarder l'image"
-      :disabled="!hasLayers"
       @click="onExportImage"
-    >
-      <span class="material-symbols-outlined">save</span>
-    </Button>
+      :disabled="!hasLayers"
+      data-tooltip="Sauvegarder l'image"
+      icon="save"
+    />
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import Button from './Button.vue'
-import Separator from './Separator.vue'
-import {
-  DEFAULT_BRUSH_MAX,
-  DEFAULT_BRUSH_MIN,
-  DEFAULT_MASK_FEATHER_MAX,
-  DEFAULT_MASK_FEATHER_MIN,
-} from '../constants/editorDefaults'
+  import { computed } from 'vue'
+  import Icon from './Icon.vue'
+  import Button from './Button.vue'
+  import Separator from './Separator.vue'
+  import {
+    DEFAULT_BRUSH_MAX,
+    DEFAULT_BRUSH_MIN,
+    DEFAULT_MASK_FEATHER_MAX,
+    DEFAULT_MASK_FEATHER_MIN,
+  } from '../constants/editorDefaults'
 
-const props = defineProps({
-  canUndo: { type: Boolean, default: false },
-  canRedo: { type: Boolean, default: false },
-  brushSize: { type: Number, default: 32 },
-  maskFeatherSize: { type: Number, default: 24 },
-  maskFeatherEdgeClamp: { type: Boolean, default: false },
-  isErasing: { type: Boolean, default: false },
-  isPanMode: { type: Boolean, default: false },
-  snapEnabled: { type: Boolean, default: true },
-  showFinalComposite: { type: Boolean, default: false },
-  hasLayers: { type: Boolean, default: false },
-  onUndo: { type: Function, required: true },
-  onRedo: { type: Function, required: true },
-  onZoomBy: { type: Function, required: true },
-  onResetZoom: { type: Function, required: true },
-  onInvertMask: { type: Function, required: true },
-  onToggleMaskFeatherEdgeClamp: { type: Function, required: true },
-  onToggleEraser: { type: Function, required: true },
-  onTogglePanMode: { type: Function, required: true },
-  onCenterInView: { type: Function, required: true },
-  onToggleSnapEnabled: { type: Function, required: true },
-  onToggleFinalComposite: { type: Function, required: true },
-  onExportImage: { type: Function, required: true },
-})
+  const props = defineProps({
+    canUndo: { type: Boolean, default: false },
+    canRedo: { type: Boolean, default: false },
+    brushSize: { type: Number, default: 32 },
+    maskFeatherSize: { type: Number, default: 24 },
+    maskFeatherEdgeClamp: { type: Boolean, default: false },
+    isErasing: { type: Boolean, default: false },
+    isPanMode: { type: Boolean, default: false },
+    snapEnabled: { type: Boolean, default: true },
+    showFinalComposite: { type: Boolean, default: false },
+    hasLayers: { type: Boolean, default: false },
+    onUndo: { type: Function, required: true },
+    onRedo: { type: Function, required: true },
+    onZoomBy: { type: Function, required: true },
+    onResetZoom: { type: Function, required: true },
+    onInvertMask: { type: Function, required: true },
+    onToggleMaskFeatherEdgeClamp: { type: Function, required: true },
+    onToggleEraser: { type: Function, required: true },
+    onTogglePanMode: { type: Function, required: true },
+    onCenterInView: { type: Function, required: true },
+    onToggleSnapEnabled: { type: Function, required: true },
+    onToggleFinalComposite: { type: Function, required: true },
+    onExportImage: { type: Function, required: true },
+  })
 
-const emit = defineEmits(['update:brushSize', 'update:maskFeatherSize'])
+  const emit = defineEmits(['update:brushSize', 'update:maskFeatherSize'])
 
-const brushModel = computed({
-  get: () => props.brushSize,
-  set: (value) => emit('update:brushSize', value),
-})
+  const brushModel = computed({
+    get: () => props.brushSize,
+    set: (value) => emit('update:brushSize', value),
+  })
 
-const maskFeatherModel = computed({
-  get: () => props.maskFeatherSize,
-  set: (value) => emit('update:maskFeatherSize', value),
-})
+  const maskFeatherModel = computed({
+    get: () => props.maskFeatherSize,
+    set: (value) => emit('update:maskFeatherSize', value),
+  })
 
-const brushPercent = computed(
-  () =>
-    ((props.brushSize - DEFAULT_BRUSH_MIN) /
-      (DEFAULT_BRUSH_MAX - DEFAULT_BRUSH_MIN)) *
-    100
-)
+  const brushPercent = computed(
+    () =>
+      ((props.brushSize - DEFAULT_BRUSH_MIN) /
+        (DEFAULT_BRUSH_MAX - DEFAULT_BRUSH_MIN)) *
+      100
+  )
 
-const maskFeatherPercent = computed(
-  () =>
-    ((props.maskFeatherSize - DEFAULT_MASK_FEATHER_MIN) /
-      (DEFAULT_MASK_FEATHER_MAX - DEFAULT_MASK_FEATHER_MIN)) *
-    100
-)
+  const maskFeatherPercent = computed(
+    () =>
+      ((props.maskFeatherSize - DEFAULT_MASK_FEATHER_MIN) /
+        (DEFAULT_MASK_FEATHER_MAX - DEFAULT_MASK_FEATHER_MIN)) *
+      100
+  )
 
-const handleZoomBy = (delta) => props.onZoomBy(delta)
+  const handleZoomBy = (delta) => props.onZoomBy(delta)
 </script>
 
 <style scoped>
-.toolbar {
-  position: sticky;
-  bottom: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 12px 16px;
-  border-top: 1px solid #1f2028;
-  background: #0f1016;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.15s ease, filter 0.15s ease;
-}
+  .toolbar {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid #1f2028;
+    background: #0f1016;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s ease, filter 0.15s ease;
+  }
 
-.toolbar-range {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .toolbar-range {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-.toolbar-range .toolbar-separator {
-  margin: 0 4px;
-}
+  .toolbar-range .toolbar-separator {
+    margin: 0 4px;
+  }
 
-.toolbar-range input[type='range'] {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-}
+  .toolbar-range input[type='range'] {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 
-.toolbar input[type='range'] {
-  width: 120px;
-  --range-thumb-size: 16px;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
+  .toolbar input[type='range'] {
+    width: 120px;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
 </style>

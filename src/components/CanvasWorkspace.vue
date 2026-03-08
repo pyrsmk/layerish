@@ -55,86 +55,86 @@
 </template>
 
 <script setup>
-import { toRef } from 'vue'
-import { useCanvas } from '../composables/useCanvas'
+  import { toRef } from 'vue'
+  import { useCanvas } from '../composables/useCanvas'
 
-const props = defineProps({
-  state: { type: Object, required: true },
-  activeLayer: { type: Object, default: null },
-  moveLayer: { type: Object, default: null },
-  canvasSize: { type: Object, required: true },
-})
+  const props = defineProps({
+    state: { type: Object, required: true },
+    activeLayer: { type: Object, default: null },
+    moveLayer: { type: Object, default: null },
+    canvasSize: { type: Object, required: true },
+  })
 
-const activeLayerRef = toRef(props, 'activeLayer')
-const moveLayerRef = toRef(props, 'moveLayer')
-const canvasSizeRef = toRef(props, 'canvasSize')
+  const activeLayerRef = toRef(props, 'activeLayer')
+  const moveLayerRef = toRef(props, 'moveLayer')
+  const canvasSizeRef = toRef(props, 'canvasSize')
 
-const {
-  canvasRef,
-  containerRef,
-  renderComposite,
-  exportImage,
-  handlePointerDown,
-  handlePointerMove,
-  handlePointerUp,
-  handlePointerLeave,
-  handleWheel,
-  centerInView,
-  fitToView,
-  resetZoom,
-  zoomBy,
-} = useCanvas({
-  state: props.state,
-  activeLayer: activeLayerRef,
-  moveLayer: moveLayerRef,
-  canvasSize: canvasSizeRef,
-})
+  const {
+    canvasRef,
+    containerRef,
+    renderComposite,
+    exportImage,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    handlePointerLeave,
+    handleWheel,
+    centerInView,
+    fitToView,
+    resetZoom,
+    zoomBy,
+  } = useCanvas({
+    state: props.state,
+    activeLayer: activeLayerRef,
+    moveLayer: moveLayerRef,
+    canvasSize: canvasSizeRef,
+  })
 
-defineExpose({
-  renderComposite,
-  exportImage,
-  centerInView,
-  fitToView,
-  resetZoom,
-  zoomBy,
-})
+  defineExpose({
+    renderComposite,
+    exportImage,
+    centerInView,
+    fitToView,
+    resetZoom,
+    zoomBy,
+  })
 </script>
 
 <style scoped>
-.canvas-shell {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-  position: relative;
-  background: #0b0b0f;
-}
+  .canvas-shell {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    background: #0b0b0f;
+  }
 
-.canvas-shell.cursor-hidden {
-  cursor: none;
-}
+  .canvas-shell.cursor-hidden {
+    cursor: none;
+  }
 
-.canvas-wrapper {
-  transform-origin: top left;
-}
+  .canvas-wrapper {
+    transform-origin: top left;
+  }
 
-.main-canvas {
-  background: #0b0b0f;
-  border-radius: 12px;
-  border: 1px solid #1f2028;
-  touch-action: none;
-}
+  .main-canvas {
+    background: #0b0b0f;
+    border-radius: var(--radius);
+    border: 1px solid #1f2028;
+    touch-action: none;
+  }
 
-.brush-cursor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 999px;
-  background: rgba(47, 123, 255, 0.45);
-  pointer-events: none;
-  box-sizing: border-box;
-}
+  .brush-cursor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 999px;
+    background: rgba(47, 123, 255, 0.45);
+    pointer-events: none;
+    box-sizing: border-box;
+  }
 
-.brush-cursor.erase {
-  background: rgba(255, 82, 82, 0.45);
-}
+  .brush-cursor.erase {
+    background: rgba(255, 82, 82, 0.45);
+  }
 </style>

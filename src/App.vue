@@ -19,24 +19,26 @@ const {
   canRedo,
   canvasSize,
 } = useEditorState()
+
 const { createMaskCanvas } = useMask()
 const { toggleLayersPanel } = useLayout(state)
 const canvasWorkspaceRef = ref(null)
 const isFileDragActive = ref(false)
 const fileDragDepth = ref(0)
-const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
-const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
+
+const undo = () => {}
+const redo = () => {}
+const zoomBy = delta => canvasWorkspaceRef.value?.zoomBy?.(delta)
+const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
 const centerInView = () => canvasWorkspaceRef.value?.centerInView?.()
+const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
+const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
+const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
+
 const handleLayersPanelTransitionEnd = (event) => {
   if (event?.propertyName !== 'width') return
   centerInView()
 }
-const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
-const zoomBy = (delta) => canvasWorkspaceRef.value?.zoomBy?.(delta)
-const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
-
-const undo = () => {}
-const redo = () => {}
 
 const {
   setActiveLayer,
@@ -66,7 +68,6 @@ const {
 
 const {
   toggleFinalComposite,
-  toggleMaskFeather,
   toggleMaskFeatherEdgeClamp,
   toggleSnapEnabled,
   toggleEraser,
@@ -218,7 +219,7 @@ onMounted(() => {
 
     <div v-if="isFileDragActive" class="file-drop-overlay">
       <div class="file-drop-overlay-content">
-        <span class="material-symbols-outlined" aria-hidden="true">
+        <span aria-hidden="true">
           add_photo_alternate
         </span>
         <p>Ajouter les images</p>
@@ -230,54 +231,49 @@ onMounted(() => {
 </template>
 
 <style>
-.app {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.workspace {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.material-symbols-outlined {
-  font-size: 18px;
-  line-height: 1;
-  vertical-align: middle;
-}
-
-.file-drop-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(11, 11, 15, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  pointer-events: none;
-}
-
-.file-drop-overlay-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #f5f6fa;
-  font-size: 32px;
-  text-align: center;
-}
-
-.file-drop-overlay-content .material-symbols-outlined {
-  font-size: 32px;
-}
-
-@media (max-width: 900px) {
-  .app {
-    flex-direction: column;
+  :root {
+    --gap: 8px;
+    --radius: 8px;
+    --margin: 4px 8px;
+    --margin-small: 2px 6px;
   }
-}
+
+  .app {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .workspace {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .file-drop-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 11, 15, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    pointer-events: none;
+  }
+
+  .file-drop-overlay-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #f5f6fa;
+    font-size: 32px;
+    text-align: center;
+  }
+
+  /*.file-drop-overlay-content .material-symbols-outlined {
+    font-size: 32px;
+  }*/
 </style>

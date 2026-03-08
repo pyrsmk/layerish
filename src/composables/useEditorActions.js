@@ -8,11 +8,6 @@ export function useEditorActions({ state, renderComposite }) {
     renderComposite?.()
   }
 
-  function toggleMaskFeather() {
-    state.maskFeatherEnabled = !state.maskFeatherEnabled
-    renderComposite?.()
-  }
-
   function toggleMaskFeatherEdgeClamp() {
     state.maskFeatherEdgeClamp = !state.maskFeatherEdgeClamp
     renderComposite?.()
@@ -56,7 +51,6 @@ export function useEditorActions({ state, renderComposite }) {
 
   return {
     toggleFinalComposite,
-    toggleMaskFeather,
     toggleMaskFeatherEdgeClamp,
     toggleSnapEnabled,
     toggleEraser,
