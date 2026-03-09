@@ -304,7 +304,7 @@
     padding: var(--margin-xsmall);
     background-color: #f5f6fa;
     color: #0b0b0f;
-    border-radius: calc(var(--gap) / 2);
+    border-radius: calc(var(--gap) / 3);
     position: relative;
     top: -6px;
     left: -2px;

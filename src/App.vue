@@ -6,7 +6,7 @@
     @dragover="handleAppFileDragOver"
     @drop="handleAppFileDrop"
   >
-    <LayersPanel
+    <Layers
       :layers="state.layers"
       :active-layer-id="state.activeLayerId"
       :move-layer-id="state.moveLayerId"
@@ -71,10 +71,8 @@
     </main>
 
     <div v-if="isFileDragActive" class="file-drop-overlay">
-      <div class="file-drop-overlay-content">
-        <span aria-hidden="true">
-          add_photo_alternate
-        </span>
+      <div>
+        <Icon code="add_photo_alternate" size="giant" aria-hidden="true" />
         <p>Ajouter les images</p>
       </div>
     </div>
@@ -86,9 +84,10 @@
 <script setup>
   import { onMounted, onUnmounted, ref } from 'vue'
   import CanvasWorkspace from './components/CanvasWorkspace.vue'
-  import LayersPanel from './components/LayersPanel.vue'
+  import Layers from './components/Layers.vue'
   import Toolbar from './components/Toolbar.vue'
   import Tooltip from './components/Tooltip.vue'
+  import Icon from './components/Icon.vue'
   import { useEditorState } from './composables/useEditorState'
   import { useLayout } from './composables/useLayout'
   import { useLayers } from './composables/useLayers'
@@ -174,8 +173,9 @@
     clearMoveModes()
   }
 
-  const hasFileTransfer = (event) =>
-    Array.from(event?.dataTransfer?.types || []).includes('Files')
+  const hasFileTransfer = (event) => {
+    return Array.from(event?.dataTransfer?.types || []).includes('Files')
+  }
 
   const resetFileDragState = () => {
     isFileDragActive.value = false
@@ -266,7 +266,7 @@
     pointer-events: none;
   }
 
-  .file-drop-overlay-content {
+  .file-drop-overlay > div {
     display: flex;
     align-items: center;
     gap: var(--gap);
@@ -274,8 +274,4 @@
     font-size: 32px;
     text-align: center;
   }
-
-  /*.file-drop-overlay-content .material-symbols-outlined {
-    font-size: 32px;
-  }*/
 </style>

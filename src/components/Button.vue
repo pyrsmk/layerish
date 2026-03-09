@@ -22,8 +22,8 @@
     size: { type: String, default: 'normal' },
   })
 
-  const small = props.size == 'small'
-  const big = props.size == 'big'
+  const small = computed(() => props.size == 'small')
+  const big = computed(() => props.size == 'big')
 </script>
 
 <style scoped>

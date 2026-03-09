@@ -1,7 +1,7 @@
 <template>
   <span
     class="icon material-symbols-outlined"
-    :class="{ small, big }"
+    :class="{ small, big, giant }"
     :style="`color: ${color}`"
   >
     {{ code }}
@@ -9,14 +9,17 @@
 </template>
 
 <script setup>
+  import { computed } from 'vue'
+
   const props = defineProps({
     code: { type: String, required: true },
     color: { type: String, default: 'inherit' },
     size: { type: String, default: 'normal' },
   })
 
-  const small = props.size == 'small'
-  const big = props.size == 'big'
+  const small = computed(() => props.size == 'small')
+  const big = computed(() => props.size == 'big')
+  const giant = computed(() => props.size == 'giant')
 </script>
 
 <style scoped>
@@ -32,5 +35,9 @@
 
   .icon.big {
     font-size: 20px;
+  }
+
+  .icon.giant {
+    font-size: 32px;
   }
 </style>
