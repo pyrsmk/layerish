@@ -1,5 +1,9 @@
 <template>
-  <span class="icon material-symbols-outlined" :class="{ small }" :style="`color: ${color}`">
+  <span
+    class="icon material-symbols-outlined"
+    :class="{ small, big }"
+    :style="`color: ${color}`"
+  >
     {{ code }}
   </span>
 </template>
@@ -8,8 +12,11 @@
   const props = defineProps({
     code: { type: String, required: true },
     color: { type: String, default: 'inherit' },
-    small: { type: Boolean, default: false },
+    size: { type: String, default: 'normal' },
   })
+
+  const small = props.size == 'small'
+  const big = props.size == 'big'
 </script>
 
 <style scoped>
@@ -21,5 +28,9 @@
 
   .icon.small {
     font-size: 16px;
+  }
+
+  .icon.big {
+    font-size: 20px;
   }
 </style>

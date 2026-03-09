@@ -1,5 +1,6 @@
 <template>
-  <li
+  <component
+    :is="tagName"
     :class="['layer-item', { active: isActive }]"
     :draggable="false"
     @pointerdown="emitPointerDragStart"
@@ -20,13 +21,13 @@
           :data-tooltip="layer.visible ? 'Masquer' : 'Afficher'"
           icon="visibility_off"
           selectable
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitDelete()"
           data-tooltip="Supprimer le layer"
           icon="delete"
-          small
+          size="small"
         />
       </div>
     </header>
@@ -40,7 +41,7 @@
           :disabled="isPreviousBlendModeDisabled"
           data-tooltip="Mode précédent"
           icon="chevron_left"
-          small
+          size="small"
         />
         <select
           v-model="layer.blendMode"
@@ -55,7 +56,7 @@
           :disabled="isNextBlendModeDisabled"
           data-tooltip="Mode suivant"
           icon="chevron_right"
-          small
+          size="small"
         />
       </div>
       <label
@@ -81,25 +82,25 @@
           @click="emitSelect(); emitNudge(-0.05)"
           data-tooltip="Réduire"
           icon="remove"
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitNudge(0.05)"
           data-tooltip="Agrandir"
           icon="add"
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitFitLayerToViewport()"
           data-tooltip="Adapter le calque au viewport"
           icon="fit_screen"
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitFitViewportToLayer()"
           data-tooltip="Adapter le viewport au calque"
           icon="responsive_layout"
-          small
+          size="small"
         />
       </div>
       <div class="toolbar">
@@ -109,13 +110,13 @@
           data-tooltip="Déplacer"
           icon="open_with"
           selectable
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitRecenter()"
           data-tooltip="Recentrer"
           icon="arrows_input"
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitToggleStretchEdges()"
@@ -123,17 +124,17 @@
           data-tooltip="Étirer le calque"
           icon="transform"
           selectable
-          small
+          size="small"
         />
         <Button
           @click="emitSelect(); emitClearMask()"
           data-tooltip="Effacer la sélection"
           icon="remove_selection"
-          small
+          size="small"
         />
       </div>
     </div>
-  </li>
+  </component>
 </template>
 
 <script setup>
@@ -141,6 +142,7 @@
   import Button from './Button.vue'
 
   const props = defineProps({
+    tagName: { type: String, default: 'LI' },
     layer: { type: Object, required: true },
     index: { type: Number, required: true },
     isActive: { type: Boolean, default: false },
@@ -231,6 +233,7 @@
     align-items: center;
     gap: var(--gap);
     width: 100%;
+    padding-bottom: var(--gap);
   }
 
   header .spacer {

@@ -1,8 +1,6 @@
 # TODO
 
-- mettre le numéro de version en indice du titre
 - quand on dessine en composite avec plusieurs calques c'est super lent (mais sans composite ça va)
-- LayerItem => Layer; <li> vers tag personnalisé
 - enlever le radius sur le workspace quand le height ou le width est à 100%
 - on recentre dès qu'on resize
 - supprimer la réduction de la colonne des layers

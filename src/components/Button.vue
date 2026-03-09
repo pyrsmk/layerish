@@ -1,25 +1,29 @@
 <template>
   <button
     @click.stop="$emit('click')"
-    :class="{ selectable, active, small }"
+    :class="{ selectable, active, small, big }"
     :disabled="disabled"
   >
-    <Icon :code="icon" :small="small" />
+    <Icon :code="icon" :size="size" />
   </button>
 </template>
 
 <script setup>
   import Icon from './Icon.vue'
+  import { computed } from 'vue'
 
   defineEmits(['click'])
 
-  defineProps({
+  const props = defineProps({
     icon: { type: String, required: true },
     selectable: { type: Boolean, default: false },
     active: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
-    small: { type: Boolean, default: false },
+    size: { type: String, default: 'normal' },
   })
+
+  const small = props.size == 'small'
+  const big = props.size == 'big'
 </script>
 
 <style scoped>
@@ -35,6 +39,10 @@
 
   button.small {
     padding: var(--margin-small);
+  }
+
+  button.big {
+    padding: var(--margin-large);
   }
 
   button[disabled] {

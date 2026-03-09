@@ -1,149 +1,3 @@
-<script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
-import CanvasWorkspace from './components/CanvasWorkspace.vue'
-import LayersPanel from './components/LayersPanel.vue'
-import Toolbar from './components/Toolbar.vue'
-import Tooltip from './components/Tooltip.vue'
-import { useEditorState } from './composables/useEditorState'
-import { useLayout } from './composables/useLayout'
-import { useLayers } from './composables/useLayers'
-import { useMask } from './composables/useMask'
-import { useEditorActions } from './composables/useEditorActions'
-import { blendModes } from './constants'
-
-const {
-  state,
-  activeLayer,
-  moveLayer,
-  canUndo,
-  canRedo,
-  canvasSize,
-} = useEditorState()
-
-const { createMaskCanvas } = useMask()
-const { toggleLayersPanel } = useLayout(state)
-const canvasWorkspaceRef = ref(null)
-const isFileDragActive = ref(false)
-const fileDragDepth = ref(0)
-
-const undo = () => {}
-const redo = () => {}
-const zoomBy = delta => canvasWorkspaceRef.value?.zoomBy?.(delta)
-const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
-const centerInView = () => canvasWorkspaceRef.value?.centerInView?.()
-const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
-const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
-const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
-
-const handleLayersPanelTransitionEnd = (event) => {
-  if (event?.propertyName !== 'width') return
-  centerInView()
-}
-
-const {
-  setActiveLayer,
-  onLayerDragStart,
-  onLayerDragOver,
-  onLayerDrop,
-  onLayerDragEnd,
-  onDropSlotOver,
-  onFilesSelected,
-  nudgeLayerScale,
-  fitLayerToViewport,
-  fitViewportToLayer,
-  recenterLayer,
-  clearMask,
-  toggleLayerVisibility,
-  toggleLayerStretchEdges,
-  invertActiveMask,
-  deleteLayer,
-  toggleMoveLayer,
-} = useLayers({
-  state,
-  canvasSize,
-  createMaskCanvas,
-  renderComposite,
-  fitToView,
-})
-
-const {
-  toggleFinalComposite,
-  toggleMaskFeatherEdgeClamp,
-  toggleSnapEnabled,
-  toggleEraser,
-  togglePanMode,
-  onBlendModeChange,
-  onBlendOpacityInput,
-} = useEditorActions({
-  state,
-  renderComposite,
-})
-
-const clearMoveModes = () => {
-  state.isPanMode = false
-  state.moveLayerId = null
-}
-
-const handleGlobalButtonClick = (event) => {
-  if (!event?.target?.closest?.('button')) return
-  clearMoveModes()
-}
-
-const hasFileTransfer = (event) =>
-  Array.from(event?.dataTransfer?.types || []).includes('Files')
-
-const resetFileDragState = () => {
-  isFileDragActive.value = false
-  fileDragDepth.value = 0
-}
-
-const handleAppFileDragEnter = (event) => {
-  if (!hasFileTransfer(event)) return
-  event.preventDefault()
-  fileDragDepth.value += 1
-  isFileDragActive.value = true
-}
-
-const handleAppFileDragLeave = (event) => {
-  if (!hasFileTransfer(event)) return
-  fileDragDepth.value = Math.max(0, fileDragDepth.value - 1)
-  if (fileDragDepth.value === 0) {
-    isFileDragActive.value = false
-  }
-}
-
-const handleAppFileDragOver = (event) => {
-  if (!hasFileTransfer(event)) return
-  event.preventDefault()
-  if (event.dataTransfer) {
-    event.dataTransfer.dropEffect = 'copy'
-  }
-}
-
-const handleAppFileDrop = (event) => {
-  if (!hasFileTransfer(event)) return
-  event.preventDefault()
-  resetFileDragState()
-  const files = Array.from(event.dataTransfer?.files || []).filter((file) =>
-    file.type?.startsWith('image/')
-  )
-  if (!files.length) return
-  onFilesSelected({ target: { files, value: '' } })
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleGlobalButtonClick, true)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleGlobalButtonClick, true)
-})
-
-onMounted(() => {
-  renderComposite()
-})
-</script>
-
 <template>
   <div
     class="app"
@@ -229,6 +83,152 @@ onMounted(() => {
   </div>
 </template>
 
+<script setup>
+  import { onMounted, onUnmounted, ref } from 'vue'
+  import CanvasWorkspace from './components/CanvasWorkspace.vue'
+  import LayersPanel from './components/LayersPanel.vue'
+  import Toolbar from './components/Toolbar.vue'
+  import Tooltip from './components/Tooltip.vue'
+  import { useEditorState } from './composables/useEditorState'
+  import { useLayout } from './composables/useLayout'
+  import { useLayers } from './composables/useLayers'
+  import { useMask } from './composables/useMask'
+  import { useEditorActions } from './composables/useEditorActions'
+  import { blendModes } from './constants'
+
+  const {
+    state,
+    activeLayer,
+    moveLayer,
+    canUndo,
+    canRedo,
+    canvasSize,
+  } = useEditorState()
+
+  const { createMaskCanvas } = useMask()
+  const { toggleLayersPanel } = useLayout(state)
+  const canvasWorkspaceRef = ref(null)
+  const isFileDragActive = ref(false)
+  const fileDragDepth = ref(0)
+
+  const undo = () => {}
+  const redo = () => {}
+  const zoomBy = delta => canvasWorkspaceRef.value?.zoomBy?.(delta)
+  const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
+  const centerInView = () => canvasWorkspaceRef.value?.centerInView?.()
+  const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
+  const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
+  const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
+
+  const handleLayersPanelTransitionEnd = (event) => {
+    if (event?.propertyName !== 'width') return
+    centerInView()
+  }
+
+  const {
+    setActiveLayer,
+    onLayerDragStart,
+    onLayerDragOver,
+    onLayerDrop,
+    onLayerDragEnd,
+    onDropSlotOver,
+    onFilesSelected,
+    nudgeLayerScale,
+    fitLayerToViewport,
+    fitViewportToLayer,
+    recenterLayer,
+    clearMask,
+    toggleLayerVisibility,
+    toggleLayerStretchEdges,
+    invertActiveMask,
+    deleteLayer,
+    toggleMoveLayer,
+  } = useLayers({
+    state,
+    canvasSize,
+    createMaskCanvas,
+    renderComposite,
+    fitToView,
+  })
+
+  const {
+    toggleFinalComposite,
+    toggleMaskFeatherEdgeClamp,
+    toggleSnapEnabled,
+    toggleEraser,
+    togglePanMode,
+    onBlendModeChange,
+    onBlendOpacityInput,
+  } = useEditorActions({
+    state,
+    renderComposite,
+  })
+
+  const clearMoveModes = () => {
+    state.isPanMode = false
+    state.moveLayerId = null
+  }
+
+  const handleGlobalButtonClick = (event) => {
+    if (!event?.target?.closest?.('button')) return
+    clearMoveModes()
+  }
+
+  const hasFileTransfer = (event) =>
+    Array.from(event?.dataTransfer?.types || []).includes('Files')
+
+  const resetFileDragState = () => {
+    isFileDragActive.value = false
+    fileDragDepth.value = 0
+  }
+
+  const handleAppFileDragEnter = (event) => {
+    if (!hasFileTransfer(event)) return
+    event.preventDefault()
+    fileDragDepth.value += 1
+    isFileDragActive.value = true
+  }
+
+  const handleAppFileDragLeave = (event) => {
+    if (!hasFileTransfer(event)) return
+    fileDragDepth.value = Math.max(0, fileDragDepth.value - 1)
+    if (fileDragDepth.value === 0) {
+      isFileDragActive.value = false
+    }
+  }
+
+  const handleAppFileDragOver = (event) => {
+    if (!hasFileTransfer(event)) return
+    event.preventDefault()
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'copy'
+    }
+  }
+
+  const handleAppFileDrop = (event) => {
+    if (!hasFileTransfer(event)) return
+    event.preventDefault()
+    resetFileDragState()
+    const files = Array.from(event.dataTransfer?.files || []).filter((file) =>
+      file.type?.startsWith('image/')
+    )
+    if (!files.length) return
+    onFilesSelected({ target: { files, value: '' } })
+  }
+
+  onMounted(() => {
+    document.addEventListener('click', handleGlobalButtonClick, true)
+  })
+
+  onUnmounted(() => {
+    document.removeEventListener('click', handleGlobalButtonClick, true)
+  })
+
+  onMounted(() => {
+    renderComposite()
+  })
+</script>
+
 <style>
   :root {
     --gap: 8px;
@@ -236,6 +236,7 @@ onMounted(() => {
     --margin-xsmall: 1px 3px;
     --margin-small: 2px 6px;
     --margin: 4px 8px;
+    --margin-large: 6px 10px;
     --margin-xlarge: 12px 16px;
   }
 

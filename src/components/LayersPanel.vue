@@ -11,11 +11,11 @@
       </div>
       <div class="actions">
         <Button
-          class="add-layer-button"
           @click="triggerFileInput"
+          icon="add_photo_alternate"
+          size="big"
           data-tooltip="Ajouter une image"
           data-tooltip-position="bottom"
-          icon="add_photo_alternate"
         />
       </div>
     </div>
@@ -106,7 +106,7 @@
           @drop="() => onLayerDrop(null, toInternalInsertIndex(layers.length))"
         />
         <template v-for="(layer, index) in layers" :key="layer.id">
-          <LayerItem
+          <Layer
             :layer="layer"
             :index="index"
             :blend-modes="blendModes"
@@ -149,10 +149,10 @@
 <script setup>
   import { version } from '../constants'
   import { onUnmounted, ref } from 'vue'
+  import Layer from './Layer.vue'
   import Icon from './Icon.vue'
   import Button from './Button.vue'
   import DropSlot from './DropSlot.vue'
-  import LayerItem from './LayerItem.vue'
 
   const props = defineProps({
     layers: { type: Array, required: true },
@@ -189,6 +189,10 @@
   const fileInputRef = ref(null)
   const layersListRef = ref(null)
   let activePointerId = null
+
+  const triggerFileInput = () => {
+    fileInputRef.value?.click()
+  }
 
   const stopPointerListeners = () => {
     window.removeEventListener('pointermove', handlePointerMove)
@@ -252,23 +256,19 @@
     if (event.propertyName !== 'width') return
     props.onLayersTransitionEnd?.(event)
   }
-
-  const triggerFileInput = () => {
-    fileInputRef.value?.click()
-  }
 </script>
 
 <style scoped>
   .layers {
     position: relative;
     z-index: 10;
-    width: 350px;
+    width: 325px;
     background: #14141a;
     border-right: 1px solid #1f2028;
     display: flex;
     flex-direction: column;
-    padding: 16px;
-    gap: 12px;
+    padding: calc(var(--gap) * 2);
+    gap: calc(var(--gap) * 2);
     transition: width 0.2s ease,
                 padding 0.2s ease;
   }
