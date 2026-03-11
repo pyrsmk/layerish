@@ -1,6 +1,7 @@
 <template>
   <div
-    class="canvas-shell"
+    ref="containerRef"
+    class="container"
     :class="{
       'cursor-hidden': (
         state.layers.length > 0 &&
@@ -12,20 +13,18 @@
     :style="{
       cursor: state.isPanMode || state.moveLayerId ? 'move' : ''
     }"
-    ref="containerRef"
   >
     <div
       v-if="state.layers.length > 0"
-      class="canvas-wrapper"
+      class="wrapper"
       :style="{
-        transform:
-          `translate(${state.pan.x}px, ${state.pan.y}px) ` +
-          `scale(${state.zoom})`,
+        transform: `translate(${state.pan.x}px, ${state.pan.y}px) ` +
+                   `scale(${state.zoom})`,
       }"
     >
       <canvas
         ref="canvasRef"
-        class="main-canvas"
+        class="canvas"
         @pointerdown="handlePointerDown"
         @pointermove="handlePointerMove"
         @pointerup="handlePointerUp"
@@ -41,14 +40,13 @@
         !state.moveLayerId &&
         state.isCursorOverImage
       "
-      class="brush-cursor"
+      class="brush"
       :class="{ erase: state.isErasing }"
       :style="{
         width: `${state.brushSize}px`,
         height: `${state.brushSize}px`,
-        transform:
-          `translate(${state.cursor.x - state.brushSize / 2}px, ` +
-          `${state.cursor.y - state.brushSize / 2}px)`,
+        transform: `translate(${state.cursor.x - state.brushSize / 2}px, ` +
+                   `${state.cursor.y - state.brushSize / 2}px)`,
       }"
     ></div>
   </div>
@@ -101,30 +99,29 @@
 </script>
 
 <style scoped>
-  .canvas-shell {
+  .container {
     flex: 1;
     display: flex;
     overflow: hidden;
     position: relative;
-    background: #0b0b0f;
   }
 
-  .canvas-shell.cursor-hidden {
+  .container.cursor-hidden {
     cursor: none;
   }
 
-  .canvas-wrapper {
+  .wrapper {
     transform-origin: top left;
   }
 
-  .main-canvas {
+  .canvas {
     background: #0b0b0f;
     border-radius: var(--radius);
     border: 1px solid #1f2028;
     touch-action: none;
   }
 
-  .brush-cursor {
+  .brush {
     position: absolute;
     top: 0;
     left: 0;
@@ -134,7 +131,7 @@
     box-sizing: border-box;
   }
 
-  .brush-cursor.erase {
+  .brush.erase {
     background: rgba(255, 82, 82, 0.45);
   }
 </style>

@@ -20,85 +20,17 @@
       </div>
     </div>
 
-    <div v-if="layers.length === 0" class="empty-layers">
-      <ul>
-        <li>
-          <Icon color="#f5f6fa" code="add_photo_alternate" />
-          <span>Importer une image<br>(ou par glisser-déposer)</span>
-        </li>
-        <li class="separator" aria-hidden="true" />
-        <li>
-          <Icon color="#f5f6fa" code="add" />
-          <span>Zoomer</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="remove" />
-          <span>Dézoomer</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="fit_screen" />
-          <span>Adapter le calque au viewport</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="responsive_layout" />
-          <span>Adapter le viewport au calque</span>
-        </li>
-        <li class="separator" aria-hidden="true" />
-        <li>
-          <Icon color="#f5f6fa" code="brush" />
-          <span>Mode pinceau</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="ink_eraser" />
-          <span>Mode gomme</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="stroke_partial" />
-          <span>Inverser la sélection du masque</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="transform" />
-          <span>Étirer le masque</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="remove_selection" />
-          <span>Effacer la sélection</span>
-        </li>
-        <li class="separator" aria-hidden="true" />
-        <li>
-          <Icon color="#f5f6fa" code="blur_on" />
-          <span>Ajuster le dégradé des sélections pour adoucir les bords</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="flip_to_back" />
-          <span>Désactiver le dégradé sur le bord des masques</span>
-        </li>
-        <li class="separator" aria-hidden="true" />
-        <li>
-          <Icon color="#f5f6fa" code="open_with" />
-          <span>Déplacer le calque ou la zone de travail</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="arrows_input" />
-          <span>Recentrer le calque ou la zone de travail</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="electric_bolt" />
-          <span>Activer l’aimantation</span>
-        </li>
-        <li class="separator" aria-hidden="true" />
-        <li>
-          <Icon color="#f5f6fa" code="texture" />
-          <span>Activer le mode composite pour prévisualiser le rendu</span>
-        </li>
-        <li>
-          <Icon color="#f5f6fa" code="save" />
-          <span>Sauvegarder l’image finale</span>
-        </li>
-      </ul>
+    <div
+      v-if="layers.length == 0"
+      class="notice"
+    >
+      Aucun calque chargé.
     </div>
-
-    <ul class="list" ref="layersListRef">
+    <ul
+      v-else
+      ref="layersListRef"
+      class="list"
+    >
       <div style="display: flex; flex-direction: column-reverse;">
         <DropSlot
           :active="Boolean(dragLayerId && toDisplayInsertIndex(dragInsertIndex) === layers.length)"
@@ -317,6 +249,16 @@
     box-sizing: border-box;
   }
 
+  .notice {
+    color: #9ea1b0;
+    font-size: 16px;
+    background: #171820;
+    border: 1px dashed #2a2c36;
+    border-radius: var(--radius);
+    padding: calc(var(--gap) * 4);
+    text-align: center;
+  }
+
   .list {
     --layer-gap: 12px;
     --layer-slot-padding: 10px;
@@ -328,41 +270,6 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-  }
-
-  .empty-layers {
-    color: #9ea1b0;
-    font-size: 14px;
-    background: #171820;
-    border: 1px dashed #2a2c36;
-    border-radius: var(--radius);
-    padding: calc(var(--gap) * 2);
-    overflow-y: auto;
-  }
-
-  .empty-layers ul {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .empty-layers li {
-    display: grid;
-    grid-template-columns: 20px 1fr;
-    align-items: start;
-    gap: var(--gap);
-    line-height: 1.3;
-  }
-
-  .empty-layers .separator {
-    display: block;
-    height: 1px;
-    width: 55%;
-    margin: 4px auto;
-    background: #2a2c36;
   }
 
   .file-input {

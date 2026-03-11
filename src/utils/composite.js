@@ -46,8 +46,6 @@ function applySelectionMaskToStretchedCanvas(
   stretchedCtx.drawImage(maskedCanvas, x, y, width, height)
 }
 
-
-
 function createStretchedLayerCanvas(layer, layerCanvas, canvasSize) {
   const viewportWidth = canvasSize.width
   const viewportHeight = canvasSize.height

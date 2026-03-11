@@ -19,7 +19,7 @@
     selectable: { type: Boolean, default: false },
     active: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
-    size: { type: String, default: 'normal' },
+    size: { type: String, default: 'default' },
   })
 
   const small = computed(() => props.size == 'small')

@@ -1,5 +1,7 @@
 # TODO
 
+- UI carrée comme à l'époque VB6
+- fonctionnalité de floutage (doigt)
 - quand on dessine en composite avec plusieurs calques c'est super lent (mais sans composite ça va)
 - enlever le radius sur le workspace quand le height ou le width est à 100%
 - on recentre dès qu'on resize
@@ -10,11 +12,6 @@
   - vérifier le responsive
   - vérifier le PWA sur Android
   - pourquoi pas ajouter de nouveaux effets, comme de la pixellisation, du glitch, etc
-
-## Refacto aide
-
-- aide au centre de l'écran
-- "Glissez-déposez pour ajouter un nouveau calque"
 
 ## Refacto mode composite
 

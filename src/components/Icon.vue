@@ -14,7 +14,7 @@
   const props = defineProps({
     code: { type: String, required: true },
     color: { type: String, default: 'inherit' },
-    size: { type: String, default: 'normal' },
+    size: { type: String, default: 'default' },
   })
 
   const small = computed(() => props.size == 'small')

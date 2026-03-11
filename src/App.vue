@@ -7,6 +7,7 @@
     @drop="handleAppFileDrop"
   >
     <Layers
+      class="layers"
       :layers="state.layers"
       :active-layer-id="state.activeLayerId"
       :move-layer-id="state.moveLayerId"
@@ -36,17 +37,101 @@
     />
 
     <main class="workspace">
-      <CanvasWorkspace
-        ref="canvasWorkspaceRef"
+      <DrawingArea
+        v-if="state.layers.length > 0"
+        ref="drawingAreaRef"
         :state="state"
         :active-layer="activeLayer"
         :move-layer="moveLayer"
         :canvas-size="canvasSize"
       />
 
+      <div
+        v-else
+        class="help"
+      >
+        <ul>
+          <li>
+            <Icon color="#f5f6fa" code="add_photo_alternate" />
+            <span>Importer une image<br>(ou par glisser-déposer)</span>
+          </li>
+          <li class="separator" aria-hidden="true" />
+          <li>
+            <Icon color="#f5f6fa" code="add" />
+            <span>Zoomer</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="remove" />
+            <span>Dézoomer</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="fit_screen" />
+            <span>Adapter le calque au viewport</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="responsive_layout" />
+            <span>Adapter le viewport au calque</span>
+          </li>
+          <li class="separator" aria-hidden="true" />
+          <li>
+            <Icon color="#f5f6fa" code="brush" />
+            <span>Mode pinceau</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="ink_eraser" />
+            <span>Mode gomme</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="stroke_partial" />
+            <span>Inverser la sélection du masque</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="transform" />
+            <span>Étirer le masque</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="remove_selection" />
+            <span>Effacer la sélection</span>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <Icon color="#f5f6fa" code="blur_on" />
+            <span>Ajuster le dégradé des sélections pour adoucir les bords</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="flip_to_back" />
+            <span>Désactiver le dégradé sur le bord des masques</span>
+          </li>
+          <li class="separator" aria-hidden="true" />
+          <li>
+            <Icon color="#f5f6fa" code="open_with" />
+            <span>Déplacer le calque ou la zone de travail</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="arrows_input" />
+            <span>Recentrer le calque ou la zone de travail</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="electric_bolt" />
+            <span>Activer l’aimantation</span>
+          </li>
+          <li class="separator" aria-hidden="true" />
+          <li>
+            <Icon color="#f5f6fa" code="texture" />
+            <span>Activer le mode composite pour prévisualiser le rendu</span>
+          </li>
+          <li>
+            <Icon color="#f5f6fa" code="save" />
+            <span>Sauvegarder l’image finale</span>
+          </li>
+        </ul>
+      </div>
+
       <Toolbar
         v-model:brushSize="state.brushSize"
         v-model:maskFeatherSize="state.maskFeatherSize"
+        class="toolbar"
         :can-undo="canUndo"
         :can-redo="canRedo"
         :is-erasing="state.isErasing"
@@ -83,7 +168,7 @@
 
 <script setup>
   import { onMounted, onUnmounted, ref } from 'vue'
-  import CanvasWorkspace from './components/CanvasWorkspace.vue'
+  import DrawingArea from './components/DrawingArea.vue'
   import Layers from './components/Layers.vue'
   import Toolbar from './components/Toolbar.vue'
   import Tooltip from './components/Tooltip.vue'
@@ -106,18 +191,18 @@
 
   const { createMaskCanvas } = useMask()
   const { toggleLayersPanel } = useLayout(state)
-  const canvasWorkspaceRef = ref(null)
+  const drawingAreaRef = ref(null)
   const isFileDragActive = ref(false)
   const fileDragDepth = ref(0)
 
   const undo = () => {}
   const redo = () => {}
-  const zoomBy = delta => canvasWorkspaceRef.value?.zoomBy?.(delta)
-  const resetZoom = () => canvasWorkspaceRef.value?.resetZoom?.()
-  const centerInView = () => canvasWorkspaceRef.value?.centerInView?.()
-  const fitToView = () => canvasWorkspaceRef.value?.fitToView?.()
-  const renderComposite = () => canvasWorkspaceRef.value?.renderComposite?.()
-  const exportImage = () => canvasWorkspaceRef.value?.exportImage?.()
+  const zoomBy = delta => drawingAreaRef.value?.zoomBy?.(delta)
+  const resetZoom = () => drawingAreaRef.value?.resetZoom?.()
+  const centerInView = () => drawingAreaRef.value?.centerInView?.()
+  const fitToView = () => drawingAreaRef.value?.fitToView?.()
+  const renderComposite = () => drawingAreaRef.value?.renderComposite?.()
+  const exportImage = () => drawingAreaRef.value?.exportImage?.()
 
   const handleLayersPanelTransitionEnd = (event) => {
     if (event?.propertyName !== 'width') return
@@ -246,13 +331,59 @@
     overflow: hidden;
   }
 
+  .layers {
+    flex-shrink: 0;
+  }
+
   .workspace {
-    position: relative;
-    z-index: 1;
-    flex: 1;
     display: flex;
     flex-direction: column;
     min-width: 0;
+    flex: 1;
+  }
+
+  .help {
+    width: 800px;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    color: #9ea1b0;
+    font-size: 14px;
+    background: #171820;
+    border: 1px dashed #2a2c36;
+    border-radius: var(--radius);
+    padding: calc(var(--gap) * 4);
+    overflow-y: auto;
+  }
+
+  .help ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .help li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: var(--gap);
+    line-height: 1.3;
+  }
+
+  .help .separator {
+    display: block;
+    height: 1px;
+    width: 55%;
+    margin: calc(var(--gap) / 2) auto;
+    background: #2a2c36;
+  }
+
+  .toolbar {
+    margin-top: auto;
   }
 
   .file-drop-overlay {
