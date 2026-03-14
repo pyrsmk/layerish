@@ -1,7 +1,6 @@
 # TODO
 
 - quand on dessine en composite avec plusieurs calques c'est super lent (mais sans composite ça va)
-- enlever le radius sur le workspace quand le height ou le width est à 100%
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
 - il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit
 - UI carrée comme à l'époque VB6

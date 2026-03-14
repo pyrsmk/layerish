@@ -25,6 +25,7 @@
       <canvas
         ref="canvasRef"
         class="canvas"
+        :class="{ 'full-bleed': isFullBleed }"
         @pointerdown="handlePointerDown"
         @pointermove="handlePointerMove"
         @pointerup="handlePointerUp"
@@ -53,7 +54,7 @@
 </template>
 
 <script setup>
-  import { toRef } from 'vue'
+  import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
   import { useCanvas } from '../composables/useCanvas'
 
   const props = defineProps({
@@ -89,6 +90,39 @@
     canvasSize: canvasSizeRef,
   })
 
+  const containerSize = ref({ width: 0, height: 0 })
+  let resizeObserver = null
+
+  const isFullBleed = computed(() => {
+    const { width, height } = containerSize.value
+    if (!width || !height) return false
+    const canvasWidth = props.canvasSize.width * props.state.zoom
+    const canvasHeight = props.canvasSize.height * props.state.zoom
+    const epsilon = 0.5
+    return canvasWidth >= width - epsilon || canvasHeight >= height - epsilon
+  })
+
+  onMounted(() => {
+    const container = containerRef.value
+    if (!container) return
+    const rect = container.getBoundingClientRect()
+    containerSize.value = { width: rect.width, height: rect.height }
+    resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (!entry) return
+      const { width, height } = entry.contentRect
+      containerSize.value = { width, height }
+    })
+    resizeObserver.observe(container)
+  })
+
+  onUnmounted(() => {
+    if (resizeObserver) {
+      resizeObserver.disconnect()
+      resizeObserver = null
+    }
+  })
+
   defineExpose({
     renderComposite,
     exportImage,
@@ -121,6 +155,10 @@
     border-radius: var(--radius);
     border: 1px solid #1f2028;
     touch-action: none;
+  }
+
+  .canvas.full-bleed {
+    border-radius: 0;
   }
 
   .brush {

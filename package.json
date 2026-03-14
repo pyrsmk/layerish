@@ -1,7 +1,7 @@
 {
   "name": "layerish",
   "private": true,
-  "version": "0.24",
+  "version": "0.25",
   "type": "module",
   "dependencies": {
     "vue": "^3.5.25"
