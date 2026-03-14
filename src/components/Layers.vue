@@ -1,7 +1,6 @@
 <template>
   <aside
     class="layers"
-    @transitionend.self="handleTransitionEnd"
   >
     <div class="header">
       <div class="title">
@@ -93,8 +92,7 @@
     dragLayerId: { type: String, default: null },
     dragInsertIndex: { type: Number, default: null },
     blendModes: { type: Array, required: true },
-    onToggleLayersPanel: { type: Function, required: true },
-    onLayersTransitionEnd: { type: Function, required: false },
+
     onFilesSelected: { type: Function, required: true },
     onSetActiveLayer: { type: Function, required: true },
     onDeleteLayer: { type: Function, required: true },
@@ -184,10 +182,7 @@
     window.addEventListener('pointercancel', handlePointerCancel)
   }
 
-  const handleTransitionEnd = (event) => {
-    if (event.propertyName !== 'width') return
-    props.onLayersTransitionEnd?.(event)
-  }
+
 </script>
 
 <style scoped>
@@ -201,8 +196,6 @@
     flex-direction: column;
     padding: calc(var(--gap) * 2);
     gap: calc(var(--gap) * 2);
-    transition: width 0.2s ease,
-                padding 0.2s ease;
   }
 
   .header {

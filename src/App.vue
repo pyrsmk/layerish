@@ -14,8 +14,6 @@
       :drag-layer-id="state.dragLayerId"
       :drag-insert-index="state.dragInsertIndex"
       :blend-modes="blendModes"
-      :on-toggle-layers-panel="toggleLayersPanel"
-      :on-layers-transition-end="handleLayersPanelTransitionEnd"
       :on-files-selected="onFilesSelected"
       :on-set-active-layer="setActiveLayer"
       :on-delete-layer="deleteLayer"
@@ -174,7 +172,7 @@
   import Tooltip from './components/Tooltip.vue'
   import Icon from './components/Icon.vue'
   import { useEditorState } from './composables/useEditorState'
-  import { useLayout } from './composables/useLayout'
+
   import { useLayers } from './composables/useLayers'
   import { useMask } from './composables/useMask'
   import { useEditorActions } from './composables/useEditorActions'
@@ -190,7 +188,6 @@
   } = useEditorState()
 
   const { createMaskCanvas } = useMask()
-  const { toggleLayersPanel } = useLayout(state)
   const drawingAreaRef = ref(null)
   const isFileDragActive = ref(false)
   const fileDragDepth = ref(0)
@@ -204,10 +201,7 @@
   const renderComposite = () => drawingAreaRef.value?.renderComposite?.()
   const exportImage = () => drawingAreaRef.value?.exportImage?.()
 
-  const handleLayersPanelTransitionEnd = (event) => {
-    if (event?.propertyName !== 'width') return
-    centerInView()
-  }
+
 
   const {
     setActiveLayer,

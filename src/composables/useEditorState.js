@@ -36,7 +36,7 @@ export function useEditorState() {
     moveStart: null,
     moveLayerId: null,
     isPanMode: false,
-    hasUserToggledLayers: false,
+
     isCursorOverImage: false,
     dragLayerId: null,
     dragOverLayerId: null,

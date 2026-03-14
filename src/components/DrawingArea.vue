@@ -81,6 +81,7 @@
     fitToView,
     resetZoom,
     zoomBy,
+    syncPanToContainerCenter,
   } = useCanvas({
     state: props.state,
     activeLayer: activeLayerRef,
@@ -95,6 +96,7 @@
     fitToView,
     resetZoom,
     zoomBy,
+    syncPanToContainerCenter,
   })
 </script>
 

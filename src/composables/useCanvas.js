@@ -9,6 +9,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
   const moveLayerRef = computed(() => unref(moveLayer) ?? null)
   const canvasSizeRef = computed(() => unref(canvasSize) ?? null)
   let maskFeatherRenderTimer = null
+  let resizeRaf = null
+  let lastContainerSize = null
 
   function renderComposite() {
     const canvas = canvasRef.value
@@ -344,6 +346,43 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     zoomBy(delta)
   }
 
+  function preserveCanvasCenter(prevSize, nextSize) {
+    const centerX = prevSize.width / 2
+    const centerY = prevSize.height / 2
+    const canvasCenterX = (centerX - state.pan.x) / state.zoom
+    const canvasCenterY = (centerY - state.pan.y) / state.zoom
+
+    state.pan.x = nextSize.width / 2 - canvasCenterX * state.zoom
+    state.pan.y = nextSize.height / 2 - canvasCenterY * state.zoom
+  }
+
+  function syncPanToContainerCenter() {
+    const container = containerRef.value
+    if (!container) return
+
+    const nextSize = {
+      width: container.clientWidth,
+      height: container.clientHeight,
+    }
+
+    if (!lastContainerSize) {
+      lastContainerSize = nextSize
+      centerInView()
+      return
+    }
+
+    preserveCanvasCenter(lastContainerSize, nextSize)
+    lastContainerSize = nextSize
+  }
+
+  function handleWindowResize() {
+    if (resizeRaf) cancelAnimationFrame(resizeRaf)
+    resizeRaf = requestAnimationFrame(() => {
+      syncPanToContainerCenter()
+      resizeRaf = null
+    })
+  }
+
   watch(
     () => [state.layers.length, state.activeLayerId],
     () => {
@@ -367,9 +406,22 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
 
   onMounted(() => {
     renderComposite()
+    const container = containerRef.value
+    if (container) {
+      lastContainerSize = {
+        width: container.clientWidth,
+        height: container.clientHeight,
+      }
+    }
+    window.addEventListener('resize', handleWindowResize)
   })
 
   onUnmounted(() => {
+    window.removeEventListener('resize', handleWindowResize)
+    if (resizeRaf) {
+      cancelAnimationFrame(resizeRaf)
+      resizeRaf = null
+    }
     if (state.pointerId !== null) {
       state.pointerId = null
     }
@@ -377,7 +429,6 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
       clearTimeout(maskFeatherRenderTimer)
       maskFeatherRenderTimer = null
     }
-
   })
 
   return {
@@ -394,5 +445,6 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     fitToView,
     resetZoom,
     zoomBy,
+    syncPanToContainerCenter,
   }
 }
