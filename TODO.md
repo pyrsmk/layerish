@@ -1,15 +1,12 @@
 # TODO
 
-- quand on dessine en composite avec plusieurs calques c'est super lent (mais sans composite ça va)
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
-- il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit
 - UI carrée comme à l'époque VB6
 
 - après les refactos :
   - vérifier le responsive
   - vérifier le PWA sur Android
-  - pourquoi pas ajouter de nouveaux effets, comme de la pixellisation, du glitch, etc
-  - fonctionnalité de floutage (doigt)
+- il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit (à voir quand on aura d'autres actions à intégrer)
 
 ## Refacto mode composite
 

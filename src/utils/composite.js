@@ -1,3 +1,5 @@
+import { applyFiltersToCanvas } from '../composables/useFilters'
+
 function createLayerCanvas(layer) {
   const layerCanvas = document.createElement('canvas')
   layerCanvas.width = layer.width
@@ -331,6 +333,10 @@ export function drawComposite({
   visibleOrdered.forEach((layer) => {
     if (!layer.visible) return
     const { layerCanvas, layerCtx } = createLayerCanvas(layer)
+
+    if (Array.isArray(layer.filters) && layer.filters.length > 0) {
+      applyFiltersToCanvas(layerCanvas, layer.filters, { layer })
+    }
 
     const maskCanvas =
       applySelectionMask &&

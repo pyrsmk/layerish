@@ -133,13 +133,44 @@
           size="small"
         />
       </div>
+      <div class="filters">
+        <div class="filters-title">Filtres</div>
+        <div class="filters-grid">
+          <div
+            v-for="preset in filterPresets"
+            :key="preset.id"
+            class="filter-item"
+          >
+            <Button
+              @click="emitSelect(); emitToggleFilter(preset.id)"
+              :active="layer.filters?.includes(preset.id)"
+              :data-tooltip="preset.label"
+              :icon="preset.icon"
+              selectable
+              size="small"
+            />
+            <button
+              v-if="isRandomFilter(preset.id)"
+              type="button"
+              class="filter-dice"
+              :disabled="!layer.filters?.includes(preset.id)"
+              @click.stop="emitSelect(); emitReseedFilter(preset.id)"
+              data-tooltip="Rejouer"
+            >
+              <Icon code="casino" size="xsmall" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </component>
 </template>
 
 <script setup>
   import { computed, ref } from 'vue'
+  import { filterPresets, RANDOM_FILTER_IDS } from '../composables/useFilters'
   import Button from './Button.vue'
+  import Icon from './Icon.vue'
 
   const props = defineProps({
     tagName: { type: String, default: 'LI' },
@@ -165,6 +196,8 @@
     'recenter',
     'clear-mask',
     'toggle-stretch-edges',
+    'toggle-filter',
+    'reseed-filter',
     'pointer-drag-start',
   ])
 
@@ -180,7 +213,11 @@
   const emitRecenter = () => emit('recenter', props.layer)
   const emitClearMask = () => emit('clear-mask', props.layer)
   const emitToggleStretchEdges = () => emit('toggle-stretch-edges', props.layer)
+  const emitToggleFilter = filterId => emit('toggle-filter', props.layer, filterId)
+  const emitReseedFilter = filterId => emit('reseed-filter', props.layer, filterId)
   const emitPointerDragStart = event => emit('pointer-drag-start', props.layer, props.index, event)
+
+  const isRandomFilter = filterId => RANDOM_FILTER_IDS.includes(filterId)
 
   const getBlendModeIndex = () => (
     props.blendModes.findIndex(mode => mode.value === props.layer.blendMode)
@@ -315,6 +352,63 @@
 
   .toolbar > * {
     flex: 1 1 0;
+  }
+
+  .filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    width: 100%;
+  }
+
+  .filters-title {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9ea1b0;
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(34px, 1fr));
+    gap: var(--gap);
+  }
+
+  .filters-grid > * {
+    width: 100%;
+  }
+
+  .filter-item {
+    position: relative;
+    width: 100%;
+  }
+
+  .filter-dice {
+    position: absolute;
+    top: -6px;
+    right: 4px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #9ea1b0;
+    cursor: pointer;
+    transition: color 150ms;
+    height: 14px;
+    line-height: 12px;
+  }
+
+  .filter-dice:hover {
+    color: #7b61ff;
+  }
+
+  .filter-dice[disabled] {
+    color: #434655;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .filter-dice > * {
+    background: #1a1c22;
   }
 
   .blend-controls:not(.visible),

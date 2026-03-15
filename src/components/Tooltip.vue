@@ -41,7 +41,7 @@
     if (!eventTarget) return
 
     target = eventTarget
-    startTimer(showTooltip, 350)
+    startTimer(showTooltip, 200)
   }
 
   function handlePointerOut(event) {

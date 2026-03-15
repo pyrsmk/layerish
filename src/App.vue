@@ -27,6 +27,8 @@
       :on-recenter-layer="recenterLayer"
       :on-clear-mask="clearMask"
       :on-toggle-stretch-edges="toggleLayerStretchEdges"
+      :on-toggle-layer-filter="toggleLayerFilter"
+      :on-reseed-layer-filter="reseedLayerFilter"
       :on-layer-drag-start="onLayerDragStart"
       :on-layer-drag-over="onLayerDragOver"
       :on-layer-drop="onLayerDrop"
@@ -218,6 +220,8 @@
     clearMask,
     toggleLayerVisibility,
     toggleLayerStretchEdges,
+    toggleLayerFilter,
+    reseedLayerFilter,
     invertActiveMask,
     deleteLayer,
     toggleMoveLayer,

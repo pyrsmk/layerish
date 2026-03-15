@@ -1,7 +1,7 @@
 <template>
   <span
     class="icon material-symbols-outlined"
-    :class="{ small, big, giant }"
+    :class="{ xsmall, small, big, giant }"
     :style="`color: ${color}`"
   >
     {{ code }}
@@ -17,6 +17,7 @@
     size: { type: String, default: 'default' },
   })
 
+  const xsmall = computed(() => props.size == 'xsmall')
   const small = computed(() => props.size == 'small')
   const big = computed(() => props.size == 'big')
   const giant = computed(() => props.size == 'giant')
@@ -27,6 +28,10 @@
     font-size: 18px;
     line-height: 1;
     vertical-align: middle;
+  }
+
+  .icon.xsmall {
+    font-size: 14px;
   }
 
   .icon.small {

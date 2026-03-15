@@ -55,6 +55,8 @@
             @recenter="onRecenterLayer"
             @clear-mask="onClearMask"
             @toggle-stretch-edges="onToggleStretchEdges"
+            @toggle-filter="onToggleLayerFilter"
+            @reseed-filter="onReseedLayerFilter"
             @pointer-drag-start="handlePointerDragStart"
           />
           <DropSlot
@@ -106,6 +108,8 @@
     onRecenterLayer: { type: Function, required: true },
     onClearMask: { type: Function, required: true },
     onToggleStretchEdges: { type: Function, required: true },
+    onToggleLayerFilter: { type: Function, required: true },
+    onReseedLayerFilter: { type: Function, required: true },
     onLayerDragStart: { type: Function, required: true },
     onLayerDragOver: { type: Function, required: true },
     onLayerDrop: { type: Function, required: true },
