@@ -13,7 +13,6 @@
       :move-layer-id="state.moveLayerId"
       :drag-layer-id="state.dragLayerId"
       :drag-insert-index="state.dragInsertIndex"
-      :blend-modes="blendModes"
       :on-files-selected="onFilesSelected"
       :on-set-active-layer="setActiveLayer"
       :on-delete-layer="deleteLayer"
@@ -100,7 +99,7 @@
             <span>Ajuster le dégradé des sélections pour adoucir les bords</span>
           </li>
           <li>
-            <Icon color="#f5f6fa" code="flip_to_back" />
+            <Icon color="#f5f6fa" code="blur_linear" />
             <span>Désactiver le dégradé sur le bord des masques</span>
           </li>
           <li class="separator" aria-hidden="true" />
@@ -137,6 +136,7 @@
         :is-erasing="state.isErasing"
         :is-pan-mode="state.isPanMode"
         :snap-enabled="state.snapEnabled"
+        :pixel-rendering="state.pixelRendering"
         :show-final-composite="state.showFinalComposite"
         :mask-feather-edge-clamp="state.maskFeatherEdgeClamp"
         :has-layers="state.layers.length > 0"
@@ -150,6 +150,7 @@
         :on-toggle-pan-mode="togglePanMode"
         :on-center-in-view="centerInView"
         :on-toggle-snap-enabled="toggleSnapEnabled"
+        :on-toggle-pixel-rendering="togglePixelRendering"
         :on-toggle-final-composite="toggleFinalComposite"
         :on-export-image="exportImage"
       />
@@ -177,8 +178,6 @@
 
   import { useLayers } from './composables/useLayers'
   import { useMask } from './composables/useMask'
-  import { useEditorActions } from './composables/useEditorActions'
-  import { blendModes } from './constants'
 
   const {
     state,
@@ -222,28 +221,23 @@
     toggleLayerStretchEdges,
     toggleLayerFilter,
     reseedLayerFilter,
+    onBlendModeChange,
+    onBlendOpacityInput,
     invertActiveMask,
     deleteLayer,
     toggleMoveLayer,
+    toggleFinalComposite,
+    toggleMaskFeatherEdgeClamp,
+    toggleSnapEnabled,
+    togglePixelRendering,
+    toggleEraser,
+    togglePanMode,
   } = useLayers({
     state,
     canvasSize,
     createMaskCanvas,
     renderComposite,
     fitToView,
-  })
-
-  const {
-    toggleFinalComposite,
-    toggleMaskFeatherEdgeClamp,
-    toggleSnapEnabled,
-    toggleEraser,
-    togglePanMode,
-    onBlendModeChange,
-    onBlendOpacityInput,
-  } = useEditorActions({
-    state,
-    renderComposite,
   })
 
   const clearMoveModes = () => {

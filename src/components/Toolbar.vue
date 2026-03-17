@@ -75,7 +75,7 @@
       :active="maskFeatherEdgeClamp"
       :disabled="!hasLayers"
       data-tooltip="Pas de dégradé sur les bords"
-      icon="motion_mode"
+      icon="blur_linear"
       selectable
     />
     <Separator />
@@ -102,6 +102,14 @@
       selectable
     />
     <Separator />
+    <Button
+      @click="onTogglePixelRendering"
+      :active="pixelRendering"
+      :disabled="!hasLayers"
+      data-tooltip="Pixel perfect"
+      icon="yard"
+      selectable
+    />
     <Button
       @click="onToggleFinalComposite"
       :active="showFinalComposite"
@@ -140,6 +148,7 @@
     isErasing: { type: Boolean, default: false },
     isPanMode: { type: Boolean, default: false },
     snapEnabled: { type: Boolean, default: true },
+    pixelRendering: { type: Boolean, default: true },
     showFinalComposite: { type: Boolean, default: false },
     hasLayers: { type: Boolean, default: false },
     onUndo: { type: Function, required: true },
@@ -152,6 +161,7 @@
     onTogglePanMode: { type: Function, required: true },
     onCenterInView: { type: Function, required: true },
     onToggleSnapEnabled: { type: Function, required: true },
+    onTogglePixelRendering: { type: Function, required: true },
     onToggleFinalComposite: { type: Function, required: true },
     onExportImage: { type: Function, required: true },
   })

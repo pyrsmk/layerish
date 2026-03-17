@@ -169,6 +169,7 @@
 <script setup>
   import { computed, ref } from 'vue'
   import { filterPresets, RANDOM_FILTER_IDS } from '../composables/useFilters'
+  import { blendModes } from '../constants'
   import Button from './Button.vue'
   import Icon from './Icon.vue'
 
@@ -178,7 +179,6 @@
     index: { type: Number, required: true },
     isActive: { type: Boolean, default: false },
     isMoveActive: { type: Boolean, default: false },
-    blendModes: { type: Array, required: true },
   })
 
   const isDragSuppressed = ref(false)
@@ -220,7 +220,7 @@
   const isRandomFilter = filterId => RANDOM_FILTER_IDS.includes(filterId)
 
   const getBlendModeIndex = () => (
-    props.blendModes.findIndex(mode => mode.value === props.layer.blendMode)
+    blendModes.findIndex(mode => mode.value === props.layer.blendMode)
   )
   const blendModeIndex = computed(() => getBlendModeIndex())
 
@@ -228,17 +228,17 @@
     () => blendModeIndex.value == 0
   )
   const isNextBlendModeDisabled = computed(
-    () => blendModeIndex.value == props.blendModes.length - 1
+    () => blendModeIndex.value == blendModes.length - 1
   )
 
   const selectBlendModeAt = index => {
-    if (!props.blendModes.length) {
+    if (!blendModes.length) {
       return
     }
-    if (index < 0 || index >= props.blendModes.length) {
+    if (index < 0 || index >= blendModes.length) {
       return
     }
-    props.layer.blendMode = props.blendModes[index].value
+    props.layer.blendMode = blendModes[index].value
     emitBlendModeChange()
   }
   const selectPreviousBlendMode = () => selectBlendModeAt(getBlendModeIndex() - 1)

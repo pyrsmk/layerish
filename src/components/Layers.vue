@@ -40,7 +40,6 @@
           <Layer
             :layer="layer"
             :index="index"
-            :blend-modes="blendModes"
             :is-active="layer.id === activeLayerId"
             :is-move-active="layer.id === moveLayerId"
             @select="onSetActiveLayer"
@@ -93,8 +92,6 @@
     moveLayerId: { type: String, default: null },
     dragLayerId: { type: String, default: null },
     dragInsertIndex: { type: Number, default: null },
-    blendModes: { type: Array, required: true },
-
     onFilesSelected: { type: Function, required: true },
     onSetActiveLayer: { type: Function, required: true },
     onDeleteLayer: { type: Function, required: true },

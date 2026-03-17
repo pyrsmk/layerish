@@ -25,7 +25,7 @@
       <canvas
         ref="canvasRef"
         class="canvas"
-        :class="{ 'full-bleed': isFullBleed }"
+        :class="{ 'full-bleed': isFullBleed, 'pixel-rendering': state.pixelRendering }"
         @pointerdown="handlePointerDown"
         @pointermove="handlePointerMove"
         @pointerup="handlePointerUp"
@@ -155,6 +155,10 @@
     border-radius: var(--radius);
     border: 1px solid #1f2028;
     touch-action: none;
+  }
+
+  .canvas.pixel-rendering {
+    image-rendering: pixelated;
   }
 
   .canvas.full-bleed {

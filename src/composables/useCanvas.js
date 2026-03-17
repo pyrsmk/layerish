@@ -221,8 +221,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     if (state.isPanning && state.panLastPoint) {
       const dx = event.clientX - state.panLastPoint.x
       const dy = event.clientY - state.panLastPoint.y
-      state.pan.x += dx
-      state.pan.y += dy
+      state.pan.x = Math.round(state.pan.x + dx)
+      state.pan.y = Math.round(state.pan.y + dy)
       state.panLastPoint = { x: event.clientX, y: event.clientY }
       return
     }
@@ -277,8 +277,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     const height = container.clientHeight
     const canvasWidth = canvasSizeRef.value.width * state.zoom
     const canvasHeight = canvasSizeRef.value.height * state.zoom
-    state.pan.x = (width - canvasWidth) / 2
-    state.pan.y = (height - canvasHeight) / 2
+    state.pan.x = Math.round((width - canvasWidth) / 2)
+    state.pan.y = Math.round((height - canvasHeight) / 2)
   }
 
   function fitToView() {
@@ -316,8 +316,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     const canvasCenterY = (centerY - state.pan.y) / prevZoom
 
     state.zoom = nextZoom
-    state.pan.x = centerX - canvasCenterX * nextZoom
-    state.pan.y = centerY - canvasCenterY * nextZoom
+    state.pan.x = Math.round(centerX - canvasCenterX * nextZoom)
+    state.pan.y = Math.round(centerY - canvasCenterY * nextZoom)
   }
 
   function zoomBy(delta) {
@@ -335,8 +335,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     const canvasCenterY = (centerY - state.pan.y) / prevZoom
 
     state.zoom = nextZoom
-    state.pan.x = centerX - canvasCenterX * nextZoom
-    state.pan.y = centerY - canvasCenterY * nextZoom
+    state.pan.x = Math.round(centerX - canvasCenterX * nextZoom)
+    state.pan.y = Math.round(centerY - canvasCenterY * nextZoom)
   }
 
   function handleWheel(event) {
@@ -352,8 +352,8 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     const canvasCenterX = (centerX - state.pan.x) / state.zoom
     const canvasCenterY = (centerY - state.pan.y) / state.zoom
 
-    state.pan.x = nextSize.width / 2 - canvasCenterX * state.zoom
-    state.pan.y = nextSize.height / 2 - canvasCenterY * state.zoom
+    state.pan.x = Math.round(nextSize.width / 2 - canvasCenterX * state.zoom)
+    state.pan.y = Math.round(nextSize.height / 2 - canvasCenterY * state.zoom)
   }
 
   function syncPanToContainerCenter() {

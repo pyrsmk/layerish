@@ -1,7 +1,13 @@
 # TODO
 
+- vhs : fine tuner
+- retro scifi : fine tuner
+- vérifier getFilterSignature
+- mieux ranger les filtres par fichier
+- réordonner les listes et codes qui concernent les filtres
+- loader quand une opération prend du temps
+
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
-- UI carrée comme à l'époque VB6
 
 - après les refactos :
   - vérifier le responsive
