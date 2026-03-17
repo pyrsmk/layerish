@@ -224,7 +224,7 @@ const FILTER_PRESETS = [
   },
   {
     id: 'jpeg-artifact',
-    label: 'JPEG Artifact',
+    label: 'JPEG Artifacts',
     engine: 'jpegArtifact',
     params: {
       quality: [2, 5],

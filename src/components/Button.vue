@@ -30,6 +30,7 @@
 
 <style scoped>
   button {
+    position: relative;
     background: #1b1c24;
     color: #f5f6fa;
     padding: var(--margin);
@@ -66,9 +67,18 @@
     color: #7b61ff;
   }
 
-  button:not([disabled]).active {
+  button:not([disabled]).active:not(.has-preview) {
     border-color: #7b61ff;
     color: #7b61ff;
+  }
+
+  button.has-preview:not([disabled]).active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(123, 97, 255, 0.45);
+    border-radius: inherit;
+    pointer-events: none;
   }
 
   .preview-img {
