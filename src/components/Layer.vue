@@ -32,110 +32,107 @@
       </div>
     </header>
     <div class="controls">
-      <div
-        class="blend-controls"
-        :class="{ visible: index != 0 }"
-      >
-        <Button
-          @click="emitSelect(); selectPreviousBlendMode()"
-          :disabled="isPreviousBlendModeDisabled"
-          data-tooltip="Mode précédent"
-          icon="chevron_left"
-          size="small"
-        />
-        <select
-          v-model="layer.blendMode"
-          @change="emitSelect(); emitBlendModeChange()"
-        >
-          <option v-for="mode in blendModes" :key="mode.value" :value="mode.value">
-            {{ mode.label }}
-          </option>
-        </select>
-        <Button
-          @click="emitSelect(); selectNextBlendMode()"
-          :disabled="isNextBlendModeDisabled"
-          data-tooltip="Mode suivant"
-          icon="chevron_right"
-          size="small"
-        />
+      <div class="section" :class="{ hidden: index == 0 }">
+        <div class="section-title">Modes de fusion</div>
+        <div class="blend-controls">
+          <Button
+            @click="emitSelect(); selectPreviousBlendMode()"
+            :disabled="isPreviousBlendModeDisabled"
+            data-tooltip="Mode précédent"
+            icon="chevron_left"
+            size="small"
+          />
+          <select
+            v-model="layer.blendMode"
+            @change="emitSelect(); emitBlendModeChange()"
+          >
+            <option v-for="mode in blendModes" :key="mode.value" :value="mode.value">
+              {{ mode.label }}
+            </option>
+          </select>
+          <Button
+            @click="emitSelect(); selectNextBlendMode()"
+            :disabled="isNextBlendModeDisabled"
+            data-tooltip="Mode suivant"
+            icon="chevron_right"
+            size="small"
+          />
+        </div>
+        <label class="blend-range" :style="{ '--range-value': layer.blendOpacity }">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            v-model.number="layer.blendOpacity"
+            :data-tooltip="`${layer.blendOpacity}%`"
+            @input="emitSelect(); emitBlendOpacityInput()"
+            @pointerdown.stop="isDragSuppressed = true; emitSelect()"
+            @pointerup.stop="isDragSuppressed = false"
+            @pointercancel.stop="isDragSuppressed = false"
+            @pointerleave.stop="isDragSuppressed = false"
+          />
+        </label>
       </div>
-      <label
-        class="blend-range"
-        :class="{ visible: index != 0 }"
-        :style="{ '--range-value': layer.blendOpacity }"
-      >
-        <input
-          type="range"
-          min="0"
-          max="100"
-          v-model.number="layer.blendOpacity"
-          :data-tooltip="`${layer.blendOpacity}%`"
-          @input="emitSelect(); emitBlendOpacityInput()"
-          @pointerdown.stop="isDragSuppressed = true; emitSelect()"
-          @pointerup.stop="isDragSuppressed = false"
-          @pointercancel.stop="isDragSuppressed = false"
-          @pointerleave.stop="isDragSuppressed = false"
-        />
-      </label>
-      <div class="toolbar">
-        <Button
-          @click="emitSelect(); emitNudge(-0.05)"
-          data-tooltip="Réduire"
-          icon="remove"
-          size="small"
-        />
-        <Button
-          @click="emitSelect(); emitNudge(0.05)"
-          data-tooltip="Agrandir"
-          icon="add"
-          size="small"
-        />
-        <Button
-          @click="emitSelect(); emitFitLayerToViewport()"
-          data-tooltip="Adapter le calque au viewport"
-          icon="fit_screen"
-          size="small"
-        />
-        <Button
-          @click="emitSelect(); emitFitViewportToLayer()"
-          data-tooltip="Adapter le viewport au calque"
-          icon="responsive_layout"
-          size="small"
-        />
+      <div class="section">
+        <div class="section-title">Actions</div>
+        <div class="section-grid">
+          <Button
+            @click="emitSelect(); emitNudge(-0.05)"
+            data-tooltip="Réduire"
+            icon="remove"
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitNudge(0.05)"
+            data-tooltip="Agrandir"
+            icon="add"
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitFitLayerToViewport()"
+            data-tooltip="Adapter le calque au viewport"
+            icon="fit_screen"
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitFitViewportToLayer()"
+            data-tooltip="Adapter le viewport au calque"
+            icon="responsive_layout"
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitToggleMove()"
+            :active="isMoveActive"
+            data-tooltip="Déplacer"
+            icon="open_with"
+            selectable
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitRecenter()"
+            data-tooltip="Recentrer"
+            icon="arrows_input"
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitToggleStretchEdges()"
+            :active="layer.stretchEdges"
+            data-tooltip="Étirer le calque"
+            icon="transform"
+            selectable
+            size="small"
+          />
+          <Button
+            @click="emitSelect(); emitClearMask()"
+            data-tooltip="Effacer la sélection"
+            icon="remove_selection"
+            size="small"
+          />
+        </div>
       </div>
-      <div class="toolbar">
-        <Button
-          @click="emitSelect(); emitToggleMove()"
-          :active="isMoveActive"
-          data-tooltip="Déplacer"
-          icon="open_with"
-          selectable
-          size="small"
-        />
-        <Button
-          @click="emitSelect(); emitRecenter()"
-          data-tooltip="Recentrer"
-          icon="arrows_input"
-          size="small"
-        />
-        <Button
-          @click="emitSelect(); emitToggleStretchEdges()"
-          :active="layer.stretchEdges"
-          data-tooltip="Étirer le calque"
-          icon="transform"
-          selectable
-          size="small"
-        />
-        <Button
-          @click="emitSelect(); emitClearMask()"
-          data-tooltip="Effacer la sélection"
-          icon="remove_selection"
-          size="small"
-        />
-      </div>
-      <div class="filters">
-        <div class="filters-title">Filtres</div>
-        <div class="filters-grid">
+      <div class="section">
+        <div class="section-title">Filtres</div>
+        <div class="section-grid">
           <div
             v-for="preset in filterPresets"
             :key="preset.id"
@@ -293,16 +290,44 @@
     object-position: center;
   }
 
+  .actions {
+    display: flex;
+    gap: var(--gap);
+  }
+
   .controls {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--gap) * 2);
+    width: 100%;
+  }
+
+  .section {
     display: flex;
     flex-direction: column;
     gap: var(--gap);
     width: 100%;
   }
 
-  .actions {
-    display: flex;
+  .section.hidden {
+    display: none;
+  }
+
+  .section-title {
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9ea1b0;
+  }
+
+  .section-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
     gap: var(--gap);
+  }
+
+  .section-grid > * {
+    width: 100%;
   }
 
   .blend-controls {
@@ -344,40 +369,6 @@
     cursor: pointer;
   }
 
-  .toolbar {
-    display: flex;
-    gap: var(--gap);
-    width: 100%;
-  }
-
-  .toolbar > * {
-    flex: 1 1 0;
-  }
-
-  .filters {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap);
-    width: 100%;
-  }
-
-  .filters-title {
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #9ea1b0;
-  }
-
-  .filters-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(34px, 1fr));
-    gap: var(--gap);
-  }
-
-  .filters-grid > * {
-    width: 100%;
-  }
-
   .filter-item {
     position: relative;
     width: 100%;
@@ -409,10 +400,5 @@
 
   .filter-dice > * {
     background: #1a1c22;
-  }
-
-  .blend-controls:not(.visible),
-  .blend-range:not(.visible) {
-    display: none;
   }
 </style>

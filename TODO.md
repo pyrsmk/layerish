@@ -6,13 +6,9 @@
 - mieux ranger les filtres par fichier
 - réordonner les listes et codes qui concernent les filtres
 - loader quand une opération prend du temps
+- affichage des filtres en vignette, et plus en icônes + tooltip
 
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
-
-- après les refactos :
-  - vérifier le responsive
-  - vérifier le PWA sur Android
-- il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit (à voir quand on aura d'autres actions à intégrer)
 
 ## Refacto mode composite
 
@@ -65,3 +61,9 @@
   - { event: 'workspace_snap', enabled: boolean }
   - { event: 'workspace_composite_mode', enabled: boolean }
   - <layer_id> : hash aléatoire de 6 caractères hexadécimaux
+
+## Suite
+
+- vérifier le responsive
+- vérifier le PWA sur Android
+- il faudrait ptet un bouton pour prendre toute la surface disponible à côté du bouton fit (à voir quand on aura d'autres actions à intégrer)
