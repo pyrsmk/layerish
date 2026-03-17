@@ -37,63 +37,54 @@ const FILTER_PRESETS = [
   {
     id: 'nano-pixel',
     label: 'Nano Pixel',
-    icon: 'grid_4x4',
     engine: 'pixelize',
     params: { sizeRatio: 0.0025 },
   },
   {
     id: 'micro-pixel',
     label: 'Micro Pixel',
-    icon: 'grid_4x4',
     engine: 'pixelize',
     params: { sizeRatio: 0.004 },
   },
   {
     id: 'duotone',
     label: 'Duotone',
-    icon: 'palette',
     engine: 'duotone',
     params: { dark: { r: 20, g: 0, b: 80 }, light: { r: 255, g: 200, b: 50 } },
   },
   {
     id: 'channel-swap',
     label: 'Channel Swap',
-    icon: 'palette',
     engine: 'channelSwap',
     params: { shift: 1 },
   },
   {
     id: 'film-grain',
     label: 'Film Grain',
-    icon: 'transition_dissolve',
     engine: 'noise',
     params: { amount: 14 },
   },
   {
     id: 'dusty-grain',
     label: 'Dusty Grain',
-    icon: 'transition_dissolve',
     engine: 'noise',
     params: { amount: 28 },
   },
   {
     id: 'rgb-noise',
     label: 'RGB Noise',
-    icon: 'transition_dissolve',
     engine: 'rgbNoise',
     params: { amount: 0.3, scale: 0.012, edgeBoost: 2.9, saturation: 1.05 },
   },
   {
     id: 'soft-glow',
     label: 'Soft Glow',
-    icon: 'auto_awesome',
     engine: 'bloom',
     params: { radiusRatio: 0.02, intensity: 0.9 },
   },
   {
     id: 'neon-glow',
     label: 'Neon Glow',
-    icon: 'auto_awesome',
     engine: 'dualSplitBase',
     params: {
       magenta: { xRatio: -0.004, yRatio: -0.002 },
@@ -104,98 +95,84 @@ const FILTER_PRESETS = [
   {
     id: 'bloom-hdr',
     label: 'Bloom HDR',
-    icon: 'auto_awesome',
     engine: 'bloomHdr',
     params: { radiusRatio: 0.02, intensity: 0.7, threshold: 0.6 },
   },
   {
     id: 'dreamy-glow',
     label: 'Dreamy Glow',
-    icon: 'auto_awesome',
     engine: 'dreamyGlow',
     params: { radiusRatio: 0.03, intensity: 0.6, desaturation: 0.4 },
   },
   {
     id: 'edge-glow',
     label: 'Edge Glow',
-    icon: 'auto_awesome',
     engine: 'edgeGlow',
     params: { radiusRatio: 0.012, intensity: 0.8, edgeStrength: 1.5 },
   },
   {
     id: 'warm-glow',
     label: 'Warm Glow',
-    icon: 'auto_awesome',
     engine: 'tintedBloom',
     params: { radiusRatio: 0.025, intensity: 0.5, tint: { r: 255, g: 180, b: 80 } },
   },
   {
     id: 'cold-glow',
     label: 'Cold Glow',
-    icon: 'auto_awesome',
     engine: 'tintedBloom',
     params: { radiusRatio: 0.025, intensity: 0.5, tint: { r: 80, g: 160, b: 255 } },
   },
   {
     id: 'halo-glow',
     label: 'Halo Glow',
-    icon: 'auto_awesome',
     engine: 'haloGlow',
     params: { radiusRatio: 0.06, intensity: 0.35 },
   },
   {
     id: 'random-noise-dither',
     label: 'Random Noise Dither',
-    icon: 'grain',
     engine: 'ditherRandomNoise',
     params: { levels: 2 },
   },
   {
     id: 'riemersma-dither',
     label: 'Riemersma Dither',
-    icon: 'grain',
     engine: 'ditherRiemersma',
     params: { levels: 2 },
   },
   {
     id: 'atkinson-dither',
     label: 'Atkinson Dither',
-    icon: 'grain',
     engine: 'ditherAtkinson',
     params: { levels: 2 },
   },
   {
     id: 'bayer-dither',
     label: 'Bayer Dither',
-    icon: 'grain',
     engine: 'ditherBayer',
     params: { matrixSize: 4, levels: 2 },
   },
   {
     id: 'blue-noise-dither',
     label: 'Blue Noise Dither',
-    icon: 'grain',
     engine: 'ditherBlueNoise',
     params: { levels: 2 },
   },
   {
     id: 'clustered-dot-dither',
     label: 'Clustered Dot Dither',
-    icon: 'grain',
     engine: 'ditherClusteredDot',
     params: { levels: 2 },
   },
   {
     id: 'chromatic-split',
     label: 'Chromatic Split',
-    icon: 'broken_image',
     engine: 'chroma',
     params: { offsetRatio: 0.004, offsetYRatio: 0.002 },
   },
   {
     id: 'retro-split',
     label: 'Retro Split',
-    icon: 'broken_image',
     engine: 'neonSplit',
     params: {
       r: { xRatio: -0.01, yRatio: -0.006 },
@@ -206,7 +183,6 @@ const FILTER_PRESETS = [
   {
     id: 'neon-split',
     label: 'Neon Split',
-    icon: 'broken_image',
     engine: 'dualSplitOnly',
     params: {
       magenta: { xRatio: -0.0025, yRatio: -0.0025 },
@@ -217,14 +193,12 @@ const FILTER_PRESETS = [
   {
     id: 'anaglyph-split',
     label: 'Anaglyph Split',
-    icon: 'broken_image',
     engine: 'anaglyphSplit',
     params: { offsetRatio: [0.025, 0.075] },
   },
   {
     id: 'rgb-shift-bands',
     label: 'RGB Shift',
-    icon: 'broken_image',
     engine: 'rgbShiftBands',
     params: {
       bandCount: [3, 8],
@@ -236,7 +210,6 @@ const FILTER_PRESETS = [
   {
     id: 'negative-bands',
     label: 'Negative Bands',
-    icon: 'broken_image',
     engine: 'colorShift',
     params: {
       bandCount: [3, 7],
@@ -252,7 +225,6 @@ const FILTER_PRESETS = [
   {
     id: 'jpeg-artifact',
     label: 'JPEG Artifact',
-    icon: 'broken_image',
     engine: 'jpegArtifact',
     params: {
       quality: [2, 5],
@@ -264,7 +236,6 @@ const FILTER_PRESETS = [
   {
     id: 'block-corruption',
     label: 'Block Corruption',
-    icon: 'broken_image',
     engine: 'blockCorruption',
     params: {
       blockSizeRatio: [0.006, 0.012],
@@ -276,42 +247,36 @@ const FILTER_PRESETS = [
   {
     id: 'horizontal-shift',
     label: 'Horizontal Shift',
-    icon: 'texture',
     engine: 'glitchTear',
     params: { bandCount: 7, heightRatio: [0.01, 0.1], maxOffsetRatio: 0.03 },
   },
   {
     id: 'vertical-shift',
     label: 'Vertical Shift',
-    icon: 'texture',
     engine: 'glitchTearVertical',
     params: { bandCount: 7, heightRatio: [0.01, 0.1], maxOffsetRatio: 0.03 },
   },
   {
     id: 'blocks-shift',
     label: 'Blocks Shift',
-    icon: 'texture',
     engine: 'glitchBlocks',
     params: { blockCount: 64, sizeRatio: [0.01, 0.1], maxOffsetRatio: 0.024 },
   },
   {
     id: 'horizontal-byte-shift',
     label: 'Horizontal Byte Shift',
-    icon: 'texture',
     engine: 'horizontalByteShift',
     params: { offsetRatio: [0.1, 0.5] },
   },
   {
     id: 'vertical-byte-shift',
     label: 'Vertical Byte Shift',
-    icon: 'texture',
     engine: 'verticalByteShift',
     params: { offsetRatio: [0.1, 0.5] },
   },
   {
     id: 'palette-gameboy',
     label: 'Gameboy',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[15, 56, 15], [48, 98, 48], [139, 172, 15], [155, 188, 15]],
@@ -321,7 +286,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-rgb',
     label: 'RGB',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [255, 0, 0], [0, 255, 0], [0, 0, 255]],
@@ -331,7 +295,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-cym',
     label: 'CYM',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [0, 255, 255], [255, 255, 0], [255, 0, 255]],
@@ -341,7 +304,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-cga',
     label: 'CGA',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [85, 255, 85], [255, 85, 85], [255, 255, 85]],
@@ -351,7 +313,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-virtual-boy',
     label: 'Virtual Boy',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [85, 0, 0], [170, 0, 0], [255, 0, 0]],
@@ -361,7 +322,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-nes',
     label: 'NES',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[15, 15, 15], [252, 252, 252], [216, 40, 0], [0, 88, 248], [0, 168, 0], [248, 184, 0], [252, 0, 120], [60, 188, 252]],
@@ -371,7 +331,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-zx-spectrum',
     label: 'ZX Spectrum',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [0, 0, 215], [215, 0, 0], [215, 0, 215], [0, 215, 0], [0, 215, 215], [215, 215, 0], [215, 215, 215], [0, 0, 255], [255, 0, 0], [255, 0, 255], [0, 255, 0], [0, 255, 255], [255, 255, 0], [255, 255, 255]],
@@ -381,7 +340,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-mono-amber',
     label: 'Mono Amber',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [85, 52, 0], [170, 105, 0], [255, 176, 0]],
@@ -391,7 +349,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-sepia',
     label: 'Sepia',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[44, 30, 15], [100, 70, 40], [180, 140, 100], [240, 220, 190]],
@@ -401,7 +358,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-cyberpunk',
     label: 'Cyberpunk',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [255, 0, 128], [0, 255, 255], [128, 0, 255]],
@@ -411,7 +367,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-vaporwave',
     label: 'Vaporwave',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[255, 113, 206], [121, 189, 255], [185, 137, 255], [0, 255, 195]],
@@ -421,7 +376,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-bw',
     label: 'B&W',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 0], [255, 255, 255]],
@@ -431,7 +385,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-blueprint',
     label: 'Blueprint',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[10, 30, 80], [40, 80, 160], [120, 160, 220], [220, 230, 255]],
@@ -441,7 +394,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-infrared',
     label: 'Infrared',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[0, 0, 32], [140, 0, 140], [255, 40, 0], [255, 255, 0]],
@@ -451,7 +403,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-sunset',
     label: 'Sunset',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[20, 0, 20], [180, 40, 30], [255, 120, 0], [255, 220, 50]],
@@ -461,7 +412,6 @@ const FILTER_PRESETS = [
   {
     id: 'palette-newsprint',
     label: 'Journal',
-    icon: 'terminal',
     engine: 'palettePixel',
     params: {
       palette: [[35, 31, 25], [120, 110, 95], [200, 190, 170], [240, 235, 220]],
@@ -471,35 +421,30 @@ const FILTER_PRESETS = [
   {
     id: 'bitcrush-1',
     label: 'Bitcrush 1',
-    icon: 'flex_wrap',
     engine: 'bitcrush',
     params: { level: [2, 2] },
   },
   {
     id: 'bitcrush-2',
     label: 'Bitcrush 2',
-    icon: 'flex_wrap',
     engine: 'bitcrush',
     params: { level: [3, 3] },
   },
   {
     id: 'bitcrush-3',
     label: 'Bitcrush 3',
-    icon: 'flex_wrap',
     engine: 'bitcrush',
     params: { level: [4, 7] },
   },
   {
     id: 'bitcrush-stripes',
     label: 'Bitcrush Stripes',
-    icon: 'flex_wrap',
     engine: 'bitcrushStripes',
     params: { heightRatio: [0.01, 0.1], level: [2, 6] },
   },
   {
     id: 'cinema-tone',
     label: 'Cinema Tone',
-    icon: 'videocam',
     engine: 'cinemaTone',
     params: {
       contrast: 1.2,
@@ -514,7 +459,6 @@ const FILTER_PRESETS = [
   {
     id: 'chromatic-aberration',
     label: 'Chromatic Aberration',
-    icon: 'videocam',
     engine: 'chromaticAberration',
     params: {
       strengthRatio: 0.008,
@@ -524,7 +468,6 @@ const FILTER_PRESETS = [
   {
     id: 'crt-screen',
     label: 'CRT Screen',
-    icon: 'videocam',
     engine: 'crtScreen',
     params: {
       barrel: 0.07,
@@ -541,7 +484,6 @@ const FILTER_PRESETS = [
   {
     id: 'vhs',
     label: 'VHS',
-    icon: 'videocam',
     engine: 'vhs',
     params: {
       lumaSmear: [0.3, 0.8],
@@ -572,7 +514,6 @@ const FILTER_PRESETS = [
   {
     id: 'retro-sci-fi',
     label: 'Retro Sci-fi',
-    icon: 'videocam',
     engine: 'retroSciFi',
     params: {
       lineFrequency: 0.38,
@@ -587,7 +528,6 @@ const FILTER_PRESETS = [
   {
     id: 'oscilloscope',
     label: 'Oscilloscope',
-    icon: 'videocam',
     engine: 'oscilloscope',
     params: {
       rowStepRatio: 0.011,
@@ -602,14 +542,12 @@ const FILTER_PRESETS = [
   {
     id: 'data-loss',
     label: 'Data Loss',
-    icon: 'barcode',
     engine: 'dataLoss',
     params: { heightRatio: [0.15, 0.50], noiseDensity: 0.65, rgbNoise: 0.6, lineRatio: 1/12 },
   },
   {
     id: 'data-loss-stream',
     label: 'Data Loss Stream',
-    icon: 'barcode',
     engine: 'dataLossStream',
     params: {
       heightRatio: [0.15, 0.50],
@@ -621,42 +559,36 @@ const FILTER_PRESETS = [
   {
     id: 'data-loss-freeze',
     label: 'Data Loss Freeze',
-    icon: 'barcode',
     engine: 'dataLossFreeze',
     params: { startRatio: [0.10, 0.70] },
   },
   {
     id: 'data-loss-bitplane',
     label: 'Data Loss Bitplane',
-    icon: 'barcode',
     engine: 'dataLossBitplane',
     params: { heightRatio: [0.15, 0.50] },
   },
   {
     id: 'row-corruption',
     label: 'Row Corruption',
-    icon: 'barcode',
     engine: 'rowCorruption',
     params: { bandCount: [5, 20], heightRatio: [0.001, 0.006], maxShiftRatio: 0.2 },
   },
   {
     id: 'rgb-glitch',
     label: 'RGB Glitch',
-    icon: 'looks',
     engine: 'hueDistortionRgb',
     params: { amount: 1.2, scale: 0.022, threshold: 0.3, maxOffsetRatio: 0.014, edgeBoost: 1.1 },
   },
   {
     id: 'data-loss-drift',
     label: 'RGB Drift',
-    icon: 'looks',
     engine: 'dataLossDrift',
     params: { startRatio: [0.10, 0.70], maxDriftRatio: [0.15, 0.45] },
   },
   {
     id: 'pixel-melt',
     label: 'Pixel Melt',
-    icon: 'line_end_arrow',
     engine: 'pixelMelt',
     params: {
       threshold: 0.45,
@@ -696,7 +628,7 @@ export const RANDOM_FILTER_IDS = [
   'block-corruption',
 ]
 
-const FILTER_ENGINES = {
+export const FILTER_ENGINES = {
   pixelize: applyPixelize,
   rgbShift: applyRgbShift,
   neonSplit: applyNeonSplit,

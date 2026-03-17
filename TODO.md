@@ -6,7 +6,6 @@
 - mieux ranger les filtres par fichier
 - réordonner les listes et codes qui concernent les filtres
 - loader quand une opération prend du temps
-- affichage des filtres en vignette, et plus en icônes + tooltip
 
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
 

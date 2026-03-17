@@ -1,10 +1,11 @@
 <template>
   <button
     @click.stop="$emit('click')"
-    :class="{ selectable, active, small, big }"
+    :class="{ selectable, active, small, big, 'has-preview': !!preview }"
     :disabled="disabled"
   >
-    <Icon :code="icon" :size="size" />
+    <img v-if="preview" :src="preview" class="preview-img" alt="" />
+    <Icon v-else-if="icon" :code="icon" :size="size" />
   </button>
 </template>
 
@@ -15,7 +16,8 @@
   defineEmits(['click'])
 
   const props = defineProps({
-    icon: { type: String, required: true },
+    icon: { type: String, default: '' },
+    preview: { type: String, default: null },
     selectable: { type: Boolean, default: false },
     active: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
@@ -45,6 +47,11 @@
     padding: var(--margin-large);
   }
 
+  button.has-preview {
+    padding: 0;
+    overflow: hidden;
+  }
+
   button[disabled] {
     color: #2b2c34;
   }
@@ -62,5 +69,12 @@
   button:not([disabled]).active {
     border-color: #7b61ff;
     color: #7b61ff;
+  }
+
+  .preview-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
   }
 </style>

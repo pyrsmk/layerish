@@ -14,7 +14,7 @@ const applyGlitchToRegion = (canvas, rx, ry, rw, rh, rand) => {
   const temp = document.createElement('canvas')
   temp.width = rw
   temp.height = rh
-  const tempCtx = temp.getContext('2d')
+  const tempCtx = temp.getContext('2d', { willReadFrequently: true })
   if (!tempCtx) return
   tempCtx.drawImage(canvas, rx, ry, rw, rh, 0, 0, rw, rh)
   const glitchSeed = Math.floor(rand() * 0xFFFFFFFF)

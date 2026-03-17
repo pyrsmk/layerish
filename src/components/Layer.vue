@@ -142,7 +142,7 @@
               @click="emitSelect(); emitToggleFilter(preset.id)"
               :active="layer.filters?.includes(preset.id)"
               :data-tooltip="preset.label"
-              :icon="preset.icon"
+              :preview="previews[preset.id]"
               selectable
               size="small"
             />
@@ -166,6 +166,7 @@
 <script setup>
   import { computed, ref } from 'vue'
   import { filterPresets, RANDOM_FILTER_IDS } from '../composables/useFilters'
+  import { useFilterPreviews } from '../composables/useFilterPreviews'
   import { blendModes } from '../constants'
   import Button from './Button.vue'
   import Icon from './Icon.vue'
@@ -179,6 +180,7 @@
   })
 
   const isDragSuppressed = ref(false)
+  const { previews } = useFilterPreviews(computed(() => props.layer.img))
 
   const emit = defineEmits([
     'select',
