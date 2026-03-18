@@ -2,10 +2,7 @@
   <div
     ref="tooltip"
     class="tooltip"
-    :class="[
-      { visible: state.visible },
-      state.position
-    ]"
+    :class="[{ visible: state.visible }]"
   >
     {{ state.text }}
   </div>
@@ -17,7 +14,7 @@
   import { useRequestAnimationFrame } from '../composables/useRequestAnimationFrame'
 
   const tooltip = ref(null)
-  const state = reactive({ visible: false, text: '', position: 'top' })
+  const state = reactive({ visible: false, text: '' })
   const { start: startTimer, clear: clearTimer } = useTimer()
   const { schedule: scheduleRaf, cancel: cancelRaf } = useRequestAnimationFrame()
   let target = null
@@ -66,14 +63,7 @@
     })
   }
 
-  function getTooltipPositionArg() {
-    return target?.getAttribute('data-tooltip-position') == 'bottom' ?
-           'bottom' :
-           'top'
-  }
-
   function showTooltip() {
-    state.position = getTooltipPositionArg()
     updateTooltipText()
     scheduleRaf(() => updateTooltipPosition(() => state.visible = true))
   }
@@ -102,9 +92,7 @@
     const targetRect = target.getBoundingClientRect()
     let x = targetRect.x + (targetRect.width / 2) - (tooltipRect.width / 2)
     let y = targetRect.y + (targetRect.height / 2) - (tooltipRect.height / 2)
-    let translateY = getTooltipPositionArg() == 'top' ?
-                     -(targetRect.height - tooltipRect.height) - 4 - tooltipRect.height :
-                     tooltipRect.height + (targetRect.height - tooltipRect.height) + 2
+    let translateY = -(targetRect.height / 2 + tooltipRect.height / 2) - 6
 
     if (target.tagName === 'INPUT' && target.type === 'range') {
       const min = Number(target.min || 0)
@@ -117,10 +105,14 @@
         height: targetRect.height,
       }
       x = thumbRect.x + (thumbRect.width / 2) - (tooltipRect.width / 2)
-      translateY = getTooltipPositionArg() == 'top' ?
-                   -(thumbRect.height - tooltipRect.height) - 10 - tooltipRect.height :
-                   thumbRect.height + (thumbRect.height - tooltipRect.height) + 22
+      translateY = -(thumbRect.height - tooltipRect.height) - 10 - tooltipRect.height
     }
+
+    const margin = 6
+    x = Math.max(margin, Math.min(x, window.innerWidth - tooltipRect.width - margin))
+    let finalY = y + translateY
+    finalY = Math.max(margin, Math.min(finalY, window.innerHeight - tooltipRect.height - margin))
+    translateY = finalY - y
 
     scheduleRaf(() => {
       tooltip.value.style.left = `${x}px`

@@ -14,7 +14,6 @@
           icon="add_photo_alternate"
           size="big"
           data-tooltip="Ajouter une image"
-          data-tooltip-position="bottom"
         />
       </div>
     </div>
