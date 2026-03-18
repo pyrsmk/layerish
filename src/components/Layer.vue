@@ -142,6 +142,7 @@
               @click="emitSelect(); emitToggleFilter(preset.id)"
               :active="layer.filters?.includes(preset.id)"
               :data-tooltip="preset.label"
+              :label="preset.label"
               :preview="previews[preset.id]"
               selectable
               size="small"
@@ -324,7 +325,7 @@
 
   .section-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: var(--gap);
   }
 

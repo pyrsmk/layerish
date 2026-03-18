@@ -5,6 +5,7 @@
     :disabled="disabled"
   >
     <img v-if="preview" :src="preview" class="preview-img" alt="" />
+    <span v-if="preview && label" class="preview-label">{{ label }}</span>
     <Icon v-else-if="icon" :code="icon" :size="size" />
   </button>
 </template>
@@ -18,6 +19,7 @@
   const props = defineProps({
     icon: { type: String, default: '' },
     preview: { type: String, default: null },
+    label: { type: String, default: null },
     selectable: { type: Boolean, default: false },
     active: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
@@ -51,6 +53,23 @@
   button.has-preview {
     padding: 0;
     overflow: hidden;
+  }
+
+  .preview-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(26, 28, 34, 0.75);
+    color: #ffffff;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    padding: 2px 4px;
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   button[disabled] {

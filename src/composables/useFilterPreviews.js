@@ -2,7 +2,7 @@ import { ref, unref, watchEffect } from 'vue'
 import { filterPresets, FILTER_ENGINES } from './useFilters.js'
 
 const PREVIEW_SEED = 1337
-const PREVIEW_SIZE = 30
+const PREVIEW_SIZE = 60
 
 export const useFilterPreviews = (imgSource) => {
   const previews = ref({})

@@ -223,28 +223,6 @@ const FILTER_PRESETS = [
     },
   },
   {
-    id: 'jpeg-artifact',
-    label: 'JPEG Artifacts',
-    engine: 'jpegArtifact',
-    params: {
-      quality: [2, 5],
-      blockShift: [0.08, 0.25],
-      colorSmear: [0.3, 0.8],
-      blockSizeRatio: [0.006, 0.012],
-    },
-  },
-  {
-    id: 'block-corruption',
-    label: 'Block Corruption',
-    engine: 'blockCorruption',
-    params: {
-      blockSizeRatio: [0.006, 0.012],
-      intensity: [0.005, 0.11],
-      levels: [2, 5],
-      saturation: [0.2, 2],
-    },
-  },
-  {
     id: 'horizontal-shift',
     label: 'Horizontal Shift',
     engine: 'glitchTear',
@@ -557,12 +535,6 @@ const FILTER_PRESETS = [
     },
   },
   {
-    id: 'data-loss-freeze',
-    label: 'Data Loss Freeze',
-    engine: 'dataLossFreeze',
-    params: { startRatio: [0.10, 0.70] },
-  },
-  {
     id: 'data-loss-bitplane',
     label: 'Data Loss Bitplane',
     engine: 'dataLossBitplane',
@@ -575,6 +547,44 @@ const FILTER_PRESETS = [
     params: { bandCount: [5, 20], heightRatio: [0.001, 0.006], maxShiftRatio: 0.2 },
   },
   {
+    id: 'jpeg-artifact',
+    label: 'JPEG Artifacts',
+    engine: 'jpegArtifact',
+    params: {
+      quality: [1, 4],
+      blockShift: [0.01, 0.02],
+      colorSmear: [0.3, 0.8],
+      blockSizeRatio: [0.006, 0.012],
+    },
+  },
+  {
+    id: 'block-corruption',
+    label: 'Block Corruption',
+    engine: 'blockCorruption',
+    params: {
+      blockSizeRatio: [0.006, 0.012],
+      intensity: [0.005, 0.11],
+      levels: [2, 5],
+      saturation: [0.2, 2],
+    },
+  },
+  {
+    id: 'data-loss-freeze',
+    label: 'Data Loss Freeze',
+    engine: 'dataLossFreeze',
+    params: { startRatio: [0.10, 0.70] },
+  },
+  {
+    id: 'pixel-melt',
+    label: 'Pixel Melt',
+    engine: 'pixelMelt',
+    params: {
+      threshold: 0.45,
+      lengthRatio: [0.02, 0.06],
+      brightnessMode: 0,
+    }
+  },
+  {
     id: 'rgb-glitch',
     label: 'RGB Glitch',
     engine: 'hueDistortionRgb',
@@ -585,16 +595,6 @@ const FILTER_PRESETS = [
     label: 'RGB Drift',
     engine: 'dataLossDrift',
     params: { startRatio: [0.10, 0.70], maxDriftRatio: [0.15, 0.45] },
-  },
-  {
-    id: 'pixel-melt',
-    label: 'Pixel Melt',
-    engine: 'pixelMelt',
-    params: {
-      threshold: 0.45,
-      lengthRatio: [0.02, 0.06],
-      brightnessMode: 0,
-    },
   },
 ]
 

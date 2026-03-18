@@ -1,5 +1,8 @@
 # TODO
 
+- ratio résolution : ça marche pas trop comme prévu; ce que j'attendais c'était un truc basé sur la taille du workspace en réalité, mais c'est peut être débile
+- supprimer le pixel vaporwave
+- jpeg artifacts : fine tuner
 - vhs : fine tuner
 - retro scifi : fine tuner
 - vérifier getFilterSignature
@@ -8,6 +11,7 @@
 - loader quand une opération prend du temps
 
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
+- utiliser le scroll pour agrandir une image to en restant "centré" sur la souris
 
 ## Refacto mode composite
 
