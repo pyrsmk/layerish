@@ -379,12 +379,12 @@
 
   .filter-dice {
     position: absolute;
-    top: -6px;
-    right: 4px;
+    top: -7px;
+    right: -4px;
     border: 0;
     padding: 0;
     background: transparent;
-    color: #9ea1b0;
+    color: #f5f6fa;
     cursor: pointer;
     transition: color 150ms;
     height: 14px;
