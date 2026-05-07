@@ -8,26 +8,46 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
   const activeLayerRef = computed(() => unref(activeLayer) ?? null)
   const moveLayerRef = computed(() => unref(moveLayer) ?? null)
   const canvasSizeRef = computed(() => unref(canvasSize) ?? null)
+  const isCompositing = ref(false)
   let maskFeatherRenderTimer = null
   let resizeRaf = null
   let lastContainerSize = null
+  let renderInProgress = false
+  let renderQueued = false
 
-  function renderComposite() {
+  async function renderComposite() {
+    if (renderInProgress) {
+      renderQueued = true
+      return
+    }
+    renderInProgress = true
+    isCompositing.value = true
+
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+
     const canvas = canvasRef.value
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    canvas.width = canvasSizeRef.value.width
-    canvas.height = canvasSizeRef.value.height
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      canvas.width = canvasSizeRef.value.width
+      canvas.height = canvasSizeRef.value.height
+      drawComposite({
+        ctx,
+        state,
+        canvasSize: canvasSizeRef.value,
+        applySelectionMask: state.showFinalComposite,
+        showSelectionOverlay: !state.showFinalComposite,
+        maskFeatherEnabled: state.maskFeatherEnabled,
+        maskFeatherSize: state.maskFeatherSize,
+      })
+    }
 
-    drawComposite({
-      ctx,
-      state,
-      canvasSize: canvasSizeRef.value,
-      applySelectionMask: state.showFinalComposite,
-      showSelectionOverlay: !state.showFinalComposite,
-      maskFeatherEnabled: state.maskFeatherEnabled,
-      maskFeatherSize: state.maskFeatherSize,
-    })
+    renderInProgress = false
+    isCompositing.value = false
+
+    if (renderQueued) {
+      renderQueued = false
+      renderComposite()
+    }
   }
 
   function exportImage() {
@@ -433,6 +453,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
   return {
     canvasRef,
     containerRef,
+    isCompositing,
     renderComposite,
     exportImage,
     handlePointerDown,

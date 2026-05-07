@@ -50,6 +50,9 @@
                    `${state.cursor.y - state.brushSize / 2}px)`,
       }"
     ></div>
+    <div v-if="isCompositing" class="compositing-overlay">
+      <div class="compositing-spinner"></div>
+    </div>
   </div>
 </template>
 
@@ -73,6 +76,7 @@
   const {
     canvasRef,
     containerRef,
+    isCompositing,
     renderComposite,
     exportImage,
     handlePointerDown,
@@ -178,5 +182,34 @@
 
   .brush.erase {
     background: rgba(255, 82, 82, 0.45);
+  }
+
+  @keyframes compositing-reveal {
+    to { opacity: 1; }
+  }
+
+  @keyframes compositing-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .compositing-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    will-change: opacity;
+    animation: compositing-reveal 0.15s 0.5s forwards;
+  }
+
+  .compositing-spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-top-color: rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    animation: compositing-spin 0.7s linear infinite;
   }
 </style>

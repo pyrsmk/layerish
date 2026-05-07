@@ -1,19 +1,13 @@
 # TODO
 
-- ratio des filtres
-  - regrouper les filtres
-  - nettoyer les signatures
-  - migrer le seeding
-  - migrer les ratios (+nettoyer les invZoom et scaleRatio)
+- VHS 2 : https://github.com/ntsc-rs/ntsc-rs
 
-- supprimer le pixel vaporwave
 - jpeg artifacts : fine tuner
 - vhs : fine tuner
 - retro scifi : fine tuner
 - vérifier getFilterSignature
 - mieux ranger les filtres par fichier
 - réordonner les listes et codes qui concernent les filtres
-- loader quand une opération prend du temps
 
 - ça marche moyennement bien la gomme qui efface tout qui est censée remettre le calque en mode full
 - utiliser le scroll pour agrandir une image to en restant "centré" sur la souris

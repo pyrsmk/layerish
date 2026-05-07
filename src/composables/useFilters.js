@@ -361,14 +361,6 @@ export const filterPresets = [
     }
   },
   {
-    label: 'Vaporwave',
-    function: applyPixelPalette,
-    params: {
-      palette: [[255, 113, 206], [121, 189, 255], [185, 137, 255], [0, 255, 195]],
-      size: 3,
-    }
-  },
-  {
     label: 'B&W',
     function: applyPixelPalette,
     params: {
