@@ -1,4 +1,4 @@
-import { clamp, hashString, createSeededRandom, getImageData } from './utils.js'
+import { clamp, createSeededRandom, getImageData, getBlockRatio } from './utils.js'
 
 export const applyPixelMelt = (
   canvas,
@@ -30,16 +30,11 @@ export const applyPixelMelt = (
         lengthRatio ?? lengthMinRatio ?? 0.02,
         lengthRatio ?? lengthMaxRatio ?? 0.06,
       ]
-  const minLen = Math.max(1, Math.round(len0 * ref))
-  const maxLen = Math.max(minLen, Math.round(len1 * ref))
+  const minLen = Math.max(1, Math.round(len0 * ref * getBlockRatio()))
+  const maxLen = Math.max(minLen, Math.round(len1 * ref * getBlockRatio()))
   const mode = clamp(Math.round(brightnessMode), 0, 1)
 
-  const seedValue = Number.isFinite(seed)
-    ? seed
-    : hashString(
-        `${width}x${height}|${threshold}|${minLen}|${maxLen}|${brightnessMode}`
-      )
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
 
   const dir = Math.floor(rand() * 4)
   const maxMeltLen = Math.round(minLen + rand() * (maxLen - minLen))

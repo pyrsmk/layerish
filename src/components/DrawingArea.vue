@@ -54,8 +54,9 @@
 </template>
 
 <script setup>
-  import { computed, onMounted, onUnmounted, ref, toRef } from 'vue'
+  import { computed, onMounted, onUnmounted, toRef } from 'vue'
   import { useCanvas } from '../composables/useCanvas'
+  import { useEditorState } from '../composables/useEditorState'
 
   const props = defineProps({
     state: { type: Object, required: true },
@@ -64,6 +65,7 @@
     canvasSize: { type: Object, required: true },
   })
 
+  const { state: editorState } = useEditorState()
   const activeLayerRef = toRef(props, 'activeLayer')
   const moveLayerRef = toRef(props, 'moveLayer')
   const canvasSizeRef = toRef(props, 'canvasSize')
@@ -90,11 +92,10 @@
     canvasSize: canvasSizeRef,
   })
 
-  const containerSize = ref({ width: 0, height: 0 })
   let resizeObserver = null
 
   const isFullBleed = computed(() => {
-    const { width, height } = containerSize.value
+    const { width, height } = editorState.containerSize
     if (!width || !height) return false
     const canvasWidth = props.canvasSize.width * props.state.zoom
     const canvasHeight = props.canvasSize.height * props.state.zoom
@@ -106,12 +107,12 @@
     const container = containerRef.value
     if (!container) return
     const rect = container.getBoundingClientRect()
-    containerSize.value = { width: rect.width, height: rect.height }
+    editorState.containerSize = { width: rect.width, height: rect.height }
     resizeObserver = new ResizeObserver((entries) => {
       const entry = entries[0]
       if (!entry) return
       const { width, height } = entry.contentRect
-      containerSize.value = { width, height }
+      editorState.containerSize = { width, height }
     })
     resizeObserver.observe(container)
   })

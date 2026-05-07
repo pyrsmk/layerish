@@ -1,4 +1,4 @@
-import { clamp, hashString, createSeededRandom, getImageData } from './utils.js'
+import { clamp, createSeededRandom, getImageData } from './utils.js'
 
 // ---------------------------------------------------------------------------
 // IIR Transfer‑Function filter – ported from ntsc‑rs filter.rs
@@ -131,8 +131,6 @@ const makeLowpass = (cutoff, rate) => {
   return new TransferFunction([alpha], [-(1 - alpha)])
 }
 
-const makeLowpassTriple = (cutoff, rate) => makeLowpass(cutoff, rate).cascadeSelf(3)
-
 const makeButterworth = (cutoff, rate) => {
   const freq = Math.min(2 * cutoff, rate) / rate * Math.PI
   const omegaS = Math.sin(freq)
@@ -180,41 +178,34 @@ const filterPlane = (plane, w, tf, initialMode, delay) => {
 
 export const applyVhs = (
   canvas,
-  rawParams = {}
+  {
+    lumaSmear,
+    chromaBlur,
+    chromaDelayX,
+    chromaDelayY,
+    chromaVertBlend,
+    edgeWave,
+    edgeWaveFrequency,
+    edgeWaveAmplitude,
+    headSwitchingHeight,
+    headSwitchingShift,
+    chromaLoss,
+    noise,
+    snow,
+    snowOpacity,
+    trackingNoiseHeight,
+    trackingNoiseWave,
+    trackingNoiseSnow,
+    trackingNoiseNoise,
+    chromaDegradation,
+    sharpen,
+    ringingFreq,
+    ringingPower,
+    ringingIntensity,
+    vhsSharpen,
+    seed = null,
+  } = {}
 ) => {
-  // Resolve array [min, max] params to concrete values via seeded RNG
-  const paramSeed = rawParams.seed ?? null
-  const rand = Number.isFinite(paramSeed) ? createSeededRandom(paramSeed) : null
-  const resolve = (key, fallback) => {
-    const v = rawParams[key] ?? fallback
-    if (Array.isArray(v) && v.length === 2 && rand) {
-      return v[0] + rand() * (v[1] - v[0])
-    }
-    return Array.isArray(v) ? v[0] : v
-  }
-  const lumaSmear = resolve('lumaSmear', 0.55)
-  const chromaBlur = resolve('chromaBlur', 0.65)
-  const chromaDelayX = resolve('chromaDelayX', 2.5)
-  const chromaDelayY = resolve('chromaDelayY', 1)
-  const chromaVertBlend = resolve('chromaVertBlend', 0.45)
-  const edgeWave = resolve('edgeWave', 0.4)
-  const edgeWaveFrequency = resolve('edgeWaveFrequency', 0.025)
-  const edgeWaveAmplitude = resolve('edgeWaveAmplitude', 4.5)
-  const headSwitchingHeight = resolve('headSwitchingHeight', 0.18)
-  const headSwitchingShift = resolve('headSwitchingShift', 6)
-  const chromaLoss = resolve('chromaLoss', 0.12)
-  const noise = resolve('noise', 0.08)
-  const snow = resolve('snow', 0.02)
-  const trackingNoiseHeight = resolve('trackingNoiseHeight', 0.14)
-  const trackingNoiseWave = resolve('trackingNoiseWave', 6)
-  const trackingNoiseSnow = resolve('trackingNoiseSnow', 0.08)
-  const trackingNoiseNoise = resolve('trackingNoiseNoise', 0.18)
-  const sharpen = resolve('sharpen', 1.0)
-  const ringingFreq = resolve('ringingFreq', 0.45)
-  const ringingPower = resolve('ringingPower', 4.0)
-  const ringingIntensity = resolve('ringingIntensity', 4.0)
-  const vhsSharpen = resolve('vhsSharpen', 0.25)
-  const chromaDegradation = resolve('chromaDegradation', 1.0)
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -231,7 +222,6 @@ export const applyVhs = (
   const rate = NTSC_RATE * hScale
 
   // ── helpers ──────────────────────────────────────────────────────────────
-  const clampCoord = (v, max) => Math.max(0, Math.min(max, v))
   const hash = (a, b) => {
     const s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453
     return s - Math.floor(s)
@@ -306,7 +296,7 @@ export const applyVhs = (
     }
   }
 
-  const seed = hashString(`${width}x${height}|ntsc-vhs`)
+  const vhsSeed = seed ?? 0
 
   const I_MULT = [1, 0, -1, 0]
   const Q_MULT = [0, 1, 0, -1]
@@ -379,7 +369,6 @@ export const applyVhs = (
 
   // ── 7. Snow (transient speckles via geometric distribution) ─────────────
   const snowAmount = clamp(snow, 0, 1)
-  const snowOpacity = 0.4
 
   const addRowSpeckles = (row, rng, intensity, anisotropy) => {
     if (intensity <= 0) return
@@ -411,9 +400,9 @@ export const applyVhs = (
     for (let y = 0; y < height; y++) {
       const rowOff = y * width
       const row = composite.subarray(rowOff, rowOff + width)
-      const rowSeed = hashString(`${seed}|snow|${y}`)
+      const rowSeed = ((vhsSeed ^ (y * 2654435761)) >>> 0)
       const rng = createSeededRandom(rowSeed)
-      addRowSpeckles(row, rng, snowAmount * snowOpacity, 0.5)
+      addRowSpeckles(row, rng, snowAmount * clamp(snowOpacity, 0, 1), 0.5)
     }
   }
 
@@ -448,10 +437,9 @@ export const applyVhs = (
       }
       const t = trackingHeight > 1 ? (y - trackingStart) / (trackingHeight - 1) : 1
       const intensityScale = t * t
-      const wave =
-        (Math.sin(y * 0.15 + seed * 0.003) +
-          (hash(y * 1.1, seed * 0.37) - 0.5) * 0.5) *
-        trackingNoiseWave * intensityScale
+      const wave = (Math.sin(y * 0.15 + seed * 0.003) +
+                   (hash(y * 1.1, seed * 0.37) - 0.5) * 0.5) *
+                   trackingNoiseWave * intensityScale
       shiftRow(composite, trackingComposite, y, wave)
 
       const row = trackingComposite.subarray(rowOff, rowOff + width)
@@ -462,7 +450,7 @@ export const applyVhs = (
         }
       }
       if (trackingNoiseSnow > 0) {
-        const rowSeed = hashString(`${seed}|tracking|${y}`)
+        const rowSeed = ((vhsSeed ^ (y * 2246822519)) >>> 0)
         const rng = createSeededRandom(rowSeed)
         addRowSpeckles(row, rng, trackingNoiseSnow * intensityScale, 0.25)
       }
@@ -557,15 +545,15 @@ export const applyVhs = (
 
   // ── 15. Chroma delay ───────────────────────────────────────────────────
   const delayX = chromaDelayX * hScale
-  const delayYVal = chromaDelayY
-  if (Math.abs(delayX) > 0 || Math.abs(delayYVal) > 0) {
+  const delayY = chromaDelayY
+  if (Math.abs(delayX) > 0 || Math.abs(delayY) > 0) {
     const delayedI = new Float32Array(size)
     const delayedQ = new Float32Array(size)
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const p = y * width + x
-        delayedI[p] = samplePlane(iDemod, x + delayX, y + delayYVal)
-        delayedQ[p] = samplePlane(qDemod, x + delayX, y + delayYVal)
+        delayedI[p] = samplePlane(iDemod, x + delayX, y + delayY)
+        delayedQ[p] = samplePlane(qDemod, x + delayX, y + delayY)
       }
     }
     iDemod.set(delayedI)
@@ -670,3 +658,4 @@ export const applyVhs = (
 
   ctx.putImageData(output, 0, 0)
 }
+

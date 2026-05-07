@@ -301,7 +301,6 @@ export function drawComposite({
   showSelectionOverlay = false,
   maskFeatherEnabled = false,
   maskFeatherSize = 0,
-  respectVisibility = false,
 }) {
   if (!ctx || !state || !canvasSize) return
 
@@ -335,7 +334,7 @@ export function drawComposite({
     const { layerCanvas, layerCtx } = createLayerCanvas(layer)
 
     if (Array.isArray(layer.filters) && layer.filters.length > 0) {
-      applyFiltersToCanvas(layerCanvas, layer.filters, { layer })
+      applyFiltersToCanvas(layer.filters, layer, layerCanvas)
     }
 
     const maskCanvas =

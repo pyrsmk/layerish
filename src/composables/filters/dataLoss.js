@@ -1,4 +1,4 @@
-import { clamp, hashString, createSeededRandom, getImageData } from './utils.js'
+import { clamp, createSeededRandom, getImageData, getBlockRatio, getWidthRatio, resolveRange } from './utils.js'
 
 const LINE_COLORS = [
   [255, 0, 0],
@@ -9,9 +9,6 @@ const LINE_COLORS = [
   [0, 0, 0],
   [255, 255, 255],
 ]
-
-const resolveRange = (param, dMin, dMax) =>
-  Array.isArray(param) ? [param[0], param[1]] : [param ?? dMin, param ?? dMax]
 
 const resolveStartRow = (rand, startRatio, height) => {
   const [s0, s1] = resolveRange(startRatio, 0.15, 0.75)
@@ -83,13 +80,10 @@ export const applyDataLoss = (
     ? heightRatio
     : [heightRatio ?? minHeightRatio ?? 0.15, heightRatio ?? maxHeightRatio ?? 0.50]
 
-  const seedValue = Number.isFinite(seed)
-    ? seed
-    : hashString(`dl|${width}x${height}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
   const density = clamp(noiseDensity, 0, 1)
 
-  const blockSize = Math.max(10, Math.floor(Math.min(width, height) * 0.035))
+  const blockSize = Math.max(10, Math.floor(0.035 * Math.min(width, height) * getBlockRatio()))
   const rawH = Math.max(2 * blockSize, Math.round((h0 + rand() * (h1 - h0)) * height))
   const numBlockRows = Math.max(2, Math.floor(rawH / blockSize))
   const bandHeight = numBlockRows * blockSize
@@ -155,7 +149,7 @@ export const applyDataLoss = (
   ctx.putImageData(output, 0, 0)
 }
 
-export const applyDataLossStreamByteOffset = (
+export const applyDataLossStream = (
   canvas,
   {
     heightRatio = null,
@@ -181,9 +175,7 @@ export const applyDataLossStreamByteOffset = (
     ? heightRatio
     : [heightRatio ?? minHeightRatio ?? 0.15, heightRatio ?? maxHeightRatio ?? 0.50]
 
-  const seedValue = Number.isFinite(seed)
-    ? seed : hashString(`dl-stream|${width}x${height}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
 
   const reverse = rand() < 0.5  // false = bottom band, true = top band
   const bandHeight = Math.max(1, Math.round((h0 + rand() * (h1 - h0)) * height))
@@ -298,66 +290,7 @@ export const applyDataLossStreamByteOffset = (
   ctx.putImageData(output, 0, 0)
 }
 
-export const applyDataLossChannelCascadeDrift = (
-  canvas,
-  { startRatio = null, maxDriftRatio = null, seed = null } = {}
-) => {
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  const { width, height } = canvas
-  const source = getImageData(ctx, width, height)
-  if (!source) return
-  const output = ctx.createImageData(width, height)
-  const src = source.data
-  const dst = output.data
-  dst.set(src)
-
-  const seedValue = Number.isFinite(seed)
-    ? seed : hashString(`dl-drift|${width}x${height}`)
-  const rand = createSeededRandom(seedValue)
-
-  const startRow = resolveStartRow(rand, startRatio, height)
-  const [d0, d1] = resolveRange(maxDriftRatio, 0.15, 0.45)
-  const maxDrift = Math.round((d0 + rand() * (d1 - d0)) * width)
-  const reverse = rand() < 0.5
-
-  const lerpChannel = (src, rowOffset, x0, x1, frac, ch) =>
-    src[(rowOffset + x0) * 4 + ch] * (1 - frac) + src[(rowOffset + x1) * 4 + ch] * frac
-
-  const processRow = (y, t) => {
-    const rawDrift = t * maxDrift
-    const rowOffset = y * width
-    for (let x = 0; x < width; x++) {
-      const dstI = (y * width + x) * 4
-
-      const rXf = clamp(x + rawDrift, 0, width - 1)
-      const rX0 = Math.floor(rXf)
-      dst[dstI] = lerpChannel(src, rowOffset, rX0, Math.min(rX0 + 1, width - 1), rXf - rX0, 0)
-
-      const gXf = clamp(x + rawDrift * 0.25, 0, width - 1)
-      const gX0 = Math.floor(gXf)
-      dst[dstI + 1] = lerpChannel(src, rowOffset, gX0, Math.min(gX0 + 1, width - 1), gXf - gX0, 1)
-
-      const bXf = clamp(x - rawDrift, 0, width - 1)
-      const bX0 = Math.floor(bXf)
-      dst[dstI + 2] = lerpChannel(src, rowOffset, bX0, Math.min(bX0 + 1, width - 1), bXf - bX0, 2)
-
-      dst[dstI + 3] = src[dstI + 3]
-    }
-  }
-
-  if (!reverse) {
-    const span = Math.max(1, height - 1 - startRow)
-    for (let y = startRow; y < height; y++) processRow(y, (y - startRow) / span)
-  } else {
-    const span = Math.max(1, startRow)
-    for (let y = 0; y <= startRow; y++) processRow(y, 1 - y / span)
-  }
-
-  ctx.putImageData(output, 0, 0)
-}
-
-export const applyDataLossRowFreezeDecay = (
+export const applyDataLossFreeze = (
   canvas,
   { startRatio = null, seed = null } = {}
 ) => {
@@ -371,9 +304,7 @@ export const applyDataLossRowFreezeDecay = (
   const dst = output.data
   dst.set(src)
 
-  const seedValue = Number.isFinite(seed)
-    ? seed : hashString(`dl-freeze|${width}x${height}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
 
   const startRow = resolveStartRow(rand, startRatio, height)
   const reverse = rand() < 0.5
@@ -411,7 +342,7 @@ export const applyDataLossRowFreezeDecay = (
   ctx.putImageData(output, 0, 0)
 }
 
-export const applyDataLossBitPlaneCascade = (
+export const applyDataLossBitplane = (
   canvas,
   {
     heightRatio = null,
@@ -434,11 +365,9 @@ export const applyDataLossBitPlaneCascade = (
     ? heightRatio
     : [heightRatio ?? minHeightRatio ?? 0.15, heightRatio ?? maxHeightRatio ?? 0.50]
 
-  const seedValue = Number.isFinite(seed)
-    ? seed : hashString(`dl-bitplane|${width}x${height}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
 
-  const blockSize = Math.max(10, Math.floor(Math.min(width, height) * 0.035))
+  const blockSize = Math.max(10, Math.floor(0.035 * Math.min(width, height) * getBlockRatio()))
   const rawH = Math.max(2 * blockSize, Math.round((h0 + rand() * (h1 - h0)) * height))
   const numBlockRows = Math.max(2, Math.floor(rawH / blockSize))
   const bandHeight = numBlockRows * blockSize
@@ -469,6 +398,318 @@ export const applyDataLossBitPlaneCascade = (
             dst[i + c] = (src[i + c] & keepMask) | (Math.floor(rand() * 256) & noiseMask)
           }
           dst[i + 3] = src[i + 3]
+        }
+      }
+    }
+  }
+
+  ctx.putImageData(output, 0, 0)
+}
+
+export const applyRowCorruption = (
+  canvas,
+  {
+    bandCount = null,
+    bandCountMin = null,
+    bandCountMax = null,
+    heightRatio = null,
+    minHeightRatio = null,
+    maxHeightRatio = null,
+    maxShiftRatio = 0.2,
+    seed = null,
+  } = {}
+) => {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  const width = canvas.width
+  const height = canvas.height
+  const source = getImageData(ctx, width, height)
+  if (!source) return
+  const output = ctx.createImageData(width, height)
+  const src = source.data
+  const dst = output.data
+  dst.set(src)
+
+  const [bc0, bc1] = Array.isArray(bandCount)
+    ? bandCount
+    : [bandCount ?? bandCountMin ?? 3, bandCount ?? bandCountMax ?? 10]
+  const [h0, h1] = Array.isArray(heightRatio)
+    ? heightRatio
+    : [heightRatio ?? minHeightRatio ?? 0.001, heightRatio ?? maxHeightRatio ?? 0.006]
+
+  const countMin = Math.max(1, Math.round(bc0))
+  const countMax = Math.max(countMin, Math.round(bc1))
+  const minH = Math.max(1, Math.round(h0 * height))
+  const maxH = Math.max(minH, Math.round(h1 * height))
+  const shiftLimit = Math.max(0, Math.round(maxShiftRatio * width * getWidthRatio()))
+
+  const rand = createSeededRandom(seed)
+  const bands = Math.round(countMin + rand() * (countMax - countMin))
+
+  const read = (x, y, channel) => {
+    const cx = clamp(x, 0, width - 1)
+    const cy = clamp(y, 0, height - 1)
+    return src[(cy * width + cx) * 4 + channel]
+  }
+
+  for (let b = 0; b < bands; b++) {
+    const bandHeight = Math.max(1, Math.round(minH + rand() * (maxH - minH)))
+    const bandY = clamp(
+      Math.round(rand() * (height - bandHeight)), 0, height - bandHeight
+    )
+    const modeRoll = rand()
+
+    if (modeRoll < 0.3) {
+      // Mode: duplicate from a random other row
+      const sourceRow = clamp(Math.floor(rand() * height), 0, height - 1)
+      for (let y = bandY; y < bandY + bandHeight; y++) {
+        for (let x = 0; x < width; x++) {
+          const di = (y * width + x) * 4
+          dst[di]     = read(x, sourceRow, 0)
+          dst[di + 1] = read(x, sourceRow, 1)
+          dst[di + 2] = read(x, sourceRow, 2)
+          dst[di + 3] = src[di + 3]
+        }
+      }
+    } else if (modeRoll < 0.55) {
+      // Mode: horizontal shift
+      const shift = Math.round((rand() * 2 - 1) * shiftLimit)
+      for (let y = bandY; y < bandY + bandHeight; y++) {
+        for (let x = 0; x < width; x++) {
+          const di = (y * width + x) * 4
+          const sx = x - shift
+          if (sx >= 0 && sx < width) {
+            dst[di]     = read(sx, y, 0)
+            dst[di + 1] = read(sx, y, 1)
+            dst[di + 2] = read(sx, y, 2)
+          } else {
+            dst[di]     = 0
+            dst[di + 1] = 0
+            dst[di + 2] = 0
+          }
+          dst[di + 3] = src[di + 3]
+        }
+      }
+    } else if (modeRoll < 0.75) {
+      // Mode: reverse row
+      for (let y = bandY; y < bandY + bandHeight; y++) {
+        for (let x = 0; x < width; x++) {
+          const di = (y * width + x) * 4
+          const mirrorX = width - 1 - x
+          dst[di]     = read(mirrorX, y, 0)
+          dst[di + 1] = read(mirrorX, y, 1)
+          dst[di + 2] = read(mirrorX, y, 2)
+          dst[di + 3] = src[di + 3]
+        }
+      }
+    } else {
+      // Mode: channel offset — shift only one RGB channel horizontally
+      const channel = Math.floor(rand() * 3)
+      const channelShift = Math.round((rand() * 2 - 1) * shiftLimit)
+      for (let y = bandY; y < bandY + bandHeight; y++) {
+        for (let x = 0; x < width; x++) {
+          const di = (y * width + x) * 4
+          dst[di]     = read(x, y, 0)
+          dst[di + 1] = read(x, y, 1)
+          dst[di + 2] = read(x, y, 2)
+          dst[di + channel] = read(
+            clamp(x - channelShift, 0, width - 1), y, channel
+          )
+          dst[di + 3] = src[di + 3]
+        }
+      }
+    }
+  }
+
+  ctx.putImageData(output, 0, 0)
+}
+
+export const applyJpegArtifact = (
+  canvas,
+  {
+    quality = [2, 5],
+    blockShift = [0.08, 0.25],
+    colorSmear = [0.3, 0.8],
+    blockSizeRatio = [0.006, 0.012],
+    seed = null,
+  } = {}
+) => {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  const width = canvas.width
+  const height = canvas.height
+  const source = getImageData(ctx, width, height)
+  if (!source) return
+  const output = ctx.createImageData(width, height)
+  const src = source.data
+  const dst = output.data
+  dst.set(src)
+
+  const ref = Math.min(width, height)
+  const qRange = Array.isArray(quality) ? quality : [quality, quality]
+  const bsRange = Array.isArray(blockSizeRatio)
+    ? blockSizeRatio
+    : [blockSizeRatio, blockSizeRatio]
+  const shRange = Array.isArray(blockShift) ? blockShift : [blockShift, blockShift]
+  const smRange = Array.isArray(colorSmear) ? colorSmear : [colorSmear, colorSmear]
+
+  const qMin = clamp(Math.round(qRange[0]), 1, 10)
+  const qMax = clamp(Math.max(Math.round(qRange[1]), qMin), 1, 10)
+  const bsMin = Math.max(2, Math.round(bsRange[0] * ref * getBlockRatio()))
+  const bsMax = Math.max(bsMin, Math.round(bsRange[1] * ref * getBlockRatio()))
+  const shMin = clamp(shRange[0], 0, 1)
+  const shMax = clamp(Math.max(shRange[1], shMin), 0, 1)
+  const smMin = clamp(smRange[0], 0, 1)
+  const smMax = clamp(Math.max(smRange[1], smMin), 0, 1)
+
+  const rand = createSeededRandom(seed)
+
+  const q = Math.round(qMin + rand() * (qMax - qMin))
+  const block = Math.round(bsMin + rand() * (bsMax - bsMin))
+  const shift = shMin + rand() * (shMax - shMin)
+  const smear = smMin + rand() * (smMax - smMin)
+
+  const quantStep = (11 - q) * 4
+
+  const blocksX = Math.ceil(width / block)
+  const blocksY = Math.ceil(height / block)
+
+  for (let by = 0; by < blocksY; by += 1) {
+    for (let bx = 0; bx < blocksX; bx += 1) {
+      const x0 = bx * block
+      const y0 = by * block
+      const x1 = Math.min(x0 + block, width)
+      const y1 = Math.min(y0 + block, height)
+
+      const shiftDx = rand() < shift
+        ? Math.round((rand() * 2 - 1) * block * 1.5)
+        : 0
+      const shiftDy = rand() < shift
+        ? Math.round((rand() * 2 - 1) * block * 1.5)
+        : 0
+
+      const smearActive = rand() < smear * 0.3
+      const smearDir = rand() < 0.5 ? 0 : 1
+
+      for (let y = y0; y < y1; y += 1) {
+        for (let x = x0; x < x1; x += 1) {
+          const di = (y * width + x) * 4
+
+          const sx = clamp(x + shiftDx, 0, width - 1)
+          const sy = clamp(y + shiftDy, 0, height - 1)
+          const si = (sy * width + sx) * 4
+
+          let r = src[si]
+          let g = src[si + 1]
+          let b = src[si + 2]
+
+          r = Math.round(Math.round(r / quantStep) * quantStep)
+          g = Math.round(Math.round(g / quantStep) * quantStep)
+          b = Math.round(Math.round(b / quantStep) * quantStep)
+
+          if (smearActive) {
+            if (smearDir === 0) {
+              const nx = clamp(x + 1, 0, width - 1)
+              const ni = (y * width + nx) * 4
+              const blendAmt = smear * 0.5
+              r = Math.round(r * (1 - blendAmt) + src[ni] * blendAmt)
+              g = Math.round(g * (1 - blendAmt) + src[ni + 1] * blendAmt)
+            } else {
+              const ny = clamp(y + 1, 0, height - 1)
+              const ni = (ny * width + x) * 4
+              const blendAmt = smear * 0.5
+              g = Math.round(g * (1 - blendAmt) + src[ni + 1] * blendAmt)
+              b = Math.round(b * (1 - blendAmt) + src[ni + 2] * blendAmt)
+            }
+          }
+
+          dst[di] = clamp(r, 0, 255)
+          dst[di + 1] = clamp(g, 0, 255)
+          dst[di + 2] = clamp(b, 0, 255)
+        }
+      }
+    }
+  }
+
+  ctx.putImageData(output, 0, 0)
+}
+
+export const applyBlockCorruption = (
+  canvas,
+  {
+    blockSizeRatio = [0.006, 0.012],
+    intensity = [0.4, 0.8],
+    levels = [2, 5],
+    saturation = [1.5, 3.5],
+    seed = null,
+  } = {}
+) => {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  const width = canvas.width
+  const height = canvas.height
+  const source = getImageData(ctx, width, height)
+  if (!source) return
+  const output = ctx.createImageData(width, height)
+  const src = source.data
+  const dst = output.data
+  dst.set(src)
+
+  const ref = Math.min(width, height)
+  const bsRange = Array.isArray(blockSizeRatio) ? blockSizeRatio : [blockSizeRatio, blockSizeRatio]
+  const intRange = Array.isArray(intensity) ? intensity : [intensity, intensity]
+  const lvlRange = Array.isArray(levels) ? levels : [levels, levels]
+  const satRange = Array.isArray(saturation) ? saturation : [saturation, saturation]
+
+  const bsMin = Math.max(2, Math.round(bsRange[0] * ref * getBlockRatio()))
+  const bsMax = Math.max(bsMin, Math.round(bsRange[1] * ref * getBlockRatio()))
+  const intMin = clamp(intRange[0], 0, 1)
+  const intMax = clamp(Math.max(intRange[1], intMin), 0, 1)
+  const lvlMin = clamp(Math.round(lvlRange[0]), 1, 10)
+  const lvlMax = clamp(Math.max(Math.round(lvlRange[1]), lvlMin), 1, 10)
+  const satMin = Math.max(0, satRange[0])
+  const satMax = Math.max(satMin, satRange[1])
+
+  const rand = createSeededRandom(seed)
+
+  const block = Math.round(bsMin + rand() * (bsMax - bsMin))
+  const int = intMin + rand() * (intMax - intMin)
+  const lvl = Math.round(lvlMin + rand() * (lvlMax - lvlMin))
+
+  const quantStep = (11 - lvl) * 4
+  const biasStrength = 255 * int
+
+  const blocksX = Math.ceil(width / block)
+  const blocksY = Math.ceil(height / block)
+
+  for (let by = 0; by < blocksY; by += 1) {
+    for (let bx = 0; bx < blocksX; bx += 1) {
+      const x0 = bx * block
+      const y0 = by * block
+      const x1 = Math.min(x0 + block, width)
+      const y1 = Math.min(y0 + block, height)
+
+      const biasR = Math.round((rand() * 2 - 1) * biasStrength)
+      const biasG = Math.round((rand() * 2 - 1) * biasStrength)
+      const biasB = Math.round((rand() * 2 - 1) * biasStrength)
+      const satBoost = satMin + rand() * (satMax - satMin)
+
+      for (let y = y0; y < y1; y += 1) {
+        for (let x = x0; x < x1; x += 1) {
+          const di = (y * width + x) * 4
+
+          let r = Math.round(Math.round(clamp(src[di] + biasR, 0, 255) / quantStep) * quantStep)
+          let g = Math.round(Math.round(clamp(src[di + 1] + biasG, 0, 255) / quantStep) * quantStep)
+          let b = Math.round(Math.round(clamp(src[di + 2] + biasB, 0, 255) / quantStep) * quantStep)
+
+          const lum = r * 0.299 + g * 0.587 + b * 0.114
+          r = clamp(Math.round(lum + (r - lum) * satBoost), 0, 255)
+          g = clamp(Math.round(lum + (g - lum) * satBoost), 0, 255)
+          b = clamp(Math.round(lum + (b - lum) * satBoost), 0, 255)
+
+          dst[di] = r
+          dst[di + 1] = g
+          dst[di + 2] = b
         }
       }
     }

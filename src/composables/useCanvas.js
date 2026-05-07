@@ -45,7 +45,6 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
       showSelectionOverlay: false,
       maskFeatherEnabled: state.maskFeatherEnabled,
       maskFeatherSize: state.maskFeatherSize,
-      respectVisibility: true,
     })
 
     exportCanvas.toBlob((blob) => {

@@ -175,7 +175,6 @@
   import Tooltip from './components/Tooltip.vue'
   import Icon from './components/Icon.vue'
   import { useEditorState } from './composables/useEditorState'
-
   import { useLayers } from './composables/useLayers'
   import { useMask } from './composables/useMask'
 
@@ -201,8 +200,6 @@
   const fitToView = () => drawingAreaRef.value?.fitToView?.()
   const renderComposite = () => drawingAreaRef.value?.renderComposite?.()
   const exportImage = () => drawingAreaRef.value?.exportImage?.()
-
-
 
   const {
     setActiveLayer,

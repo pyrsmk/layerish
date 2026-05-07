@@ -1,12 +1,32 @@
-export const clamp = (value, min, max) => Math.min(max, Math.max(min, value))
+import { useEditorState } from '../useEditorState'
 
-export const hashString = (value) => {
-  let hash = 2166136261
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i)
-    hash = Math.imul(hash, 16777619)
-  }
-  return hash >>> 0
+const { state, activeLayer } = useEditorState()
+
+export const getWidthRatio = () => {
+  if (!activeLayer.value) return 1
+  const imageWidth = activeLayer.value.width
+  const containerWidth = state.containerSize.width || imageWidth
+  return Math.min(imageWidth, containerWidth) / (imageWidth * state.zoom)
+}
+
+export const getHeightRatio = () => {
+  if (!activeLayer.value) return 1
+  const imageHeight = activeLayer.value.height
+  const containerHeight = state.containerSize.height || imageHeight
+  return Math.min(imageHeight, containerHeight) / (imageHeight * state.zoom)
+}
+
+export const getBlockRatio = () =>
+  Math.max(getWidthRatio(), getHeightRatio())
+
+export const clamp = (value, min, max) => (
+  Math.min(max, Math.max(min, value))
+)
+
+export const resolveRange = (param, defaultMin, defaultMax) => {
+  if (Array.isArray(param)) return [param[0], param[1]]
+  if (Number.isFinite(param)) return [param, param]
+  return [defaultMin, defaultMax]
 }
 
 export const createSeededRandom = (seed) => {

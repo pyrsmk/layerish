@@ -357,15 +357,13 @@ export function useLayers({
   }
 
   function toggleLayerFilter(layer, filterId) {
-    if (toggleFilterOnLayer(layer, filterId)) {
-      renderComposite?.()
-    }
+    toggleFilterOnLayer(layer, filterId)
+    renderComposite?.()
   }
 
   function reseedLayerFilter(layer, filterId) {
-    if (reseedFilterOnLayer(layer, filterId)) {
-      renderComposite?.()
-    }
+    reseedFilterOnLayer(layer, filterId)
+    renderComposite?.()
   }
 
   function invertActiveMask() {

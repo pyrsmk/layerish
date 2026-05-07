@@ -1,5 +1,5 @@
 import { ref, unref, watchEffect } from 'vue'
-import { filterPresets, FILTER_ENGINES } from './useFilters.js'
+import { filterPresets, determineFilterParams } from './useFilters.js'
 
 const PREVIEW_SEED = 1337
 const PREVIEW_SIZE = 60
@@ -22,9 +22,6 @@ export const useFilterPreviews = (imgSource) => {
     const result = {}
 
     for (const preset of filterPresets) {
-      const engine = FILTER_ENGINES[preset.engine]
-      if (!engine) continue
-
       const canvas = document.createElement('canvas')
       canvas.width = PREVIEW_SIZE
       canvas.height = PREVIEW_SIZE
@@ -35,9 +32,9 @@ export const useFilterPreviews = (imgSource) => {
       ctx.drawImage(img, 0, 0, PREVIEW_SIZE, PREVIEW_SIZE)
 
       try {
-        engine(canvas, { ...preset.params, seed: PREVIEW_SEED })
-      } catch (_) {
-        // silent fail — preview is non-critical
+        preset.function(canvas, { ...determineFilterParams(preset.id, PREVIEW_SEED), seed: PREVIEW_SEED })
+      } catch (error) {
+        console.error(`'${preset.label}' preview failed with: ${error.message}`)
       }
 
       result[preset.id] = canvas.toDataURL()

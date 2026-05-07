@@ -1,11 +1,12 @@
-import { clamp, createCanvasClone, getImageData } from './utils.js'
+import { clamp, createCanvasClone, getImageData, getBlockRatio } from './utils.js'
+import { applyDualSplit } from './split.js'
 
-export const applyBloom = (canvas, { radiusRatio, intensity }) => {
+export const applySoftGlow = (canvas, { radiusRatio, intensity } = {}) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height))
+  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
   const source = createCanvasClone(canvas)
   const blurCanvas = document.createElement('canvas')
   blurCanvas.width = width
@@ -23,6 +24,10 @@ export const applyBloom = (canvas, { radiusRatio, intensity }) => {
   ctx.restore()
 }
 
+export const applyNeonGlow = (canvas, params = {}) => {
+  applyDualSplit(canvas, { ...params, mode: 'base' })
+}
+
 export const applyBloomHdr = (
   canvas,
   { radiusRatio = 0.02, intensity = 0.7, threshold = 0.6 } = {}
@@ -31,7 +36,7 @@ export const applyBloomHdr = (
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height))
+  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
 
   const maskCanvas = document.createElement('canvas')
   maskCanvas.width = width
@@ -78,7 +83,7 @@ export const applyDreamyGlow = (
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height))
+  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
 
   const image = getImageData(ctx, width, height)
   if (!image) return
@@ -118,7 +123,7 @@ export const applyEdgeGlow = (
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height))
+  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
   const source = getImageData(ctx, width, height)
   if (!source) return
   const src = source.data
@@ -186,7 +191,7 @@ export const applyTintedBloom = (
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height))
+  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
   const source = createCanvasClone(canvas)
 
   const blurCanvas = document.createElement('canvas')
@@ -219,7 +224,7 @@ export const applyHaloGlow = (
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height))
+  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
   const source = createCanvasClone(canvas)
 
   const blurCanvas = document.createElement('canvas')

@@ -1,4 +1,4 @@
-import { hashString, createSeededRandom, getImageData } from './utils.js'
+import { createSeededRandom, getImageData } from './utils.js'
 
 export const applyBitcrush = (
   canvas,
@@ -19,10 +19,7 @@ export const applyBitcrush = (
     ? Math.max(lvlMin, Math.round(level[1]))
     : lvlMin
 
-  const seedValue = Number.isFinite(seed)
-    ? seed
-    : hashString(`${width}x${height}|${lvlMin}|${lvlMax}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
   const lvl = Math.max(2, Math.round(lvlMin + rand() * (lvlMax - lvlMin)))
   const step = 255 / (lvl - 1)
 
@@ -53,10 +50,7 @@ export const applyBitcrushStripes = (
   const minL = Math.max(2, Math.round(Array.isArray(level) ? level[0] : level))
   const maxL = Math.max(minL, Math.round(Array.isArray(level) ? level[1] : level))
 
-  const seedValue = Number.isFinite(seed)
-    ? seed
-    : hashString(`${width}x${height}|${minH}|${maxH}|${minL}|${maxL}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
 
   for (let y = 0; y < height; ) {
     const stripeHeight = Math.max(1, Math.round(minH + rand() * (maxH - minH)))

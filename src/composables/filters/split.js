@@ -1,6 +1,6 @@
-import { clamp, createCanvasClone, getImageData } from './utils.js'
+import { clamp, createCanvasClone, getImageData, createSeededRandom, getWidthRatio, getHeightRatio } from './utils.js'
 
-export const applyRgbShift = (canvas, { r, g, b }) => {
+const applyRgbShift = (canvas, { r, g, b }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -16,12 +16,14 @@ export const applyRgbShift = (canvas, { r, g, b }) => {
     return src[(y * width + x) * 4 + channel]
   }
 
-  const rdx = Math.round((r?.xRatio ?? 0) * width)
-  const rdy = Math.round((r?.yRatio ?? 0) * height)
-  const gdx = Math.round((g?.xRatio ?? 0) * width)
-  const gdy = Math.round((g?.yRatio ?? 0) * height)
-  const bdx = Math.round((b?.xRatio ?? 0) * width)
-  const bdy = Math.round((b?.yRatio ?? 0) * height)
+  const wr = getWidthRatio()
+  const hr = getHeightRatio()
+  const rdx = Math.round((r?.xRatio ?? 0) * width * wr)
+  const rdy = Math.round((r?.yRatio ?? 0) * height * hr)
+  const gdx = Math.round((g?.xRatio ?? 0) * width * wr)
+  const gdy = Math.round((g?.yRatio ?? 0) * height * hr)
+  const bdx = Math.round((b?.xRatio ?? 0) * width * wr)
+  const bdy = Math.round((b?.yRatio ?? 0) * height * hr)
 
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
@@ -69,13 +71,13 @@ const applyVaporwaveToneToShifted = (canvas, originalCanvas, strength = 0.6) => 
   ctx.putImageData(image, 0, 0)
 }
 
-export const applyNeonSplit = (canvas, { r, g, b }) => {
+export const applyRetroSplit = (canvas, { r, g, b }) => {
   const original = createCanvasClone(canvas)
   applyRgbShift(canvas, { r, g, b })
   applyVaporwaveToneToShifted(canvas, original)
 }
 
-const applyDualSplit = (
+export const applyDualSplit = (
   canvas,
   { magenta, cyan, strength = 0.6, mode = 'base' } = {}
 ) => {
@@ -94,10 +96,12 @@ const applyDualSplit = (
     return base[(y * width + x) * 4 + channel]
   }
 
-  const mx = Math.round((magenta?.xRatio ?? -0.004) * width)
-  const my = Math.round((magenta?.yRatio ?? -0.002) * height)
-  const cx = Math.round((cyan?.xRatio ?? 0.004) * width)
-  const cy = Math.round((cyan?.yRatio ?? 0.002) * height)
+  const wr = getWidthRatio()
+  const hr = getHeightRatio()
+  const mx = Math.round((magenta?.xRatio ?? -0.004) * width * wr)
+  const my = Math.round((magenta?.yRatio ?? -0.002) * height * hr)
+  const cx = Math.round((cyan?.xRatio ?? 0.004) * width * wr)
+  const cy = Math.round((cyan?.yRatio ?? 0.002) * height * hr)
   const isNeon = mode === 'neon'
   const gamma = 0.7
 
@@ -140,18 +144,66 @@ const applyDualSplit = (
   ctx.putImageData(output, 0, 0)
 }
 
-export const applyDualSplitBase = (canvas, params = {}) => {
-  applyDualSplit(canvas, { ...params, mode: 'base' })
-}
-
-export const applyDualSplitOnly = (canvas, params = {}) => {
+export const applyNeonSplit = (canvas, params = {}) => {
   applyDualSplit(canvas, { strength: 0.95, ...params, mode: 'neon' })
 }
 
-export const applyChromatic = (canvas, { offsetRatio, offsetYRatio }) => {
+export const applyChromaticSplit = (canvas, { offsetRatio, offsetYRatio }) => {
   applyRgbShift(canvas, {
     r: { xRatio: -offsetRatio, yRatio: -offsetYRatio },
     g: { xRatio: 0, yRatio: 0 },
     b: { xRatio: offsetRatio, yRatio: offsetYRatio },
   })
+}
+
+export const applyAnaglyphSplit = (
+  canvas,
+  { offsetRatio = null, minOffsetRatio = null, maxOffsetRatio = null, seed = null } = {}
+) => {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return
+  const width = canvas.width
+  const height = canvas.height
+  const source = getImageData(ctx, width, height)
+  if (!source) return
+  const output = ctx.createImageData(width, height)
+  const src = source.data
+  const dst = output.data
+  dst.set(src)
+
+  const [rawMin, rawMax] = Array.isArray(offsetRatio)
+    ? [offsetRatio[0], offsetRatio[1]]
+    : offsetRatio !== null
+      ? [offsetRatio, offsetRatio]
+      : [minOffsetRatio ?? 0.01, maxOffsetRatio ?? 0.1]
+
+  const wr = getWidthRatio()
+  const offsetMinX = Math.min(
+    Math.max(0, Math.round(rawMin * width * wr)),
+    Math.max(0, Math.round(rawMax * width * wr))
+  )
+  const offsetMaxX = Math.max(0, Math.round(rawMax * width * wr))
+
+  const rand = createSeededRandom(seed)
+
+  const magnitude =
+    offsetMaxX === 0
+      ? 0
+      : offsetMinX + rand() * Math.max(0, offsetMaxX - offsetMinX)
+  const dx = Math.round(magnitude)
+  const channelIndex = Math.floor(rand() * 3)
+
+  const read = (x, y, channel) => {
+    if (x < 0 || y < 0 || x >= width || y >= height) return 0
+    return src[(y * width + x) * 4 + channel]
+  }
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const i = (y * width + x) * 4
+      dst[i + channelIndex] = read(x + dx, y, channelIndex)
+    }
+  }
+
+  ctx.putImageData(output, 0, 0)
 }

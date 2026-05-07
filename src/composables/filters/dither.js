@@ -1,4 +1,4 @@
-import { clamp, hashString, createSeededRandom, getImageData } from './utils.js'
+import { clamp, createSeededRandom, getImageData } from './utils.js'
 
 const BAYER_4 = new Uint8Array([
   0, 8, 2, 10,
@@ -272,10 +272,7 @@ export const applyDitherRandomNoise = (canvas, { levels, seed = null } = {}) => 
   const noiseScale = 1 / lvlsM1
   const outScale = 255 / lvlsM1
 
-  const seedValue = Number.isFinite(seed)
-    ? seed
-    : hashString(`${width}x${height}|${lvls}`)
-  const rand = createSeededRandom(seedValue)
+  const rand = createSeededRandom(seed)
 
   for (let y = 0; y < height; y++) {
     const rowBase = y * width

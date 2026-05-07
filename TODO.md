@@ -1,6 +1,11 @@
 # TODO
 
-- ratio résolution : ça marche pas trop comme prévu; ce que j'attendais c'était un truc basé sur la taille du workspace en réalité, mais c'est peut être débile
+- ratio des filtres
+  - regrouper les filtres
+  - nettoyer les signatures
+  - migrer le seeding
+  - migrer les ratios (+nettoyer les invZoom et scaleRatio)
+
 - supprimer le pixel vaporwave
 - jpeg artifacts : fine tuner
 - vhs : fine tuner

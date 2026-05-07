@@ -1,11 +1,12 @@
-import { getImageData } from './utils.js'
+import { getBlockRatio } from './utils.js'
 
-export const applyPalettePixel = (canvas, { palette, pixelSizeRatio = 0.004 } = {}) => {
+export const applyPixelPalette = (canvas, { palette, size }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
+
   const width = canvas.width
   const height = canvas.height
-  const scale = Math.max(1, Math.round(pixelSizeRatio * Math.min(width, height)))
+  const scale = getBlockRatio() * size
   const w = Math.max(1, Math.floor(width / scale))
   const h = Math.max(1, Math.floor(height / scale))
 

@@ -9,7 +9,7 @@ const PERMUTATIONS = [
   [2, 1, 0],
 ]
 
-export const applyChannelSwap = (canvas, { shift = 1, seed = null } = {}) => {
+export const applyChannelSwap = (canvas, { seed }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -18,16 +18,9 @@ export const applyChannelSwap = (canvas, { shift = 1, seed = null } = {}) => {
   if (!image) return
   const data = image.data
 
-  let perm
-  if (Number.isFinite(seed)) {
-    const rand = createSeededRandom(seed)
-    const index = 1 + Math.floor(rand() * 5)
-    perm = PERMUTATIONS[index]
-  } else {
-    const s = ((Math.round(shift) % 3) + 3) % 3
-    if (s === 0) return
-    perm = s === 1 ? PERMUTATIONS[3] : PERMUTATIONS[4]
-  }
+  const rand = createSeededRandom(seed)
+  const index = 1 + Math.floor(rand() * 5)
+  const perm = PERMUTATIONS[index]
 
   const srcR = perm[0]
   const srcG = perm[1]
