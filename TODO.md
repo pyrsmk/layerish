@@ -1,9 +1,6 @@
 # TODO
 
-- VHS 2 : https://github.com/ntsc-rs/ntsc-rs
-
 - jpeg artifacts : fine tuner
-- vhs : fine tuner
 - retro scifi : fine tuner
 - vérifier getFilterSignature
 - mieux ranger les filtres par fichier
