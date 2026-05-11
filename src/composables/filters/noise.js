@@ -1,6 +1,6 @@
 import { clamp, createSeededRandom, getImageData } from './utils.js'
 
-export const applyNoise = (canvas, { amount }) => {
+export const applyNoise = (ratioContext, canvas, { amount }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -21,14 +21,15 @@ export const applyNoise = (canvas, { amount }) => {
 }
 
 export const applyRgbNoise = (
+  ratioContext,
   canvas,
   {
-    amount = 0.7,
-    scale = 0.015,
-    edgeBoost = 0.9,
-    saturation = 1.2,
-    seed = null,
-  } = {}
+    amount,
+    scale,
+    edgeBoost,
+    saturation,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return

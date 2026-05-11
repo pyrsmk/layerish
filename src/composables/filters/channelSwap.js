@@ -9,7 +9,7 @@ const PERMUTATIONS = [
   [2, 1, 0],
 ]
 
-export const applyChannelSwap = (canvas, { seed }) => {
+export const applyChannelSwap = (ratioContext, canvas, { seed }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width

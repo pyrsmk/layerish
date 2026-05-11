@@ -1,4 +1,4 @@
-import { clamp, createSeededRandom, getImageData, getBlockRatio, getWidthRatio, resolveRange } from './utils.js'
+import { clamp, createSeededRandom, getImageData, resolveRange } from './utils.js'
 
 const LINE_COLORS = [
   [255, 0, 0],
@@ -55,16 +55,17 @@ const makeBandPainter = (rand, density, src, dst, width) => {
 }
 
 export const applyDataLoss = (
+  ratioContext,
   canvas,
   {
-    heightRatio = null,
-    minHeightRatio = null,
-    maxHeightRatio = null,
-    noiseDensity = 0.65,
-    rgbNoise = 0,
-    lineRatio = 1 / 6,
-    seed = null,
-  } = {}
+    heightRatio,
+    minHeightRatio,
+    maxHeightRatio,
+    noiseDensity,
+    rgbNoise,
+    lineRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -83,7 +84,7 @@ export const applyDataLoss = (
   const rand = createSeededRandom(seed)
   const density = clamp(noiseDensity, 0, 1)
 
-  const blockSize = Math.max(10, Math.floor(0.035 * Math.min(width, height) * getBlockRatio()))
+  const blockSize = Math.max(10, Math.round(30 / ratioContext.blockRatio))
   const rawH = Math.max(2 * blockSize, Math.round((h0 + rand() * (h1 - h0)) * height))
   const numBlockRows = Math.max(2, Math.floor(rawH / blockSize))
   const bandHeight = numBlockRows * blockSize
@@ -97,11 +98,10 @@ export const applyDataLoss = (
     : modeRoll < 0.75 ? 'barcodeCompress'
     : 'gray'
   const isCompress = bandMode === 'barcodeCompress'
-  const stripeSize = (isCompress ? 18 : 6) + Math.floor(rand() * (isCompress ? 40 : 22))
+  const stripeSize = Math.round(((isCompress ? 9 : 3) + Math.floor(rand() * (isCompress ? 40 : 22))) / ratioContext.blockRatio)
   const phase = Math.floor(rand() * stripeSize)
   const flipChance = (isCompress ? 0.03 : 0.08) + rand() * (isCompress ? 0.05 : 0.08)
   const rgbAmount = clamp(rgbNoise, 0, 1)
-
   const { drawBlockRow } = makeBandPainter(rand, density, src, dst, width)
 
   for (let row = 0; row < numBlockRows; row++) {
@@ -150,16 +150,17 @@ export const applyDataLoss = (
 }
 
 export const applyDataLossStream = (
+  ratioContext,
   canvas,
   {
-    heightRatio = null,
-    minHeightRatio = null,
-    maxHeightRatio = null,
-    blockSizeRatio = 0.03,
-    artifactModeWeights = { gray: 0.80, gradient: 0.05, pixelChecker: 0.05, colorLines: 0.05, bwLines: 0.05 },
-    artifactOpacity = 0.9,
-    seed = null,
-  } = {}
+    heightRatio,
+    minHeightRatio,
+    maxHeightRatio,
+    blockSizeRatio,
+    artifactModeWeights,
+    artifactOpacity,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -291,8 +292,9 @@ export const applyDataLossStream = (
 }
 
 export const applyDataLossFreeze = (
+  ratioContext,
   canvas,
-  { startRatio = null, seed = null } = {}
+  { startRatio, seed }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -343,13 +345,14 @@ export const applyDataLossFreeze = (
 }
 
 export const applyDataLossBitplane = (
+  ratioContext,
   canvas,
   {
-    heightRatio = null,
-    minHeightRatio = null,
-    maxHeightRatio = null,
-    seed = null,
-  } = {}
+    heightRatio,
+    minHeightRatio,
+    maxHeightRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -367,7 +370,7 @@ export const applyDataLossBitplane = (
 
   const rand = createSeededRandom(seed)
 
-  const blockSize = Math.max(10, Math.floor(0.035 * Math.min(width, height) * getBlockRatio()))
+  const blockSize = Math.max(10, Math.round(30 / ratioContext.blockRatio))
   const rawH = Math.max(2 * blockSize, Math.round((h0 + rand() * (h1 - h0)) * height))
   const numBlockRows = Math.max(2, Math.floor(rawH / blockSize))
   const bandHeight = numBlockRows * blockSize
@@ -381,7 +384,7 @@ export const applyDataLossBitplane = (
     const t = reverse
       ? 1 - row / Math.max(1, numBlockRows - 1)
       : row / Math.max(1, numBlockRows - 1)
-    const bitsToCorrupt = Math.min(8, 5 + Math.floor(t * 4))
+    const bitsToCorrupt = Math.min(8, 6 + Math.floor(t * 8))
     const noiseMask = (1 << bitsToCorrupt) - 1
     const keepMask = (~noiseMask) & 0xFF
 
@@ -407,17 +410,18 @@ export const applyDataLossBitplane = (
 }
 
 export const applyRowCorruption = (
+  ratioContext,
   canvas,
   {
-    bandCount = null,
-    bandCountMin = null,
-    bandCountMax = null,
-    heightRatio = null,
-    minHeightRatio = null,
-    maxHeightRatio = null,
-    maxShiftRatio = 0.2,
-    seed = null,
-  } = {}
+    bandCount,
+    bandCountMin,
+    bandCountMax,
+    heightRatio,
+    minHeightRatio,
+    maxHeightRatio,
+    maxShiftRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -441,7 +445,7 @@ export const applyRowCorruption = (
   const countMax = Math.max(countMin, Math.round(bc1))
   const minH = Math.max(1, Math.round(h0 * height))
   const maxH = Math.max(minH, Math.round(h1 * height))
-  const shiftLimit = Math.max(0, Math.round(maxShiftRatio * width * getWidthRatio()))
+  const shiftLimit = Math.max(0, Math.round(maxShiftRatio * width * ratioContext.widthRatio))
 
   const rand = createSeededRandom(seed)
   const bands = Math.round(countMin + rand() * (countMax - countMin))
@@ -525,14 +529,15 @@ export const applyRowCorruption = (
 }
 
 export const applyJpegArtifact = (
+  ratioContext,
   canvas,
   {
-    quality = [2, 5],
-    blockShift = [0.08, 0.25],
-    colorSmear = [0.3, 0.8],
-    blockSizeRatio = [0.006, 0.012],
-    seed = null,
-  } = {}
+    quality,
+    blockShift,
+    colorSmear,
+    blockSizeRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -545,7 +550,6 @@ export const applyJpegArtifact = (
   const dst = output.data
   dst.set(src)
 
-  const ref = Math.min(width, height)
   const qRange = Array.isArray(quality) ? quality : [quality, quality]
   const bsRange = Array.isArray(blockSizeRatio)
     ? blockSizeRatio
@@ -553,10 +557,11 @@ export const applyJpegArtifact = (
   const shRange = Array.isArray(blockShift) ? blockShift : [blockShift, blockShift]
   const smRange = Array.isArray(colorSmear) ? colorSmear : [colorSmear, colorSmear]
 
+  const ref = Math.min(width, height)
   const qMin = clamp(Math.round(qRange[0]), 1, 10)
   const qMax = clamp(Math.max(Math.round(qRange[1]), qMin), 1, 10)
-  const bsMin = Math.max(2, Math.round(bsRange[0] * ref * getBlockRatio()))
-  const bsMax = Math.max(bsMin, Math.round(bsRange[1] * ref * getBlockRatio()))
+  const bsMin = Math.max(2, Math.round(bsRange[0] * ref / ratioContext.blockRatio))
+  const bsMax = Math.max(bsMin, Math.round(bsRange[1] * ref / ratioContext.blockRatio))
   const shMin = clamp(shRange[0], 0, 1)
   const shMax = clamp(Math.max(shRange[1], shMin), 0, 1)
   const smMin = clamp(smRange[0], 0, 1)
@@ -635,14 +640,15 @@ export const applyJpegArtifact = (
 }
 
 export const applyBlockCorruption = (
+  ratioContext,
   canvas,
   {
-    blockSizeRatio = [0.006, 0.012],
-    intensity = [0.4, 0.8],
-    levels = [2, 5],
-    saturation = [1.5, 3.5],
-    seed = null,
-  } = {}
+    blockSizeRatio,
+    intensity,
+    levels,
+    saturation,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -661,8 +667,8 @@ export const applyBlockCorruption = (
   const lvlRange = Array.isArray(levels) ? levels : [levels, levels]
   const satRange = Array.isArray(saturation) ? saturation : [saturation, saturation]
 
-  const bsMin = Math.max(2, Math.round(bsRange[0] * ref * getBlockRatio()))
-  const bsMax = Math.max(bsMin, Math.round(bsRange[1] * ref * getBlockRatio()))
+  const bsMin = Math.max(2, Math.round(bsRange[0] * ref / ratioContext.blockRatio))
+  const bsMax = Math.max(bsMin, Math.round(bsRange[1] * ref / ratioContext.blockRatio))
   const intMin = clamp(intRange[0], 0, 1)
   const intMax = clamp(Math.max(intRange[1], intMin), 0, 1)
   const lvlMin = clamp(Math.round(lvlRange[0]), 1, 10)

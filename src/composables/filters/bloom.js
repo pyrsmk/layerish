@@ -1,12 +1,12 @@
-import { clamp, createCanvasClone, getImageData, getBlockRatio } from './utils.js'
+import { clamp, createCanvasClone, getImageData } from './utils.js'
 import { applyDualSplit } from './split.js'
 
-export const applySoftGlow = (canvas, { radiusRatio, intensity } = {}) => {
+export const applySoftGlow = (ratioContext, canvas, { radiusRatio, intensity }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
+  const radius = Math.max(0, radiusRatio * Math.min(width, height))
   const source = createCanvasClone(canvas)
   const blurCanvas = document.createElement('canvas')
   blurCanvas.width = width
@@ -24,19 +24,20 @@ export const applySoftGlow = (canvas, { radiusRatio, intensity } = {}) => {
   ctx.restore()
 }
 
-export const applyNeonGlow = (canvas, params = {}) => {
-  applyDualSplit(canvas, { ...params, mode: 'base' })
+export const applyNeonGlow = (ratioContext, canvas, params) => {
+  applyDualSplit(ratioContext, canvas, { ...params, mode: 'base' })
 }
 
 export const applyBloomHdr = (
+  ratioContext,
   canvas,
-  { radiusRatio = 0.02, intensity = 0.7, threshold = 0.6 } = {}
+  { radiusRatio, intensity, threshold }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
+  const radius = Math.max(0, radiusRatio * Math.min(width, height))
 
   const maskCanvas = document.createElement('canvas')
   maskCanvas.width = width
@@ -76,14 +77,15 @@ export const applyBloomHdr = (
 }
 
 export const applyDreamyGlow = (
+  ratioContext,
   canvas,
-  { radiusRatio = 0.03, intensity = 0.6, desaturation = 0.4 } = {}
+  { radiusRatio, intensity, desaturation }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
+  const radius = Math.max(0, radiusRatio * Math.min(width, height))
 
   const image = getImageData(ctx, width, height)
   if (!image) return
@@ -116,14 +118,15 @@ export const applyDreamyGlow = (
 }
 
 export const applyEdgeGlow = (
+  ratioContext,
   canvas,
-  { radiusRatio = 0.012, intensity = 0.8, edgeStrength = 1.5 } = {}
+  { radiusRatio, intensity, edgeStrength }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
+  const radius = Math.max(0, radiusRatio * Math.min(width, height))
   const source = getImageData(ctx, width, height)
   if (!source) return
   const src = source.data
@@ -180,18 +183,19 @@ export const applyEdgeGlow = (
 }
 
 export const applyTintedBloom = (
+  ratioContext,
   canvas,
   {
-    radiusRatio = 0.02,
-    intensity = 0.7,
-    tint = { r: 255, g: 200, b: 100 },
-  } = {}
+    radiusRatio,
+    intensity,
+    tint,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
+  const radius = Math.max(0, radiusRatio * Math.min(width, height))
   const source = createCanvasClone(canvas)
 
   const blurCanvas = document.createElement('canvas')
@@ -217,14 +221,15 @@ export const applyTintedBloom = (
 }
 
 export const applyHaloGlow = (
+  ratioContext,
   canvas,
-  { radiusRatio = 0.06, intensity = 0.35 } = {}
+  { radiusRatio, intensity }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const radius = Math.max(0, radiusRatio * Math.min(width, height) * getBlockRatio())
+  const radius = Math.max(0, radiusRatio * Math.min(width, height))
   const source = createCanvasClone(canvas)
 
   const blurCanvas = document.createElement('canvas')

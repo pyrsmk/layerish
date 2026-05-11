@@ -1,8 +1,9 @@
 import { createSeededRandom, getImageData } from './utils.js'
 
 export const applyBitcrush = (
+  ratioContext,
   canvas,
-  { level = null, seed = null } = {}
+  { level, seed }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -33,8 +34,9 @@ export const applyBitcrush = (
 }
 
 export const applyBitcrushStripes = (
+  ratioContext,
   canvas,
-  { heightRatio = [0.01, 0.1], level = [2, 6], seed = null } = {}
+  { heightRatio, level, seed }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return

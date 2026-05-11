@@ -1,6 +1,7 @@
 import { computed, onMounted, onUnmounted, ref, unref, watch } from 'vue'
 import { snapLayerToTargets } from '../utils/snap'
 import { drawComposite } from '../utils/composite'
+import { MIN_ZOOM } from '../constants'
 
 export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
   const canvasRef = ref(null)
@@ -309,7 +310,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     const canvasHeight = canvasSizeRef.value.height
     const fitX = width / canvasWidth
     const fitY = height / canvasHeight
-    state.zoom = Math.max(0.2, Math.min(1, fitX, fitY))
+    state.zoom = Math.max(MIN_ZOOM, Math.min(1, fitX, fitY))
     centerInView()
   }
 
@@ -327,7 +328,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
     const canvasHeight = canvasSizeRef.value.height
     const fitX = width / canvasWidth
     const fitY = height / canvasHeight
-    const nextZoom = Math.max(0.2, Math.min(1, fitX, fitY))
+    const nextZoom = Math.max(MIN_ZOOM, Math.min(1, fitX, fitY))
 
     const centerX = container.clientWidth / 2
     const centerY = container.clientHeight / 2
@@ -342,7 +343,7 @@ export function useCanvas({ state, activeLayer, moveLayer, canvasSize }) {
   function zoomBy(delta) {
     const container = containerRef.value
     const prevZoom = state.zoom
-    const nextZoom = Math.max(0.2, Math.min(4, prevZoom + delta))
+    const nextZoom = Math.max(MIN_ZOOM, Math.min(4, prevZoom + delta))
     if (!container || nextZoom === prevZoom) {
       state.zoom = nextZoom
       return

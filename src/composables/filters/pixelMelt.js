@@ -1,15 +1,16 @@
-import { clamp, createSeededRandom, getImageData, getBlockRatio } from './utils.js'
+import { clamp, createSeededRandom, getImageData } from './utils.js'
 
 export const applyPixelMelt = (
+  ratioContext,
   canvas,
   {
-    threshold = 0.45,
-    lengthRatio = null,
-    lengthMinRatio = null,
-    lengthMaxRatio = null,
-    brightnessMode = 0,
-    seed = null,
-  } = {}
+    threshold,
+    lengthRatio,
+    lengthMinRatio,
+    lengthMaxRatio,
+    brightnessMode,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -30,8 +31,8 @@ export const applyPixelMelt = (
         lengthRatio ?? lengthMinRatio ?? 0.02,
         lengthRatio ?? lengthMaxRatio ?? 0.06,
       ]
-  const minLen = Math.max(1, Math.round(len0 * ref * getBlockRatio()))
-  const maxLen = Math.max(minLen, Math.round(len1 * ref * getBlockRatio()))
+  const minLen = Math.max(1, Math.round(len0 * ref))
+  const maxLen = Math.max(minLen, Math.round(len1 * ref))
   const mode = clamp(Math.round(brightnessMode), 0, 1)
 
   const rand = createSeededRandom(seed)

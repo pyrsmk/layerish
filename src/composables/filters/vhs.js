@@ -177,6 +177,7 @@ const filterPlane = (plane, w, tf, initialMode, delay) => {
 // ---------------------------------------------------------------------------
 
 export const applyVhs = (
+  ratioContext,
   canvas,
   {
     lumaSmear,
@@ -666,6 +667,7 @@ export const applyVhs = (
 // ---------------------------------------------------------------------------
 
 export const applyVhs2 = (
+  ratioContext,
   canvas,
   {
     lumaSmear,

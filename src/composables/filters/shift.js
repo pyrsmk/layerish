@@ -1,20 +1,21 @@
-import { clamp, createSeededRandom, createCanvasClone, getImageData, hslToRgb, getWidthRatio, getHeightRatio, getBlockRatio, resolveRange } from './utils.js'
+import { clamp, createSeededRandom, createCanvasClone, getImageData, hslToRgb, resolveRange } from './utils.js'
 import { applyChannelSwap } from './channelSwap.js'
 import { applyJpegArtifact, applyDataLoss } from './dataLoss.js'
 
 export const applyRgbShift = (
+  ratioContext,
   canvas,
   {
-    bandCount = null,
-    bandCountMin = null,
-    bandCountMax = null,
-    heightRatio = null,
-    minHeightRatio = null,
-    maxHeightRatio = null,
-    maxOffsetRatio = 0.012,
-    maxOffsetYRatio = 0.006,
-    seed = null,
-  } = {}
+    bandCount,
+    bandCountMin,
+    bandCountMax,
+    heightRatio,
+    minHeightRatio,
+    maxHeightRatio,
+    maxOffsetRatio,
+    maxOffsetYRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -38,8 +39,8 @@ export const applyRgbShift = (
   const countMax = Math.max(countMin, Math.round(bc1))
   const minH = Math.max(1, Math.round(h0 * height))
   const maxH = Math.max(minH, Math.round(h1 * height))
-  const offsetMaxX = Math.max(0, Math.round(maxOffsetRatio * width * getWidthRatio()))
-  const offsetMaxY = Math.max(0, Math.round(maxOffsetYRatio * height * getHeightRatio()))
+  const offsetMaxX = Math.max(0, Math.round(maxOffsetRatio * width * ratioContext.widthRatio))
+  const offsetMaxY = Math.max(0, Math.round(maxOffsetYRatio * height * ratioContext.heightRatio))
 
   const rand = createSeededRandom(seed)
   const bands = Math.round(countMin + rand() * (countMax - countMin))
@@ -70,6 +71,7 @@ export const applyRgbShift = (
 }
 
 export const applyNegativeBands = (
+  ratioContext,
   canvas,
   {
     bands,
@@ -97,8 +99,8 @@ export const applyNegativeBands = (
 
   const bandH = Math.max(1, Math.round(heightRatio * height))
   const s = Math.min(1, saturation)
-  const offsetX = Math.max(0, Math.round(channelOffsetXRatio * width * getWidthRatio()))
-  const offsetY = Math.round(channelOffsetYRatio * height * getHeightRatio())
+  const offsetX = Math.max(0, Math.round(channelOffsetXRatio * width * ratioContext.widthRatio))
+  const offsetY = Math.round(channelOffsetYRatio * height * ratioContext.heightRatio)
   const opacity = clamp(bandOpacity, 0, 1)
   const invOpacity = 1 - opacity
   const negative = clamp(bandNegative, 0, 1)
@@ -145,6 +147,7 @@ export const applyNegativeBands = (
 }
 
 export const applyHorizontalBandShift = (
+  ratioContext,
   canvas,
   {
     bandCount,
@@ -152,8 +155,8 @@ export const applyHorizontalBandShift = (
     minHeightRatio,
     maxHeightRatio,
     maxOffsetRatio,
-    seed = null,
-  } = {}
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -169,7 +172,7 @@ export const applyHorizontalBandShift = (
 
   const rand = createSeededRandom(seed)
   const bands = Math.max(1, bandCount)
-  const offsetLimit = (maxOffsetRatio ?? 0.03) * width * getWidthRatio()
+  const offsetLimit = (maxOffsetRatio ?? 0.03) * width * ratioContext.widthRatio
   for (let i = 0; i < bands; i += 1) {
     const bandHeight = Math.floor(
       hMin * height + rand() * Math.max(1, (hMax - hMin) * height)
@@ -181,6 +184,7 @@ export const applyHorizontalBandShift = (
 }
 
 export const applyVerticalBandShift = (
+  ratioContext,
   canvas,
   {
     bandCount,
@@ -188,8 +192,8 @@ export const applyVerticalBandShift = (
     minHeightRatio,
     maxHeightRatio,
     maxOffsetRatio,
-    seed = null,
-  } = {}
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -205,7 +209,7 @@ export const applyVerticalBandShift = (
 
   const rand = createSeededRandom(seed)
   const bands = Math.max(1, bandCount)
-  const offsetLimit = (maxOffsetRatio ?? 0.03) * height * getHeightRatio()
+  const offsetLimit = (maxOffsetRatio ?? 0.03) * height * ratioContext.heightRatio
   for (let i = 0; i < bands; i += 1) {
     const bandWidth = Math.floor(
       hMin * width + rand() * Math.max(1, (hMax - hMin) * width)
@@ -217,6 +221,7 @@ export const applyVerticalBandShift = (
 }
 
 export const applyBlocksShift = (
+  ratioContext,
   canvas,
   {
     blockCount,
@@ -224,8 +229,8 @@ export const applyBlocksShift = (
     minSizeRatio,
     maxSizeRatio,
     maxOffsetRatio,
-    seed = null,
-  } = {}
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -242,7 +247,7 @@ export const applyBlocksShift = (
 
   const rand = createSeededRandom(seed)
   const blocks = Math.max(1, blockCount)
-  const br = getBlockRatio()
+  const br = ratioContext.blockRatio
   const offsetLimit = (maxOffsetRatio ?? 0.024) * ref * br
   for (let i = 0; i < blocks; i += 1) {
     const size = Math.floor(
@@ -257,7 +262,7 @@ export const applyBlocksShift = (
   }
 }
 
-const applyGlitchToRegion = (canvas, rx, ry, rw, rh, rand) => {
+const applyGlitchToRegion = (ratioContext, canvas, rx, ry, rw, rh, rand) => {
   if (rw <= 0 || rh <= 0) return
   const temp = document.createElement('canvas')
   temp.width = rw
@@ -267,10 +272,10 @@ const applyGlitchToRegion = (canvas, rx, ry, rw, rh, rand) => {
   tempCtx.drawImage(canvas, rx, ry, rw, rh, 0, 0, rw, rh)
   const glitchSeed = Math.floor(rand() * 0xFFFFFFFF)
   if (rand() < 0.6) {
-    applyChannelSwap(temp, { seed: glitchSeed })
+    applyChannelSwap(ratioContext, temp, { seed: glitchSeed })
   }
   if (rand() < 0.5) {
-    applyJpegArtifact(temp, {
+    applyJpegArtifact(ratioContext, temp, {
       quality: [1, 4],
       blockShift: [0.1, 0.3],
       colorSmear: [0.3, 0.7],
@@ -279,7 +284,7 @@ const applyGlitchToRegion = (canvas, rx, ry, rw, rh, rand) => {
     })
   }
   if (rand() < 0.5) {
-    applyDataLoss(temp, {
+    applyDataLoss(ratioContext, temp, {
       bandCount: [1, 3],
       heightRatio: [0.01, 0.05],
       noiseDensity: 0.7,
@@ -292,13 +297,14 @@ const applyGlitchToRegion = (canvas, rx, ry, rw, rh, rand) => {
 }
 
 export const applyHorizontalByteShift = (
+  ratioContext,
   canvas,
   {
-    offsetRatio = null,
-    offsetMinRatio = null,
-    offsetMaxRatio = null,
-    seed = null,
-  } = {}
+    offsetRatio,
+    offsetMinRatio,
+    offsetMaxRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -340,18 +346,19 @@ export const applyHorizontalByteShift = (
     const glitchRand = createSeededRandom(seed ^ 0xABCD1234)
     const glitchW = Math.min(colShift, width - colShift)
     const glitchX = colShift <= width / 2 ? width - colShift : 0
-    applyGlitchToRegion(canvas, glitchX, 0, glitchW, height, glitchRand)
+    applyGlitchToRegion(ratioContext, canvas, glitchX, 0, glitchW, height, glitchRand)
   }
 }
 
 export const applyVerticalByteShift = (
+  ratioContext,
   canvas,
   {
-    offsetRatio = null,
-    offsetMinRatio = null,
-    offsetMaxRatio = null,
-    seed = null,
-  } = {}
+    offsetRatio,
+    offsetMinRatio,
+    offsetMaxRatio,
+    seed,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -393,7 +400,6 @@ export const applyVerticalByteShift = (
     const glitchRand = createSeededRandom(seed ^ 0xABCD1234)
     const glitchH = Math.min(rowShift, height - rowShift)
     const glitchY = rowShift <= height / 2 ? height - rowShift : 0
-    applyGlitchToRegion(canvas, 0, glitchY, width, glitchH, glitchRand)
+    applyGlitchToRegion(ratioContext, canvas, 0, glitchY, width, glitchH, glitchRand)
   }
 }
-

@@ -1,12 +1,10 @@
-import { getBlockRatio } from './utils.js'
-
-export const applyPixelize = (canvas, { size }) => {
+export const applyPixelize = (ratioContext, canvas, { size }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
   const width = canvas.width
   const height = canvas.height
-  const scale = getBlockRatio() * size
+  const scale = size / ratioContext.blockRatio
   const w = Math.floor(width / scale)
   const h = Math.floor(height / scale)
 

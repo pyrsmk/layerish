@@ -1,23 +1,40 @@
-import { useEditorState } from '../useEditorState'
+import { MIN_ZOOM } from '../../constants'
 
-const { state, activeLayer } = useEditorState()
-
-export const getWidthRatio = () => {
-  if (!activeLayer.value) return 1
-  const imageWidth = activeLayer.value.width
-  const containerWidth = state.containerSize.width || imageWidth
-  return Math.min(imageWidth, containerWidth) / (imageWidth * state.zoom)
+export const getFittedImageWidth = (imageWidth, containerWidth) => {
+  return imageWidth > containerWidth ? containerWidth : imageWidth
 }
 
-export const getHeightRatio = () => {
-  if (!activeLayer.value) return 1
-  const imageHeight = activeLayer.value.height
-  const containerHeight = state.containerSize.height || imageHeight
-  return Math.min(imageHeight, containerHeight) / (imageHeight * state.zoom)
+export const getFittedImageHeight = (imageHeight, containerHeight) => {
+  return imageHeight > containerHeight ? containerHeight : imageHeight
 }
 
-export const getBlockRatio = () =>
-  Math.max(getWidthRatio(), getHeightRatio())
+export const getFitZoom = (imageWidth, imageHeight, containerWidth, containerHeight) => {
+  return Math.max(
+    MIN_ZOOM,
+    Math.min(
+      getFittedImageWidth(imageWidth, containerWidth) / imageWidth,
+      getFittedImageHeight(imageHeight, containerHeight) / imageHeight
+    )
+  )
+}
+
+export const getWidthRatio = (imageWidth, containerWidth) => {
+  return getFittedImageWidth(imageWidth, containerWidth) / imageWidth
+}
+
+export const getHeightRatio = (imageHeight, containerHeight) => {
+  return getFittedImageHeight(imageHeight, containerHeight) / imageHeight
+}
+
+export const getBlockRatio = (imageWidth, imageHeight, containerWidth, containerHeight) => {
+  return getFitZoom(imageWidth, imageHeight, containerWidth, containerHeight)
+}
+
+export const prepareRatioContext = (imageWidth, imageHeight, containerWidth, containerHeight) => ({
+  blockRatio: getBlockRatio(imageWidth, imageHeight, containerWidth, containerHeight),
+  widthRatio: getWidthRatio(imageWidth, containerWidth),
+  heightRatio: getHeightRatio(imageHeight, containerHeight),
+})
 
 export const clamp = (value, min, max) => (
   Math.min(max, Math.max(min, value))

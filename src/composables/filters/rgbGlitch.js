@@ -1,4 +1,4 @@
-import { clamp, createSeededRandom, getImageData, getBlockRatio, resolveRange } from './utils.js'
+import { clamp, createSeededRandom, getImageData, resolveRange } from './utils.js'
 
 const resolveStartRow = (rand, startRatio, height) => {
   const [s0, s1] = resolveRange(startRatio, 0.15, 0.75)
@@ -6,14 +6,15 @@ const resolveStartRow = (rand, startRatio, height) => {
 }
 
 export const applyRgbGlitch = (
+  ratioContext,
   canvas,
-  { amount = 1.4, scale = 0.022, threshold = 0.3, maxOffsetRatio = 0.014, edgeBoost = 1.1 } = {}
+  { amount, scale, threshold, maxOffsetRatio, edgeBoost }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const maxOffset = maxOffsetRatio * Math.min(width, height) * getBlockRatio()
+  const maxOffset = maxOffsetRatio * Math.min(width, height)
   const source = getImageData(ctx, width, height)
   if (!source) return
   const output = ctx.createImageData(width, height)
@@ -42,8 +43,8 @@ export const applyRgbGlitch = (
         src[down] * 0.299 + src[down + 1] * 0.587 + src[down + 2] * 0.114
       const edge = clamp((Math.abs(lum - lumRight) + Math.abs(lum - lumDown)) / 255, 0, 1)
 
-      const nx = x * scale
-      const ny = y * scale
+      const nx = x * scale * ratioContext.blockRatio
+      const ny = y * scale * ratioContext.blockRatio
       const wave =
         Math.sin(nx * 1.7 + ny * 1.1) * 0.6 +
         Math.sin(nx * 0.7 - ny * 2.1) * 0.4
@@ -77,8 +78,9 @@ export const applyRgbGlitch = (
 }
 
 export const applyRgbDrift = (
+  ratioContext,
   canvas,
-  { startRatio = null, maxDriftRatio = null, seed = null } = {}
+  { startRatio, maxDriftRatio, seed }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return

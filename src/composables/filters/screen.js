@@ -1,16 +1,17 @@
-import { clamp, createCanvasClone, createSeededRandom, getImageData, getWidthRatio, getBlockRatio } from './utils.js'
+import { clamp, createCanvasClone, createSeededRandom, getImageData } from './utils.js'
 
 export const applyCinemaTone = (
+  ratioContext,
   canvas,
   {
-    contrast = 1.2,
-    gamma = 1.05,
-    bloom = 0.12,
-    vignette = 0.2,
-    saturation = 1.05,
-    liftBlack = 0.04,
-    tint = 0.08,
-  } = {}
+    contrast,
+    gamma,
+    bloom,
+    vignette,
+    saturation,
+    liftBlack,
+    tint,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -87,7 +88,7 @@ export const applyCinemaTone = (
   ctx.putImageData(output, 0, 0)
 
   if (bloomAmount > 0) {
-    const bloomRadius = Math.max(2, Math.round(0.015 * Math.max(width, height) * getBlockRatio()))
+    const bloomRadius = Math.max(2, Math.round(0.015 * Math.max(width, height) ))
     const bloomCanvas = document.createElement('canvas')
     bloomCanvas.width = width
     bloomCanvas.height = height
@@ -106,8 +107,9 @@ export const applyCinemaTone = (
 }
 
 export const applyChromaticAberration = (
+  ratioContext,
   canvas,
-  { strengthRatio = 0.008, falloff = 2 } = {}
+  { strengthRatio, falloff }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -123,7 +125,7 @@ export const applyChromaticAberration = (
   const cy = height * 0.5
   const maxDist = Math.sqrt(cx * cx + cy * cy)
   const invMaxDist = 1 / Math.max(1, maxDist)
-  const amount = Math.max(0, strengthRatio * Math.min(width, height) * getBlockRatio())
+  const amount = Math.max(0, strengthRatio * Math.min(width, height) )
   const power = Math.max(0.1, falloff)
 
   const sampleChannel = (sx, sy, channel) => {
@@ -170,18 +172,19 @@ export const applyChromaticAberration = (
 }
 
 export const applyCrtScreen = (
+  ratioContext,
   canvas,
   {
-    barrel = 0.08,
-    aberrationRatio = 0.002,
-    scanlineFreq = 800,
-    scanlineIntensity = 0.5,
-    brightness = 0.9,
-    contrast = 1.1,
-    desaturation = 0.15,
-    noise = 0.04,
-    bloom = 0.25,
-  } = {}
+    barrel,
+    aberrationRatio,
+    scanlineFreq,
+    scanlineIntensity,
+    brightness,
+    contrast,
+    desaturation,
+    noise,
+    bloom,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -194,7 +197,7 @@ export const applyCrtScreen = (
   const dst = output.data
 
   const barrelAmount = Math.max(0, barrel)
-  const abPixels = Math.max(0, aberrationRatio * width * getWidthRatio())
+  const abPixels = Math.max(0, aberrationRatio * width )
   const scanFreq = Math.max(0, scanlineFreq)
   const scanIntensity = clamp(scanlineIntensity, 0, 1)
   const bright = Math.max(0, brightness)
@@ -318,7 +321,7 @@ export const applyCrtScreen = (
   ctx.putImageData(output, 0, 0)
 
   if (bloomAmount > 0) {
-    const bloomRadius = Math.max(2, Math.round(0.012 * Math.max(width, height) * getBlockRatio()))
+    const bloomRadius = Math.max(2, Math.round(0.012 * Math.max(width, height) ))
     const bloomCanvas = document.createElement('canvas')
     bloomCanvas.width = width
     bloomCanvas.height = height
@@ -336,7 +339,7 @@ export const applyCrtScreen = (
   }
 }
 
-export const applyRetroSciFi = (canvas, rawParams = {}) => {
+export const applyRetroSciFi = (ratioContext, canvas, rawParams) => {
   const paramSeed = rawParams.seed ?? null
   const rand = Number.isFinite(paramSeed) ? createSeededRandom(paramSeed) : null
   const resolve = (key, fallback) => {
@@ -357,7 +360,7 @@ export const applyRetroSciFi = (canvas, rawParams = {}) => {
   if (!ctx) return
   const width = canvas.width
   const height = canvas.height
-  const warpAmplitude = warpAmplitudeRatio * width * getWidthRatio()
+  const warpAmplitude = warpAmplitudeRatio * width * ratioContext.widthRatio
   const source = getImageData(ctx, width, height)
   if (!source) return
   const output = ctx.createImageData(width, height)
@@ -435,16 +438,17 @@ export const applyRetroSciFi = (canvas, rawParams = {}) => {
 }
 
 export const applyOscilloscope = (
+  ratioContext,
   canvas,
   {
-    rowStepRatio = 0.011,
-    xStepRatio = 0.002,
-    amplitudeRatio = 0.018,
-    thicknessRatio = 0.001,
-    intensity = 1.1,
-    glow = 0.4,
-    tint = { r: 25, g: 255, b: 70 },
-  } = {}
+    rowStepRatio,
+    xStepRatio,
+    amplitudeRatio,
+    thicknessRatio,
+    intensity,
+    glow,
+    tint,
+  }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -467,7 +471,7 @@ export const applyOscilloscope = (
   const stepY = Math.max(1, Math.round(rowStepRatio * height))
   const stepX = Math.max(1, Math.round(xStepRatio * width))
   const amp = Math.max(0, amplitudeRatio * height)
-  const thick = Math.max(0, Math.round(thicknessRatio * ref * getBlockRatio()))
+  const thick = Math.max(0, Math.round(thicknessRatio * ref ))
   const bright = clamp(intensity, 0, 3)
   const glowAmount = clamp(glow, 0, 1)
   const tintR = clamp(tint?.r ?? 40, 0, 255)

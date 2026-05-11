@@ -1,6 +1,6 @@
-import { clamp, createCanvasClone, getImageData, createSeededRandom, getWidthRatio, getHeightRatio } from './utils.js'
+import { clamp, createCanvasClone, getImageData, createSeededRandom } from './utils.js'
 
-const applyRgbShift = (canvas, { r, g, b }) => {
+const applyRgbShift = (ratioContext, canvas, { r, g, b }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -16,8 +16,8 @@ const applyRgbShift = (canvas, { r, g, b }) => {
     return src[(y * width + x) * 4 + channel]
   }
 
-  const wr = getWidthRatio()
-  const hr = getHeightRatio()
+  const wr = ratioContext.widthRatio
+  const hr = ratioContext.heightRatio
   const rdx = Math.round((r?.xRatio ?? 0) * width * wr)
   const rdy = Math.round((r?.yRatio ?? 0) * height * hr)
   const gdx = Math.round((g?.xRatio ?? 0) * width * wr)
@@ -71,15 +71,16 @@ const applyVaporwaveToneToShifted = (canvas, originalCanvas, strength = 0.6) => 
   ctx.putImageData(image, 0, 0)
 }
 
-export const applyRetroSplit = (canvas, { r, g, b }) => {
+export const applyRetroSplit = (ratioContext, canvas, { r, g, b }) => {
   const original = createCanvasClone(canvas)
-  applyRgbShift(canvas, { r, g, b })
+  applyRgbShift(ratioContext, canvas, { r, g, b })
   applyVaporwaveToneToShifted(canvas, original)
 }
 
 export const applyDualSplit = (
+  ratioContext,
   canvas,
-  { magenta, cyan, strength = 0.6, mode = 'base' } = {}
+  { magenta, cyan, strength, mode }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -96,8 +97,8 @@ export const applyDualSplit = (
     return base[(y * width + x) * 4 + channel]
   }
 
-  const wr = getWidthRatio()
-  const hr = getHeightRatio()
+  const wr = ratioContext.widthRatio
+  const hr = ratioContext.heightRatio
   const mx = Math.round((magenta?.xRatio ?? -0.004) * width * wr)
   const my = Math.round((magenta?.yRatio ?? -0.002) * height * hr)
   const cx = Math.round((cyan?.xRatio ?? 0.004) * width * wr)
@@ -144,12 +145,12 @@ export const applyDualSplit = (
   ctx.putImageData(output, 0, 0)
 }
 
-export const applyNeonSplit = (canvas, params = {}) => {
-  applyDualSplit(canvas, { strength: 0.95, ...params, mode: 'neon' })
+export const applyNeonSplit = (ratioContext, canvas, params) => {
+  applyDualSplit(ratioContext, canvas, { strength: 0.95, ...params, mode: 'neon' })
 }
 
-export const applyChromaticSplit = (canvas, { offsetRatio, offsetYRatio }) => {
-  applyRgbShift(canvas, {
+export const applyChromaticSplit = (ratioContext, canvas, { offsetRatio, offsetYRatio }) => {
+  applyRgbShift(ratioContext, canvas, {
     r: { xRatio: -offsetRatio, yRatio: -offsetYRatio },
     g: { xRatio: 0, yRatio: 0 },
     b: { xRatio: offsetRatio, yRatio: offsetYRatio },
@@ -157,8 +158,9 @@ export const applyChromaticSplit = (canvas, { offsetRatio, offsetYRatio }) => {
 }
 
 export const applyAnaglyphSplit = (
+  ratioContext,
   canvas,
-  { offsetRatio = null, minOffsetRatio = null, maxOffsetRatio = null, seed = null } = {}
+  { offsetRatio, minOffsetRatio, maxOffsetRatio, seed }
 ) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
@@ -177,7 +179,7 @@ export const applyAnaglyphSplit = (
       ? [offsetRatio, offsetRatio]
       : [minOffsetRatio ?? 0.01, maxOffsetRatio ?? 0.1]
 
-  const wr = getWidthRatio()
+  const wr = ratioContext.widthRatio
   const offsetMinX = Math.min(
     Math.max(0, Math.round(rawMin * width * wr)),
     Math.max(0, Math.round(rawMax * width * wr))

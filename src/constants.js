@@ -9,6 +9,7 @@ export const DEFAULT_MASK_FEATHER_MAX = 100
 export const DEFAULT_MASK_FEATHER_SIZE = 12
 export const DEFAULT_MASK_FEATHER_EDGE_CLAMP = false
 export const DEFAULT_ZOOM = 1
+export const MIN_ZOOM = 0.2
 export const DEFAULT_PAN = Object.freeze({ x: 0, y: 0 })
 export const DEFAULT_SNAP_TOLERANCE = 8
 export const DEFAULT_SNAP_ENABLED = true

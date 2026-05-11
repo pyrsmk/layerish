@@ -12,7 +12,7 @@ import { applyRgbShift, applyNegativeBands, applyHorizontalBandShift, applyVerti
 import { applyPixelPalette } from './filters/palettePixel.js'
 import { applyBitcrush, applyBitcrushStripes } from './filters/bitcrush.js'
 import { applyCinemaTone, applyChromaticAberration, applyCrtScreen, applyRetroSciFi, applyOscilloscope } from './filters/screen.js'
-import { applyVhs } from './filters/vhs.js'
+import { applyVhs, applyVhs2 } from './filters/vhs.js'
 import { applyDataLoss, applyDataLossStream, applyDataLossFreeze, applyDataLossBitplane, applyRowCorruption, applyJpegArtifact, applyBlockCorruption } from './filters/dataLoss.js'
 import { applyPixelMelt } from './filters/pixelMelt.js'
 import { applyRgbGlitch, applyRgbDrift } from './filters/rgbGlitch.js'
@@ -40,7 +40,8 @@ export const RANDOM_FILTER_IDS = [
   'pixel-melt',
   'block-corruption',
   'negative-bands',
-  'vhs',
+  'vhs-1',
+  'vhs-2',
 ]
 
 export const filterPresets = [
@@ -457,33 +458,66 @@ export const filterPresets = [
     }
   },
   {
-    label: 'VHS',
+    label: 'VHS 1',
     function: applyVhs,
     params: {
-      lumaSmear: [0.3, 0.8],
-      chromaBlur: [0.4, 0.9],
-      chromaDelayX: [1.0, 4.5],
-      chromaDelayY: [0, 2],
-      chromaVertBlend: [0.2, 0.7],
-      edgeWave: [0.1, 0.6],
+      lumaSmear: [0.05, 0.3],
+      chromaBlur: [0.08, 0.3],
+      chromaDelayX: [0.5, 3.0],
+      chromaDelayY: [0, 1],
+      chromaVertBlend: [0.1, 0.45],
+      edgeWave: [0.05, 0.4],
       edgeWaveFrequency: 0.025,
-      edgeWaveAmplitude: [2.0, 7.0],
-      headSwitchingHeight: [0.08, 0.28],
-      headSwitchingShift: [3, 10],
-      chromaLoss: [0.04, 0.25],
-      noise: [0.03, 0.15],
-      snow: [0.005, 0.04],
-      snowOpacity: [0.2, 0.6],
-      trackingNoiseHeight: [0.06, 0.25],
-      trackingNoiseWave: [3, 10],
-      trackingNoiseSnow: [0.01, 0.08],
-      trackingNoiseNoise: [0.08, 0.3],
-      chromaDegradation: [0.6, 1.0],
-      sharpen: [0.5, 1.5],
+      edgeWaveAmplitude: [1.0, 4.0],
+      headSwitchingHeight: [0.04, 0.16],
+      headSwitchingShift: [2, 6],
+      chromaLoss: [0.01, 0.1],
+      noise: [0.02, 0.09],
+      snow: [0.003, 0.025],
+      snowOpacity: [0.15, 0.45],
+      trackingNoiseHeight: [0.04, 0.15],
+      trackingNoiseWave: [2, 6],
+      trackingNoiseSnow: [0.005, 0.05],
+      trackingNoiseNoise: [0.04, 0.18],
+      chromaDegradation: [0.5, 0.85],
+      sharpen: [0.3, 1.0],
       ringingFreq: [0.3, 0.6],
-      ringingPower: [2.0, 6.0],
-      ringingIntensity: [2.0, 6.0],
-      vhsSharpen: [0.1, 0.5],
+      ringingPower: [2.0, 4.5],
+      ringingIntensity: [1.0, 3.0],
+      vhsSharpen: [0.15, 0.5],
+    }
+  },
+  {
+    label: 'VHS 2',
+    function: applyVhs2,
+    params: {
+      lumaSmear: [0.05, 0.35],
+      chromaPhaseError: [0.03, 0.15],
+      chromaPhaseNoise: [0.02, 0.1],
+      chromaBlur: [0.1, 0.4],
+      chromaDelayX: [1.0, 4.0],
+      chromaDelayY: [0, 1],
+      chromaVertBlend: [0.25, 0.6],
+      edgeWave: [0.1, 0.55],
+      edgeWaveFrequency: 0.018,
+      edgeWaveAmplitude: [1.5, 6.0],
+      headSwitchingHeight: [0.04, 0.15],
+      headSwitchingShift: [3, 9],
+      chromaLoss: [0.01, 0.1],
+      noise: [0.03, 0.12],
+      chromaNoise: [0.025, 0.09],
+      snow: [0.005, 0.04],
+      snowOpacity: [0.2, 0.55],
+      trackingNoiseHeight: [0.05, 0.18],
+      trackingNoiseWave: [2, 8],
+      trackingNoiseSnow: [0.01, 0.06],
+      trackingNoiseNoise: [0.06, 0.25],
+      chromaDegradation: [0.6, 0.9],
+      sharpen: [0.2, 0.9],
+      ringingFreq: [0.25, 0.5],
+      ringingPower: [1.5, 3.5],
+      ringingIntensity: [0.8, 2.5],
+      vhsSharpen: [0.12, 0.45],
     }
   },
   {
@@ -526,8 +560,8 @@ export const filterPresets = [
     label: 'Data Loss Stream',
     function: applyDataLossStream,
     params: {
-      heightRatio: [0.15, 0.50],
-      blockSizeRatio: 0.001,
+      heightRatio: [0.1, 0.50],
+      blockSizeRatio: 0.004,
       artifactOpacity: 0.9,
       artifactModeWeights: { gray: 0.2, gradient: 0.2, pixelChecker: 0.2, colorLines: 0.2, bwLines: 0.2 },
     }
@@ -535,14 +569,16 @@ export const filterPresets = [
   {
     label: 'Data Loss Bitplane',
     function: applyDataLossBitplane,
-    params: { heightRatio: [0.15, 0.50] }
+    params: {
+      heightRatio: [0.15, 0.50]
+    }
   },
   {
     label: 'Row Corruption',
     function: applyRowCorruption,
     params: {
       bandCount: [5, 20],
-      heightRatio: [0.001, 0.006],
+      heightRatio: [0.003, 0.006],
       maxShiftRatio: 0.2,
     }
   },
@@ -553,17 +589,17 @@ export const filterPresets = [
       quality: [1, 4],
       blockShift: [0.01, 0.02],
       colorSmear: [0.3, 0.8],
-      blockSizeRatio: [0.006, 0.012],
+      blockSizeRatio: [0.002, 0.006],
     }
   },
   {
     label: 'Block Corruption',
     function: applyBlockCorruption,
     params: {
-      blockSizeRatio: [0.006, 0.012],
+      blockSizeRatio: [0.001, 0.003],
       intensity: [0.005, 0.11],
       levels: [2, 5],
-      saturation: [0.2, 2],
+      saturation: [1, 2],
     }
   },
   {
@@ -672,7 +708,7 @@ export const reseedFilterOnLayer = (layer, filterId) => {
   layer.filterSeeds[filterId] = nextSeed
 }
 
-export const applyFiltersToCanvas = (filterIds, layer, canvas) => {
+export const applyFiltersToCanvas = (filterIds, layer, canvas, ratioContext) => {
   filterIds.forEach(filterId => {
     const filter = filtersMap.get(filterId)
     let seed = null
@@ -683,6 +719,6 @@ export const applyFiltersToCanvas = (filterIds, layer, canvas) => {
       seed = generateFilterSeed()
     }
 
-    filter.function(canvas, { ...determineFilterParams(filterId, seed), seed })
+    filter.function(ratioContext, canvas, { ...determineFilterParams(filterId, seed), seed })
   })
 }

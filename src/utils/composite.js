@@ -1,4 +1,5 @@
 import { applyFiltersToCanvas } from '../composables/useFilters'
+import { prepareRatioContext } from '../composables/filters/utils'
 
 function createLayerCanvas(layer) {
   const layerCanvas = document.createElement('canvas')
@@ -334,7 +335,13 @@ export function drawComposite({
     const { layerCanvas, layerCtx } = createLayerCanvas(layer)
 
     if (Array.isArray(layer.filters) && layer.filters.length > 0) {
-      applyFiltersToCanvas(layer.filters, layer, layerCanvas)
+      const ratioContext = prepareRatioContext(
+        layer.width,
+        layer.height,
+        state.containerSize.width,
+        state.containerSize.height
+      )
+      applyFiltersToCanvas(layer.filters, layer, layerCanvas, ratioContext)
     }
 
     const maskCanvas =

@@ -115,17 +115,17 @@ const applyErrorDiffusionDither = (canvas, levels, kernel, divisor) => {
   ctx.putImageData(image, 0, 0)
 }
 
-export const applyDitherBayer = (canvas, { matrixSize, levels }) => {
+export const applyDitherBayer = (ratioContext, canvas, { matrixSize, levels }) => {
   const size = matrixSize === 8 ? 8 : 4
   const matrix = size === 8 ? BAYER_8 : BAYER_4
   applyOrderedDither(canvas, levels, matrix, size)
 }
 
-export const applyDitherAtkinson = (canvas, { levels } = {}) => {
+export const applyDitherAtkinson = (ratioContext, canvas, { levels }) => {
   applyErrorDiffusionDither(canvas, levels, KERNEL_ATKINSON, KERNEL_ATKINSON_DIVISOR)
 }
 
-export const applyDitherBlueNoise = (canvas, { levels } = {}) => {
+export const applyDitherBlueNoise = (ratioContext, canvas, { levels }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -161,7 +161,7 @@ export const applyDitherBlueNoise = (canvas, { levels } = {}) => {
   ctx.putImageData(image, 0, 0)
 }
 
-export const applyDitherClusteredDot = (canvas, { levels } = {}) => {
+export const applyDitherClusteredDot = (ratioContext, canvas, { levels }) => {
   applyOrderedDither(canvas, levels, CLUSTERED_DOT_4, 4)
 }
 
@@ -199,7 +199,7 @@ const buildHilbertPath = (width, height) => {
   return count === path.length ? path : path.subarray(0, count)
 }
 
-export const applyDitherRiemersma = (canvas, { levels } = {}) => {
+export const applyDitherRiemersma = (ratioContext, canvas, { levels }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
@@ -259,7 +259,7 @@ export const applyDitherRiemersma = (canvas, { levels } = {}) => {
 // Adds seeded uniform noise to each pixel before quantization.
 // The simplest possible stochastic dithering — no error diffusion, no pattern.
 
-export const applyDitherRandomNoise = (canvas, { levels, seed = null } = {}) => {
+export const applyDitherRandomNoise = (ratioContext, canvas, { levels, seed }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width

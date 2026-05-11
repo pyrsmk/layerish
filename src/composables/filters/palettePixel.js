@@ -1,12 +1,10 @@
-import { getBlockRatio } from './utils.js'
-
-export const applyPixelPalette = (canvas, { palette, size }) => {
+export const applyPixelPalette = (ratioContext, canvas, { palette, size }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
   const width = canvas.width
   const height = canvas.height
-  const scale = getBlockRatio() * size
+  const scale = size / ratioContext.blockRatio
   const w = Math.max(1, Math.floor(width / scale))
   const h = Math.max(1, Math.floor(height / scale))
 

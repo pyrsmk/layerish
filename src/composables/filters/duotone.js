@@ -1,6 +1,6 @@
 import { getImageData } from './utils.js'
 
-export const applyDuotone = (canvas, { dark, light }) => {
+export const applyDuotone = (ratioContext, canvas, { dark, light }) => {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
   const width = canvas.width
