@@ -42,6 +42,7 @@ export const RANDOM_FILTER_IDS = [
   'negative-bands',
   'vhs-1',
   'vhs-2',
+  'random-noise-dither',
 ]
 
 export const filterPresets = [
